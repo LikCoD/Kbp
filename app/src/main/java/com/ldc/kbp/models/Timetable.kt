@@ -1,5 +1,6 @@
 package com.ldc.kbp.models
 
+import com.ldc.kbp.getCurrentWeek
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -159,6 +160,9 @@ data class Timetable(
                 }
                 weeks.add(Week(days))
             }
+
+            if (getCurrentWeek(weeks.size) == 1)
+                weeks.reverse()
 
             return Timetable(weeks, info)
         }
