@@ -1,7 +1,6 @@
 package com.ldc.kbp.models
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import com.ldc.kbp.config
 import com.ldc.kbp.homeworkList
 import kotlinx.serialization.decodeFromString
@@ -19,8 +18,7 @@ object Files {
         homeworkList = fromJson(context, "homework") ?: Homeworks()
     }
 
-    fun saveHomeworkList(context: Context) =
-        toJson(context, homeworkList, "homework")
+    fun saveHomeworkList(context: Context) = toJson(context, homeworkList, "homework")
 
     private fun saveData(context: Context, path: String, data: Any) {
         try {
