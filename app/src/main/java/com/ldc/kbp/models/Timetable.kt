@@ -88,9 +88,6 @@ data class Timetable(
 
                                 fun isSelectedGroup(pos: Int? = null) =
                                     when (Groups.categories.toList()[info.categoryIndex]) {
-                                        "аудитория" -> info.group == a[4].text()
-                                        "предмет" -> info.group == a[0].text()
-                                        "группа" -> info.group == a[3].text()
                                         "преподаватель" -> {
                                             if (pos == null)
                                                 info.group == a[1].text() || info.group == a[2].text()
@@ -109,10 +106,20 @@ data class Timetable(
                                         replaced
                                     )
 
-                                    val subjects = mutableListOf(getSubject(1))
-                                    if (a[2].text() != "")
-                                        if (isSelectedGroup(2)) subjects.add(0, getSubject(2))
-                                        else subjects.add(getSubject(2))
+                                    val subjects = mutableListOf<Subject>()
+
+                                    if (Groups.categories.toList()[info.categoryIndex] == "преподаватель") {
+                                        when (info.group) {
+                                            a[1].text() -> subjects.add(getSubject(1))
+                                            a[2].text() -> subjects.add(getSubject(2))
+                                        }
+                                    } else {
+                                        subjects.add(getSubject(1))
+
+                                        if (a[2].text() != "")
+                                            if (isSelectedGroup(2)) subjects.add(0, getSubject(2))
+                                            else subjects.add(getSubject(2))
+                                    }
 
                                     return subjects
                                 }
@@ -131,13 +138,8 @@ data class Timetable(
                                     }
                                 }
 
-                                if (isSelectedGroup()) {
-                                    replacementLessons.addAll(0, replacementSubjects)
-                                    standardLessons.addAll(0, standardSubjects)
-                                } else {
-                                    replacementLessons.addAll(replacementSubjects)
-                                    standardLessons.addAll(standardSubjects)
-                                }
+                                replacementLessons.addAll(replacementSubjects)
+                                standardLessons.addAll(standardSubjects)
 
                             }
                         }
