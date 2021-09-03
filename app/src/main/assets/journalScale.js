@@ -1,0 +1,27 @@
+document.getElementsByClassName('WrapPairDisc')[0].remove();
+document.getElementsByClassName('navbar navbar-inverse navbar-fixed-top')[0].remove();
+document.getElementsByClassName('footer')[0].remove();
+let elem = document.getElementsByTagName('table')[0].getElementsByTagName('tr');
+elem[0].remove();
+elem[0].remove();
+elem[elem.length - 1].remove();
+document.getElementsByClassName('leftColumn')[0].style.paddingTop = '44px';
+document.getElementsByClassName('rowPairDisc')[0].remove();
+elem = $('.pupilName');
+elem.css('width', 'auto');
+elem.css('paddingRight', '4px');
+elem.css('fontSize', '12px');
+elem = $('.pupilNumber, .charNumber, .mark td div, .labs td div, #dateOfMonth td div');
+elem.css('fontSize', '12px');
+elem.css('width', '20px');
+elem = $('.heightRow27 tr td div');
+elem.css('height', '20px');
+elem.css('lineHeight', '20px');
+elem = document.body.style;
+elem.background = '#ffffff';
+elem.padding = '0';
+elem.margin = '0';
+elem = $('.mar');
+elem.css('fontSize', '12px');
+elem.css('lineHeight', '20px');
+$('.danger').remove()
