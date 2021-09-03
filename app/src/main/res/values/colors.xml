@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="all">#E6BA92</color>
+    <color name="black">#FF000000</color>
+    <color name="lime">#FFFFFFFF</color>
+
+    <color name="background">#434C5C</color>
+    <color name="timetable_empty_subject_bg">#505A64</color>
+    <color name="timetable_subject_bg">#D7D7D7</color>
+    <color name="text">#FCFAF1</color>
+    <color name="timetable_replacement_subject_bg">#71AB7F</color>
+    <color name="timetable_more_subject_bg">#F3EAB3</color>
+    <color name="not_updated">#33000000</color>
+    <color name="black40">#66000000</color>
+    <color name="black80">#CC000000</color>
+    <color name="white60">#99FFFFFF</color>
+    <color name="white40">#66FFFFFF</color>
+    <color name="orange90">#E6E6BA92</color>
+    <color name="transparent">#00000000</color>
+    <color name="red">#FF0000</color>
+    <color name="red70">#B3FF0000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

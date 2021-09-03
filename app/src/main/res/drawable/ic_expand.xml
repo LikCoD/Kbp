@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="21dp"
+    android:viewportWidth="40"
+    android:viewportHeight="21">
+    <path
+        android:fillColor="@color/timetable_more_subject_bg"
+        android:pathData="M40,10.45v0.1C40,16.32 35.32,21 29.55,21l-19.1,0C4.68,21 0,16.32 0,10.55l0,-0.1C0,4.68 4.68,0 10.45,0l19.1,0C35.32,0 40,4.68 40,10.45z"/>
+    <path
+        android:pathData="M5.02,10.5a3.57,3.52 0,1 0,7.14 0a3.57,3.52 0,1 0,-7.14 0z"
+        android:fillColor="#FFFFFF"/>
+    <path
+        android:pathData="M16.43,10.5a3.57,3.52 0,1 0,7.14 0a3.57,3.52 0,1 0,-7.14 0z"
+        android:fillColor="#FFFFFF"/>
+    <path
+        android:pathData="M27.84,10.5a3.57,3.52 0,1 0,7.14 0a3.57,3.52 0,1 0,-7.14 0z"
+        android:fillColor="#FFFFFF"/>
+</vector>
+

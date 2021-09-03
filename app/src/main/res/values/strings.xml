@@ -1,0 +1,233 @@
+<resources>
+    <string name="app_name">Kbp</string>
+    <string name="nav_header_subtitle">App by LikDan</string>
+
+    <string name="menu_timetable">Расписание</string>
+    <string name="menu_diary">Дневник</string>
+    <string name="menu_journal">Эл. журнал</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_statement">Заявление</string>
+
+    <string name="menu_change_week">Изменить неделю</string>
+    <string name="menu_select_group">Выбрать ресурс</string>
+
+    <string name="monday">Пн</string>
+    <string name="tuesday">Вт</string>
+    <string name="wednesday">Ср</string>
+    <string name="thursday">Чт</string>
+    <string name="friday">Пт</string>
+    <string name="saturday">Сб</string>
+
+    <string name="is_replaced">Замена</string>
+    <string name="is_not_replaced">Замен нет</string>
+    <string name="idk_replaced">Обновление</string>
+    <string name="hide_replaced">Показать замены</string>
+    <string name="black_theme">Темная тема</string>
+    <string name="link">Расписание для</string>
+
+    <string name="loading">Загрузка…</string>
+    <string name="take_photo">Загрузите фото</string>
+    <string name="save">Сохранить</string>
+    <string name="use_gradient">Использовать градиент</string>
+
+    <string name="surname">Фамилия</string>
+    <string name="group">Группа</string>
+    <string name="birthday">Дата рождения</string>
+    <string name="teacher">Учитель</string>
+    <string name="student">Студент</string>
+    <string name="collage_name">Колледж бизнеса и права</string>
+    <string name="date">Дата</string>
+
+    <string name="name">Ф. И. О.</string>
+    <string name="department">Отделение</string>
+    <string name="continue_text">Продолжить</string>
+    <string name="reg_address">Рег. адрес</string>
+    <string name="live_address">Адрес</string>
+    <string name="phone">Тел.</string>
+    <string name="concerning">В связи с</string>
+    <string name="absence_date">Дата отсутствия</string>
+    <string name="bill_date">Дата чека</string>
+    <string name="bill_number">№ Чека</string>
+    <string name="subject">Предмет</string>
+    <string name="add">Добавить</string>
+    <string name="from_specialty">Со спец.</string>
+    <string name="to_specialty">На спец.</string>
+    <string name="prev_surname">Пред. фамилия</string>
+    <string name="now_surname">Тек. фамилия</string>
+    <string name="certificate_num">№ свидет.</string>
+    <string name="term_num">№ семестра</string>
+    <string name="specialty">Специальность</string>
+    <string name="specialization">Специализация</string>
+    <string name="enter_data">Введите все данные</string>
+    <string name="to_term">Курс</string>
+    <string name="reason">По … причине</string>
+    <string name="full_name">Ф. И. О. полн.</string>
+    <string name="male">М</string>
+    <string name="female">Ж</string>
+    <string name="sex">Пол</string>
+
+    <string name="restart">Заново</string>
+    <string name="loose">Вы наступили на мину</string>
+    <string name="size_x">Размер x</string>
+    <string name="size_y">Размер y</string>
+    <string name="mines_count">Кол-во мин</string>
+    <string name="load_end">Загрузка завершена</string>
+    <string name="allow_storage">Предоставте доступ к памяти для сохранения</string>
+
+
+    <string name="show_replacement">Показать замены</string>
+    <string name="hide_replacement">Скрыть замены</string>
+    <string name="week">Неделя</string>
+    <string name="search_hint">Поиск</string>
+
+    <string name="add_homework">Добавить д/з</string>
+    <string name="load_photo">Загрузите фото</string>
+    <string name="loading_photo">Загрузка фото</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="confirm_delete">Удалить фото?</string>
+    <string name="prev"><![CDATA[<]]></string>
+    <string name="next"><![CDATA[>]]></string>
+    <string name="homework">Дом. задание</string>
+    <string name="password">Пароль</string>
+
+    <string-array name="days_of_weeks">
+        <item>Пн</item>
+        <item>Вт</item>
+        <item>Ср</item>
+        <item>Чт</item>
+        <item>Пт</item>
+        <item>Сб</item>
+        <item>Вс</item>
+    </string-array>
+
+    <string-array name="statements">
+        <item>Отсутствие на занятиях</item>
+        <item>Отсутствие на занятиях (для родителей)</item>
+        <item>Объяснительная</item>
+        <item>Отработка практического занятия</item>
+        <item>Выдача дубликата</item>
+        <item>Выдача пропуска</item>
+        <item>Перевод на другую специальность</item>
+        <item>Предоставление академического отпуска</item>
+        <item>Изменение фамилии</item>
+        <item>Повышение отметки</item>
+        <item>Восстановление</item>
+        <item>Восстановление из академ. отпуска</item>
+    </string-array>
+
+    <string-array name="departments">
+        <item>Отделение информационных технологий</item>
+        <item>Юридическое отделение</item>
+        <item>Экономическое отделение</item>
+    </string-array>
+
+    <string-array name="d_types">
+        <item>книжки успеваемости</item>
+        <item>ученического билета</item>
+    </string-array>
+
+    <string-array name="reasons">
+        <item>уважительной</item>
+        <item>неуважительной</item>
+    </string-array>
+
+    <string-array name="reasons_academic">
+        <item>состоянию здоровья</item>
+        <item>призывом на срочную военную службу в вооруженные силы Республики Беларусь</item>
+    </string-array>
+
+    <string-array name="groups">
+        <item>Т-891</item>
+        <item>Т-892</item>
+        <item>Т-893</item>
+        <item>Т-894</item>
+        <item>Т-895</item>
+        <item>Т-816</item>
+        <item>Т-817</item>
+        <item>П-891</item>
+        <item>П-892</item>
+        <item>П-893</item>
+        <item>П-894</item>
+        <item>П-815</item>
+        <item>П-816</item>
+        <item>К-891</item>
+        <item>К-812</item>
+        <item>Б-891</item>
+        <item>Б-812</item>
+        <item>Э-891</item>
+        <item>Э-812</item>
+        <item>Д-891</item>
+        <item>Д-892</item>
+        <item>Д-813</item>
+        <item>Б-801</item>
+        <item>Э-801</item>
+        <item>К-801</item>
+        <item>Д-801</item>
+        <item>П-801</item>
+        <item>П-802</item>
+        <item>П-803</item>
+        <item>П-804</item>
+        <item>Т-991</item>
+        <item>Т-992</item>
+        <item>Т-993</item>
+        <item>Т-994</item>
+        <item>Т-995</item>
+        <item>Т-916</item>
+        <item>Т-917</item>
+        <item>П-991</item>
+        <item>П-992</item>
+        <item>П-993</item>
+        <item>П-994</item>
+        <item>П-915</item>
+        <item>П-916</item>
+        <item>К-991</item>
+        <item>К-912</item>
+        <item>Л-991</item>
+        <item>Б-991</item>
+        <item>Б-912</item>
+        <item>Э-991</item>
+        <item>Э-912</item>
+        <item>Д-991</item>
+        <item>Д-992</item>
+        <item>Д-913</item>
+        <item>Э-901</item>
+        <item>Б-901</item>
+        <item>К-901</item>
+        <item>Д-901</item>
+        <item>П-901</item>
+        <item>П-902</item>
+        <item>П-903</item>
+        <item>П-904</item>
+        <item>Б-091</item>
+        <item>Д-013</item>
+        <item>Д-091</item>
+        <item>Д-092</item>
+        <item>К-091</item>
+        <item>Л-091</item>
+        <item>Л-092</item>
+        <item>П-015</item>
+        <item>П-016</item>
+        <item>П-091</item>
+        <item>П-092</item>
+        <item>П-093</item>
+        <item>П-094</item>
+        <item>Т-016</item>
+        <item>Т-017</item>
+        <item>Т-091</item>
+        <item>Т-092</item>
+        <item>Т-093</item>
+        <item>Т-094</item>
+        <item>Т-095</item>
+        <item>Т-096</item>
+        <item>Т-012</item>
+        <item>Э-091</item>
+        <item>Б-001</item>
+        <item>Э-001</item>
+        <item>К-001</item>
+        <item>Д-001</item>
+        <item>Л-001</item>
+        <item>П-001</item>
+        <item>П-002</item>
+        <item>П-003</item>
+    </string-array>
+</resources>
