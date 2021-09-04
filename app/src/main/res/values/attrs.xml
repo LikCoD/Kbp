@@ -3,4 +3,8 @@
   <declare-styleable name="MultiScrollView">
     <attr name="fillViewport" format="boolean" />
   </declare-styleable>
+    <declare-styleable name="CollapsingImageBehavior">
+      <attr name="collapsedTarget" format="reference" />
+    </declare-styleable>
+
 </resources>

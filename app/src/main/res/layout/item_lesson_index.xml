@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lesson_index_tv"
+    android:id="@+id/item_lesson_index_tv"
     style="@style/lesson_index_text"
     android:layout_width="@dimen/lesson_index_width"
     android:layout_height="@dimen/item_subject_height"

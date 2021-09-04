@@ -21,6 +21,7 @@ import java.io.File
 import java.io.InputStreamReader
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import kotlin.math.abs
 import kotlin.streams.toList
 
 var config = Config()
@@ -68,7 +69,7 @@ fun getCurrentWeek(weekCount: Int, date: LocalDate = LocalDate.now()): Int {
 
     septemberStartDate = septemberStartDate.minusDays(septemberStartDate.dayOfWeek.value.toLong())
 
-    return (ChronoUnit.WEEKS.between(septemberStartDate, date) % weekCount).toInt()
+    return abs((ChronoUnit.WEEKS.between(septemberStartDate, date) % weekCount).toInt())
 }
 
 fun createDatePicker(context: Context, listener: (LocalDate) -> Unit): DatePickerPopup =

@@ -11,19 +11,19 @@ import com.ldc.kbp.R
 import com.ldc.kbp.config
 import com.ldc.kbp.dimen
 import com.ldc.kbp.getCurrentWeek
+import com.ldc.kbp.models.Bells
 import com.ldc.kbp.models.Deprecates
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.views.adapters.RoundButtonsAdapter
+import com.ldc.kbp.views.adapters.timetable.LessonIndexAdapter
 import com.ldc.kbp.views.adapters.timetable.TimetableAdapter
 import com.ldc.kbp.views.adapters.timetable.TimetableExpandAdapter
 import com.ldc.kbp.views.fragments.GroupSelectorFragment
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_timetable.*
 import kotlinx.android.synthetic.main.fragment_timetable.view.*
 import kotlinx.android.synthetic.main.item_day_of_week.view.*
-import kotlinx.android.synthetic.main.item_lesson_index.view.*
 import java.time.LocalDate
 import kotlin.concurrent.thread
 import kotlin.properties.Delegates
@@ -34,6 +34,7 @@ class TimetableFragment : Fragment() {
 
     private lateinit var timetableAdapter: TimetableAdapter
     private lateinit var weekSelectorAdapter: RoundButtonsAdapter
+    private lateinit var lessonIndexAdapter: LessonIndexAdapter
 
     private var itemWidth by Delegates.notNull<Float>()
     private var itemHeight by Delegates.notNull<Float>()
@@ -133,6 +134,8 @@ class TimetableFragment : Fragment() {
 
         update_image.setOnClickListener { thread { update() } }
 
+        bell_image.setOnClickListener { lessonIndexAdapter.isBellShown = !lessonIndexAdapter.isBellShown }
+
         change_replacement_mode_tv.setOnClickListener {
             change_replacement_mode_tv.setText(
                 if (timetableAdapter.changeMode()) R.string.hide_replacement else R.string.show_replacement
@@ -157,7 +160,8 @@ class TimetableFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        root.timetable_scroll.scrollX = (LocalDate.now().dayOfWeek.ordinal * itemWidth).toInt()
+        root.timetable_scroll.scrollX =
+            (LocalDate.now().dayOfWeek.ordinal * itemWidth).toInt()
     }
 
     private fun View.disableActions() = setOnTouchListener { view, _ ->
@@ -179,39 +183,31 @@ class TimetableFragment : Fragment() {
             weekSelectorAdapter.items = timetable.weeks.indices.map { (it + 1).toString() }
 
             root.days_of_week_layout.removeAllViews()
-            root.lessons_index_layout.removeAllViews()
 
             timetable.weeks.map { it.days }.flatten().forEachIndexed { index, _ ->
                 val dayOfWeek =
                     requireActivity().layoutInflater.inflate(
                         R.layout.item_day_of_week,
-                        days_of_week_layout,
+                        root.days_of_week_layout,
                         false
                     )
 
-                dayOfWeek.week_number_tv.text = ((index / timetable.daysInWeek) + 1).toString()
-                dayOfWeek.day_of_week_tv.text =
+                dayOfWeek.item_day_of_week_number_tv.text = ((index / timetable.daysInWeek) + 1).toString()
+                dayOfWeek.item_day_of_week_tv.text =
                     resources.getStringArray(R.array.days_of_weeks)[index % timetable.daysInWeek]
 
-                days_of_week_layout.addView(dayOfWeek)
+                root.days_of_week_layout.addView(dayOfWeek)
             }
 
-            (1..timetable.lessonsInDay).forEach { index ->
-                val lessonIndex =
-                    requireActivity().layoutInflater.inflate(
-                        R.layout.item_lesson_index,
-                        days_of_week_layout,
-                        false
-                    )
-                lessonIndex.lesson_index_tv.text = index.toString()
+            val bells = Bells(mutableListOf())
+            bells.load()
 
-                root.lessons_index_layout.addView(lessonIndex)
-            }
-
+            lessonIndexAdapter =
+                LessonIndexAdapter(requireContext(), timetable.lessonsInDay, root.lessons_index_recycler)
 
             root.timetable_scroll.post {
                 root.timetable_scroll.smoothScrollTo(
-                    (LocalDate.now().dayOfWeek.ordinal * itemWidth).toInt(),
+                    (LocalDate.now().dayOfWeek.ordinal * itemWidth * getCurrentWeek(timetable.weeks.size)).toInt(),
                     (timetable.weeks[getCurrentWeek(timetable.weeks.size)].days[LocalDate.now().dayOfWeek.ordinal]
                         .replacementLessons.indexOfFirst { it != null } * itemHeight).toInt()
                 )

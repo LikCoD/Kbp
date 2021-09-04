@@ -11,12 +11,7 @@
     <string name="menu_change_week">Изменить неделю</string>
     <string name="menu_select_group">Выбрать ресурс</string>
 
-    <string name="monday">Пн</string>
-    <string name="tuesday">Вт</string>
-    <string name="wednesday">Ср</string>
-    <string name="thursday">Чт</string>
-    <string name="friday">Пт</string>
-    <string name="saturday">Сб</string>
+    <string name="saturday">Суббота</string>
 
     <string name="is_replaced">Замена</string>
     <string name="is_not_replaced">Замен нет</string>
@@ -89,6 +84,7 @@
     <string name="next"><![CDATA[>]]></string>
     <string name="homework">Дом. задание</string>
     <string name="password">Пароль</string>
+    <string name="workdays">Будние</string>
 
     <string-array name="days_of_weeks">
         <item>Пн</item>
@@ -136,98 +132,24 @@
         <item>призывом на срочную военную службу в вооруженные силы Республики Беларусь</item>
     </string-array>
 
-    <string-array name="groups">
-        <item>Т-891</item>
-        <item>Т-892</item>
-        <item>Т-893</item>
-        <item>Т-894</item>
-        <item>Т-895</item>
-        <item>Т-816</item>
-        <item>Т-817</item>
-        <item>П-891</item>
-        <item>П-892</item>
-        <item>П-893</item>
-        <item>П-894</item>
-        <item>П-815</item>
-        <item>П-816</item>
-        <item>К-891</item>
-        <item>К-812</item>
-        <item>Б-891</item>
-        <item>Б-812</item>
-        <item>Э-891</item>
-        <item>Э-812</item>
-        <item>Д-891</item>
-        <item>Д-892</item>
-        <item>Д-813</item>
-        <item>Б-801</item>
-        <item>Э-801</item>
-        <item>К-801</item>
-        <item>Д-801</item>
-        <item>П-801</item>
-        <item>П-802</item>
-        <item>П-803</item>
-        <item>П-804</item>
-        <item>Т-991</item>
-        <item>Т-992</item>
-        <item>Т-993</item>
-        <item>Т-994</item>
-        <item>Т-995</item>
-        <item>Т-916</item>
-        <item>Т-917</item>
-        <item>П-991</item>
-        <item>П-992</item>
-        <item>П-993</item>
-        <item>П-994</item>
-        <item>П-915</item>
-        <item>П-916</item>
-        <item>К-991</item>
-        <item>К-912</item>
-        <item>Л-991</item>
-        <item>Б-991</item>
-        <item>Б-912</item>
-        <item>Э-991</item>
-        <item>Э-912</item>
-        <item>Д-991</item>
-        <item>Д-992</item>
-        <item>Д-913</item>
-        <item>Э-901</item>
-        <item>Б-901</item>
-        <item>К-901</item>
-        <item>Д-901</item>
-        <item>П-901</item>
-        <item>П-902</item>
-        <item>П-903</item>
-        <item>П-904</item>
-        <item>Б-091</item>
-        <item>Д-013</item>
-        <item>Д-091</item>
-        <item>Д-092</item>
-        <item>К-091</item>
-        <item>Л-091</item>
-        <item>Л-092</item>
-        <item>П-015</item>
-        <item>П-016</item>
-        <item>П-091</item>
-        <item>П-092</item>
-        <item>П-093</item>
-        <item>П-094</item>
-        <item>Т-016</item>
-        <item>Т-017</item>
-        <item>Т-091</item>
-        <item>Т-092</item>
-        <item>Т-093</item>
-        <item>Т-094</item>
-        <item>Т-095</item>
-        <item>Т-096</item>
-        <item>Т-012</item>
-        <item>Э-091</item>
-        <item>Б-001</item>
-        <item>Э-001</item>
-        <item>К-001</item>
-        <item>Д-001</item>
-        <item>Л-001</item>
-        <item>П-001</item>
-        <item>П-002</item>
-        <item>П-003</item>
+    <string-array name="bell_workdays">
+        <item>08:10 – 09:40</item>
+        <item>09:50 – 11:20</item>
+        <item>11:50 – 13:20</item>
+        <item>13:50 – 15:20</item>
+        <item>15:40 – 17:10</item>
+        <item>17:20 – 18:50</item>
+        <item>19:00 – 20:30</item>
     </string-array>
+
+    <string-array name="bell_saturday">
+        <item>08:10 – 09:40</item>
+        <item>09:50 – 11:20</item>
+        <item>11:30 – 13:00</item>
+        <item>13:30 – 15:00</item>
+        <item>15:10 – 16:40</item>
+        <item>16:50 – 18:20</item>
+        <item>18:30 – 20:00</item>
+    </string-array>
+
 </resources>

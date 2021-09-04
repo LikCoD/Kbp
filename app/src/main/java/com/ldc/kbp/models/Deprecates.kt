@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.os.Environment
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.widget.TextView
 import androidx.core.app.ShareCompat
 import com.itextpdf.layout.element.Table
 import java.io.File
@@ -19,4 +20,6 @@ object Deprecates {
     fun pdfTable(cols: Int) = Table(cols)
 
     fun shareIntentBuilder(activity: Activity) = ShareCompat.IntentBuilder.from(activity)
+
+    fun setTextAppearance(textView: TextView, themeId: Int) = textView.setTextAppearance(themeId)
 }
