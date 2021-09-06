@@ -11,6 +11,7 @@ data class Config(
     var groupId: String = "",
     var password: String = "",
     var surname: String = "",
+    var multiWeek: Boolean = true,
     var isFemale: Boolean = true,
     var department: String = "",
     var group: String = "",

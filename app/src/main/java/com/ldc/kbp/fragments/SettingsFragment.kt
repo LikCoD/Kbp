@@ -103,10 +103,16 @@ class SettingsFragment : Fragment() {
                 )
             )
 
+            multi_week_mode_switcher.setOnCheckedChangeListener { _, isChecked ->
+                config.multiWeek = isChecked
+                Files.saveConfig(requireContext())
+            }
+
             name_et.setText(config.surname)
             password_et.setText(config.password)
             department_auto.setText(config.department)
-            sex_swither.isChecked = config.isFemale
+            multi_week_mode_switcher.isChecked = config.multiWeek
+            sex_switcher.isChecked = config.isFemale
 
             group_name_tv.text = timetable.info?.group
 
@@ -115,7 +121,7 @@ class SettingsFragment : Fragment() {
 
                 config.password = password_et.text.toString()
                 config.department = department_auto.text.toString()
-                config.isFemale = sex_swither.isChecked
+                config.isFemale = sex_switcher.isChecked
 
                 Files.saveConfig(requireContext())
             }

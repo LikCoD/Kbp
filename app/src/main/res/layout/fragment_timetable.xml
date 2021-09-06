@@ -96,6 +96,7 @@
 
             </LinearLayout>
         </ScrollView>
+
         <com.jrummyapps.android.widget.TwoDScrollView
                 android:id="@+id/timetable_scroll"
                 android:layout_width="0dp"
@@ -116,8 +117,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:itemCount="12"
-                        tools:listitem="@layout/item_day_timetable"/>
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_week_timetable"/>
 
                 <Space
                         android:id="@+id/recycler_space"
@@ -176,6 +177,17 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="2"
                     tools:listitem="@layout/item_round_button"/>
+
+
+            <TextView
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/timetable_change_week_mode"
+                    android:layout_width="@dimen/diary_days_of_week_selection_height"
+                    android:layout_height="@dimen/diary_days_of_week_selection_height"
+                    android:background="@drawable/ic_circle"
+                    android:gravity="center"
+                    android:text="@string/multi_week_button"
+                    android:textColor="@color/black"/>
 
         </LinearLayout>
 

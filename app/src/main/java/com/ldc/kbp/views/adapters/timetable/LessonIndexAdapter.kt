@@ -47,4 +47,6 @@ class LessonIndexAdapter(
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemSubjectHeight)
         else LinearLayout.LayoutParams(0, itemSubjectHeight)
     }
+
+    init { updateItems() }
 }

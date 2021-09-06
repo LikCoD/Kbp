@@ -85,6 +85,8 @@
     <string name="homework">Дом. задание</string>
     <string name="password">Пароль</string>
     <string name="workdays">Будние</string>
+    <string name="multi_week_mode">Multiweek</string>
+    <string name="multi_week_button">M</string>
 
     <string-array name="days_of_weeks">
         <item>Пн</item>

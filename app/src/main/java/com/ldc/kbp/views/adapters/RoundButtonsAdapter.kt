@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.item_round_button.view.*
 
 class RoundButtonsAdapter(
     context: Context,
-    private val updateItemOnClick: Boolean = true,
+    var updateItemOnClick: Boolean = true,
     items: List<String>? = null,
     firstSelectionIndex: Int = 0
 ) : Adapter<String>(context, items, R.layout.item_round_button) {
