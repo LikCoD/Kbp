@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.views.fragments.GroupSelectorFragment
+import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 
 class SettingsFragment : Fragment() {
@@ -28,7 +28,7 @@ class SettingsFragment : Fragment() {
         with(inflater.inflate(R.layout.fragment_settings, container, false)) {
             val bottomSheetBehavior = BottomSheetBehavior.from(settings_bottom_sheet)
 
-            val groupSelectorFragment = GroupSelectorFragment { timetable ->
+            val searchFragment = SearchFragment { timetable ->
                 group_name_tv.text = timetable.group
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
@@ -79,7 +79,7 @@ class SettingsFragment : Fragment() {
                 object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
                         if (newState == BottomSheetBehavior.STATE_COLLAPSED)
-                            groupSelectorFragment.hideKeyboard()
+                            searchFragment.hideKeyboard()
                     }
 
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {}
@@ -87,12 +87,12 @@ class SettingsFragment : Fragment() {
             )
 
             requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.groups_selector_fragment, groupSelectorFragment).commit()
+                .add(R.id.groups_selector_fragment, searchFragment).commit()
 
             search_image.setOnClickListener {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-                groupSelectorFragment.showKeyboard()
+                searchFragment.showKeyboard()
             }
 
             department_auto.setAdapter(

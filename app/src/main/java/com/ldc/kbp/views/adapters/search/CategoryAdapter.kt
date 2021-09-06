@@ -1,4 +1,4 @@
-package com.ldc.kbp.views.adapters.groupselector
+package com.ldc.kbp.views.adapters.search
 
 import android.content.Context
 import android.view.View

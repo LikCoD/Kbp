@@ -20,7 +20,7 @@ import com.ldc.kbp.views.adapters.timetable.LessonIndexAdapter
 import com.ldc.kbp.views.adapters.timetable.TimetableAdapter
 import com.ldc.kbp.views.adapters.timetable.TimetableExpandAdapter
 import com.ldc.kbp.views.adapters.timetable.WeekIndexAdapter
-import com.ldc.kbp.views.fragments.GroupSelectorFragment
+import com.ldc.kbp.views.fragments.SearchFragment
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_timetable.*
@@ -56,14 +56,14 @@ class TimetableFragment : Fragment() {
         weekSelectorAdapter = RoundButtonsAdapter(requireContext(), false)
         val expandAdapter = TimetableExpandAdapter(requireContext())
 
-        val groupSelectorFragment = GroupSelectorFragment {
+        val searchFragment = SearchFragment {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
             thread { update(it) }
         }
 
         requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.groups_selector_fragment, groupSelectorFragment).commit()
+            .add(R.id.groups_selector_fragment, searchFragment).commit()
 
         itemWidth =
             dimen(resources, R.dimen.item_subject_width) +
@@ -94,7 +94,7 @@ class TimetableFragment : Fragment() {
                             subject_expand_recycler.isVisible = false
                         }
 
-                        groupSelectorFragment.hideKeyboard()
+                        searchFragment.hideKeyboard()
                     }
                 }
 
@@ -119,7 +119,7 @@ class TimetableFragment : Fragment() {
             update(lTimetable = com.ldc.kbp.timetable)
 
             timetable_bottom_sheet.post {
-                groupSelectorFragment.updateGroups()
+                searchFragment.updateGroups()
             }
         }
 
@@ -144,7 +144,7 @@ class TimetableFragment : Fragment() {
         search_image.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            groupSelectorFragment.showKeyboard()
+            searchFragment.showKeyboard()
         }
 
         update_image.setOnClickListener { thread { update() } }

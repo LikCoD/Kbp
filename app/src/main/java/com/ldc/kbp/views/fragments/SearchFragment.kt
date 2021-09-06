@@ -10,14 +10,14 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.R
-import com.ldc.kbp.views.adapters.groupselector.CategoryAdapter
-import com.ldc.kbp.views.adapters.groupselector.GroupSelectionAdapter
-import kotlinx.android.synthetic.main.fragment_group_selector.*
-import kotlinx.android.synthetic.main.fragment_group_selector.view.*
+import com.ldc.kbp.views.adapters.search.CategoryAdapter
+import com.ldc.kbp.views.adapters.search.SearchAdapter
+import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_search.view.*
 
-class GroupSelectorFragment(var onGroupSelected: (Groups.Timetable) -> Unit = {}) : Fragment() {
-    private lateinit var groupSelectorAdapter: GroupSelectionAdapter
-    private lateinit var groupSelectorCategoryAdapter: CategoryAdapter
+class SearchFragment(var onSelected: (Groups.Timetable) -> Unit = {}) : Fragment() {
+    private lateinit var searchAdapter: SearchAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
 
     private lateinit var keyboard: InputMethodManager
 
@@ -28,7 +28,7 @@ class GroupSelectorFragment(var onGroupSelected: (Groups.Timetable) -> Unit = {}
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View =
-        with(inflater.inflate(R.layout.fragment_group_selector, container, false)) {
+        with(inflater.inflate(R.layout.fragment_search, container, false)) {
             root = this
 
             keyboard =
@@ -51,29 +51,29 @@ class GroupSelectorFragment(var onGroupSelected: (Groups.Timetable) -> Unit = {}
     fun updateGroups() {
         if (Groups.timetable.isEmpty()) return
 
-        groupSelectorAdapter = GroupSelectionAdapter(requireContext(), Groups.timetable)
-        groupSelectorCategoryAdapter = CategoryAdapter(requireContext(), Groups.categories)
+        searchAdapter = SearchAdapter(requireContext(), Groups.timetable)
+        categoryAdapter = CategoryAdapter(requireContext(), Groups.categories)
 
-        root.category_recycler.adapter = groupSelectorCategoryAdapter
-        root.groups_recycler.adapter = groupSelectorAdapter
+        root.category_recycler.adapter = categoryAdapter
+        root.groups_recycler.adapter = searchAdapter
 
-        groupSelectorAdapter.onItemClickListener = { _, item ->
+        searchAdapter.onItemClickListener = { _, item ->
             keyboard.hideSoftInputFromWindow(requireView().windowToken, 0)
 
-            onGroupSelected(item)
+            onSelected(item)
         }
 
-        groupSelectorCategoryAdapter.onItemClickListener = { _, _ -> updateSearch() }
+        categoryAdapter.onItemClickListener = { _, _ -> updateSearch() }
 
     }
 
     private fun updateSearch(text: String = search_edit.text.toString()) {
-        groupSelectorAdapter.items =
+        searchAdapter.items =
             Groups.timetable.filter {
                 (it.group.lowercase().contains(text.lowercase()) || it.link.lowercase()
                     .contains(text.lowercase())) &&
-                        (it.categoryIndex == groupSelectorCategoryAdapter.selectionIndex ||
-                                groupSelectorCategoryAdapter.selectionIndex == null)
+                        (it.categoryIndex == categoryAdapter.selectionIndex ||
+                                categoryAdapter.selectionIndex == null)
             }
     }
 

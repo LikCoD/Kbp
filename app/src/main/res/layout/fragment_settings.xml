@@ -278,7 +278,7 @@
             android:id="@+id/groups_selector_fragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_bar_group_selection_height"
-            tools:layout="@layout/fragment_group_selector" />
+            tools:layout="@layout/fragment_search" />
 
     </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.ldc.kbp.views.adapters.groupselector
+package com.ldc.kbp.views.adapters.search
 
 import android.content.Context
 import android.view.View
@@ -7,7 +7,7 @@ import com.ldc.kbp.R
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_group_selector.view.*
 
-class GroupSelectionAdapter(context: Context, items: Set<Groups.Timetable>? = null) :
+class SearchAdapter(context: Context, items: Set<Groups.Timetable>? = null) :
     Adapter<Groups.Timetable>(context, items?.toList(), R.layout.item_group_selector) {
 
     override fun onBindViewHolder(view: View, item: Groups.Timetable?, position: Int) {
