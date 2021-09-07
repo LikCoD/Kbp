@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.ldc.kbp.R
-import com.ldc.kbp.config
-import com.ldc.kbp.dimen
-import com.ldc.kbp.getCurrentWeek
+import com.ldc.kbp.*
 import com.ldc.kbp.models.Bells
 import com.ldc.kbp.models.Deprecates
 import com.ldc.kbp.models.Groups
@@ -108,15 +105,8 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
             timetable_change_week_mode.setBackgroundResource(R.drawable.ic_circle)
         }
 
-
         thread {
-            Groups.loadTimetable()
-
-            com.ldc.kbp.timetable = Timetable.loadTimetable(
-                Groups.timetable.find { it.link == link } ?: Groups.timetable.toList()[0]
-            )
-
-            update(lTimetable = com.ldc.kbp.timetable)
+            update(lTimetable = mainTimetable)
 
             timetable_bottom_sheet.post {
                 searchFragment.updateGroups()
@@ -235,9 +225,9 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
                     scrollX,
                     (days.getOrElse(LocalDate.now().dayOfWeek.ordinal) { days[0] }.replacementLessons.indexOfFirst { it != null } * itemHeight).toInt()
                 )
-            }
 
-            root.loading_tv.isVisible = false
+                root.loading_tv.isVisible = false
+            }
         }
     }
 }

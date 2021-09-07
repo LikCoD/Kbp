@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("com.github.OKatrych:RightSheetBehavior:1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.2.2")

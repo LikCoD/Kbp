@@ -26,7 +26,7 @@ import kotlin.streams.toList
 
 var config = Config()
 var homeworkList = Homeworks()
-lateinit var timetable: Timetable
+lateinit var mainTimetable: Timetable
 
 fun dimen(resources: Resources, dimen: Int) = resources.getDimension(dimen)
 

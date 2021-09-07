@@ -114,7 +114,7 @@ class SettingsFragment : Fragment() {
             multi_week_mode_switcher.isChecked = config.multiWeek
             sex_switcher.isChecked = config.isFemale
 
-            group_name_tv.text = timetable.info?.group
+            group_name_tv.text = mainTimetable.info?.group
 
             confirm_button.setOnClickListener {
                 if (config.isStudent) config.surname = name_et.text.toString()

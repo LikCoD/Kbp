@@ -10,7 +10,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ldc.kbp.fragments.SapperFragment
 import com.ldc.kbp.models.Files
+import com.ldc.kbp.models.Groups
+import com.ldc.kbp.models.Timetable
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,24 +30,33 @@ class MainActivity : AppCompatActivity() {
         Files.getConfig(this)
         Files.getHomeworkList(this)
 
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                launch { Groups.loadTimetable() }.join()
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_timetable,
-                R.id.nav_diary,
-                R.id.nav_journal,
-                R.id.nav_empty_room,
-                R.id.nav_statement,
-                R.id.nav_settings
-            ),
-            drawer_layout
-        )
+                mainTimetable = Timetable.loadTimetable(Groups.timetable.find { it.link == config.link }
+                    ?: Groups.timetable.toList()[0])
+            }
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        nav_view.setupWithNavController(navController)
+            setContentView(R.layout.activity_main)
+            setSupportActionBar(toolbar)
+
+            val navController = findNavController(R.id.nav_host_fragment)
+            appBarConfiguration = AppBarConfiguration(
+                setOf(
+                    R.id.nav_timetable,
+                    R.id.nav_diary,
+                    R.id.nav_journal,
+                    R.id.nav_empty_room,
+                    R.id.nav_statement,
+                    R.id.nav_settings
+                ),
+                drawer_layout
+            )
+
+            setupActionBarWithNavController(navController, appBarConfiguration)
+            nav_view.setupWithNavController(navController)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

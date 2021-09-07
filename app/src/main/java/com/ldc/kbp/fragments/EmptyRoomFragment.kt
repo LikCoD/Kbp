@@ -12,7 +12,7 @@ import com.ldc.kbp.getCurrentWeek
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.shortSnackbar
-import com.ldc.kbp.timetable
+import com.ldc.kbp.mainTimetable
 import kotlinx.android.synthetic.main.fragment_empty_room.view.*
 import java.time.LocalDate
 import kotlin.concurrent.thread
@@ -28,7 +28,7 @@ class EmptyRoomFragment : Fragment() {
             val freeRooms = mutableListOf<String>()
             val roomAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, freeRooms)
 
-            val daysOfWeek = resources.getStringArray(R.array.days_of_weeks).dropLast(7 - timetable.daysInWeek)
+            val daysOfWeek = resources.getStringArray(R.array.days_of_weeks).dropLast(7 - mainTimetable.daysInWeek)
 
             day_of_week_spinner.adapter =
                 ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, daysOfWeek)
@@ -42,20 +42,20 @@ class EmptyRoomFragment : Fragment() {
                 }
             }
 
-            if (LocalDate.now().dayOfWeek.ordinal >= timetable.daysInWeek)
+            if (LocalDate.now().dayOfWeek.ordinal >= mainTimetable.daysInWeek)
                 day_of_week_spinner.setSelection(LocalDate.now().dayOfWeek.ordinal)
 
-            week_index_edit.setText((getCurrentWeek(timetable.weeks.size) + 1).toString())
+            week_index_edit.setText((getCurrentWeek(mainTimetable.weeks.size) + 1).toString())
 
             confirm_button.setOnClickListener {
                 val lessonIndex = lesson_index_edit.text.toString().toIntOrNull() ?: 0
                 val weekIndex = week_index_edit.text.toString().toIntOrNull() ?: 0
 
-                if (lessonIndex > timetable.lessonsInDay || lessonIndex <= 0) {
+                if (lessonIndex > mainTimetable.lessonsInDay || lessonIndex <= 0) {
                     shortSnackbar(lesson_index_edit, R.string.error_lesson)
                     return@setOnClickListener
                 }
-                if (weekIndex > timetable.weeks.size || weekIndex <= 0) {
+                if (weekIndex > mainTimetable.weeks.size || weekIndex <= 0) {
                     shortSnackbar(week_index_edit, R.string.error_week)
                     return@setOnClickListener
                 }

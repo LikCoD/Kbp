@@ -39,13 +39,13 @@ class DiaryFragment : Fragment() {
                 DiaryDayAdapter(
                     requireActivity(),
                     homeworkList,
-                    timetable.weeks[getCurrentWeek(timetable.weeks.size)].days,
+                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size)].days,
                     LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
                 )
             val daysOfWeekSelectorAdapter = RoundButtonsAdapter(
                 requireContext(),
                 false,
-                resources.getStringArray(R.array.days_of_weeks).slice(0 until timetable.daysInWeek)
+                resources.getStringArray(R.array.days_of_weeks).slice(0 until mainTimetable.daysInWeek)
             )
 
             val photosAdapter = PhotosAdapter(requireActivity())
@@ -58,7 +58,7 @@ class DiaryFragment : Fragment() {
                 diaryDayAdapter.startWeekDate = date.minusDays(dayOfWeek.toLong())
 
                 diaryDayAdapter.items =
-                    timetable.weeks[getCurrentWeek(timetable.weeks.size, date)].days
+                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, date)].days
 
                 diary_day_recycler.smoothScrollToPosition(dayOfWeek - 1)
             }
@@ -82,21 +82,21 @@ class DiaryFragment : Fragment() {
 
                 diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.minusWeeks(1)
                 diaryDayAdapter.items =
-                    timetable.weeks[
-                            getCurrentWeek(timetable.weeks.size, diaryDayAdapter.startWeekDate)
+                    mainTimetable.weeks[
+                            getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)
                     ].days
 
-                daysOfWeekSelectorAdapter.selectionIndex = timetable.daysInWeek - 1
+                daysOfWeekSelectorAdapter.selectionIndex = mainTimetable.daysInWeek - 1
 
-                days_of_week_selector_recycler.scrollToPosition(timetable.daysInWeek - 1)
-                diary_day_recycler.scrollToPosition(timetable.daysInWeek - 1)
+                days_of_week_selector_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
+                diary_day_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
             }
 
             diary_days_of_week_next.setOnClickListener {
                 diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
                 diaryDayAdapter.items =
-                    timetable.weeks[
-                            getCurrentWeek(timetable.weeks.size, diaryDayAdapter.startWeekDate)
+                    mainTimetable.weeks[
+                            getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)
                     ].days
 
                 daysOfWeekSelectorAdapter.selectionIndex = 0
