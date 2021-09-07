@@ -11,7 +11,7 @@ import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfString
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.Document
-import com.itextpdf.layout.border.Border
+import com.itextpdf.layout.borders.Border
 import com.itextpdf.layout.element.Cell
 import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.property.TextAlignment
@@ -34,7 +34,7 @@ object Statement {
         val file = getFile(Environment.DIRECTORY_DOCUMENTS, "/Заявление от $date.$type.pdf")
 
         val document =
-            Document(PdfDocument(PdfWriter(file.path)).apply { catalog.setLang(PdfString("ru-RU")) })
+            Document(PdfDocument(PdfWriter(file.path)).apply { catalog.lang = PdfString("ru-RU") })
 
         document.setFont(
             PdfFontFactory.createFont(
@@ -47,7 +47,7 @@ object Statement {
 
         fun createCell(text: String, alignment: TextAlignment): Cell {
             val cell = Cell()
-            cell.add(text)
+            cell.add(Paragraph(text))
             cell.setTextAlignment(alignment)
             cell.setBorder(Border.NO_BORDER)
             return cell
@@ -67,7 +67,7 @@ object Statement {
 
         if (fullName != null) {
             document.add(Paragraph(fullName).apply {
-                marginTop = 25F
+                setMarginTop(25F)
                 setTextAlignment(TextAlignment.RIGHT)
             })
             document.add(Paragraph("Зарегистрированного по адресу:").apply {
@@ -85,10 +85,10 @@ object Statement {
             document.add(Paragraph("Тел.: $phone").apply { setTextAlignment(TextAlignment.RIGHT) })
         }
 
-        document.add(Paragraph("ЗАЯВЛЕНИЕ").apply { marginTop = 50F })
+        document.add(Paragraph("ЗАЯВЛЕНИЕ").apply { setMarginTop(50F) })
         document.add(Paragraph(date).apply {
-            marginBottom = 10F
-            marginTop = -5F
+            setMarginTop(5F)
+            setMarginBottom(5F)
         })
 
         paragraphs.forEach {
@@ -98,7 +98,7 @@ object Statement {
             })
         }
 
-        document.add(Paragraph("Учащий(ая)ся").apply { marginTop = 30F })
+        document.add(Paragraph("Учащий(ая)ся").apply { setMarginTop(30F) })
 
         if (group != "") {
             val footerCols = Deprecates.pdfTable(2)

@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ldc.kbp"
-        minSdkVersion(26)
+        minSdkVersion(23)
         targetSdkVersion(31)
         versionCode = 19
         versionName = "1.9"
