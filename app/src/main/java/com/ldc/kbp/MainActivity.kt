@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_timetable,
                 R.id.nav_diary,
                 R.id.nav_journal,
+                R.id.nav_empty_room,
                 R.id.nav_statement,
                 R.id.nav_settings
             ),

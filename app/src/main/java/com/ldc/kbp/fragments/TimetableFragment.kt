@@ -29,7 +29,7 @@ import java.time.LocalDate
 import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
-class TimetableFragment : Fragment() {
+class TimetableFragment(val link: String = config.link) : Fragment() {
     private lateinit var root: View
     private lateinit var timetable: Timetable
 
@@ -113,7 +113,7 @@ class TimetableFragment : Fragment() {
             Groups.loadTimetable()
 
             com.ldc.kbp.timetable = Timetable.loadTimetable(
-                Groups.timetable.find { it.link == config.link } ?: Groups.timetable.toList()[0]
+                Groups.timetable.find { it.link == link } ?: Groups.timetable.toList()[0]
             )
 
             update(lTimetable = com.ldc.kbp.timetable)

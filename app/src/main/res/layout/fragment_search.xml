@@ -4,6 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_bar_group_selection_height"
+        android:paddingHorizontal="10dp"
         android:background="@color/background_search">
 
     <androidx.recyclerview.widget.RecyclerView

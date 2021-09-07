@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_timetable">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mobile_navigation"
+            app:startDestination="@id/nav_timetable">
 
     <fragment
-        android:id="@+id/nav_timetable"
-        android:name="com.ldc.kbp.fragments.TimetableFragment"
-        android:label="@string/menu_timetable"
-        tools:layout="@layout/fragment_timetable" />
+            android:id="@+id/nav_timetable"
+            android:name="com.ldc.kbp.fragments.TimetableFragment"
+            android:label="@string/menu_timetable"
+            tools:layout="@layout/fragment_timetable"/>
 
     <fragment
-        android:id="@+id/nav_diary"
-        android:name="com.ldc.kbp.fragments.DiaryFragment"
-        android:label="@string/menu_diary"
-        tools:layout="@layout/fragment_diary" />
+            android:id="@+id/nav_diary"
+            android:name="com.ldc.kbp.fragments.DiaryFragment"
+            android:label="@string/menu_diary"
+            tools:layout="@layout/fragment_diary"/>
 
     <fragment
-        android:id="@+id/nav_journal"
-        android:name="com.ldc.kbp.fragments.JournalFragment"
-        android:label="@string/menu_journal"
-        tools:layout="@layout/fragment_journal" />
+            android:id="@+id/nav_journal"
+            android:name="com.ldc.kbp.fragments.JournalFragment"
+            android:label="@string/menu_journal"
+            tools:layout="@layout/fragment_journal"/>
 
     <fragment
-        android:id="@+id/nav_statement"
-        android:name="com.ldc.kbp.fragments.StatementFragmentSelector"
-        android:label="@string/menu_statement"
-        tools:layout="@layout/fragment_statement_selector" />
+            android:id="@+id/nav_empty_room"
+            android:name="com.ldc.kbp.fragments.EmptyRoomFragment"
+            android:label="@string/menu_empty_room"
+            tools:layout="@layout/fragment_empty_room"/>
 
     <fragment
-        android:id="@+id/nav_settings"
-        android:name="com.ldc.kbp.fragments.SettingsFragment"
-        android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_settings" />
+            android:id="@+id/nav_statement"
+            android:name="com.ldc.kbp.fragments.StatementFragmentSelector"
+            android:label="@string/menu_statement"
+            tools:layout="@layout/fragment_statement_selector"/>
+
+    <fragment
+            android:id="@+id/nav_settings"
+            android:name="com.ldc.kbp.fragments.SettingsFragment"
+            android:label="@string/menu_settings"
+            tools:layout="@layout/fragment_settings"/>
 </navigation>

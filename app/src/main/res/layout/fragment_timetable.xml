@@ -136,7 +136,6 @@
             android:background="@drawable/bottom_sheet"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingHorizontal="@dimen/bottom_bar_margin_h"
             app:behavior_hideable="false"
             app:behavior_peekHeight="@dimen/bottom_bar_pick_height"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
@@ -192,6 +191,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+                android:paddingHorizontal="10dp"
                 android:id="@+id/subject_expand_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_bar_subjects_recycler"
@@ -200,9 +200,7 @@
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="4"
-                tools:listitem="@layout/item_lesson">
-
-        </androidx.recyclerview.widget.RecyclerView>
+                tools:listitem="@layout/item_lesson"/>
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/groups_selector_fragment"
