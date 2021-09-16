@@ -15,8 +15,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
+import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
+import kotlin.concurrent.thread
 
 class SettingsFragment : Fragment() {
 
@@ -28,20 +30,22 @@ class SettingsFragment : Fragment() {
         with(inflater.inflate(R.layout.fragment_settings, container, false)) {
             val bottomSheetBehavior = BottomSheetBehavior.from(settings_bottom_sheet)
 
-            val searchFragment = SearchFragment { timetable ->
-                group_name_tv.text = timetable.group
+            val searchFragment = SearchFragment { timetableInfo ->
+                thread { mainTimetable = Timetable.loadTimetable(timetableInfo) }
+
+                group_name_tv.text = timetableInfo.group
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
                 shortToast(requireContext(), R.string.loading)
 
-                config.link = timetable.link
+                config.link = timetableInfo.link
 
-                when (Groups.categories.toList()[timetable.categoryIndex]) {
+                when (Groups.categories.toList()[timetableInfo.categoryIndex]) {
                     "преподаватель" -> {
                         getUrlFromGroup(
                             requireContext(),
                             "https://nehai.by/ej/t.php",
-                            timetable.group
+                            timetableInfo.group
                         ) {
                             config.groupId = it
                             Files.saveConfig(requireContext())
@@ -49,7 +53,7 @@ class SettingsFragment : Fragment() {
 
                         config.isStudent = false
                         config.group = ""
-                        config.surname = timetable.group
+                        config.surname = timetableInfo.group
                         Files.saveConfig(requireContext())
 
                         name_layout.isVisible = false
@@ -59,20 +63,22 @@ class SettingsFragment : Fragment() {
                         getUrlFromGroup(
                             requireContext(),
                             "https://nehai.by/ej",
-                            timetable.group
+                            timetableInfo.group
                         ) {
                             config.groupId = it
                             Files.saveConfig(requireContext())
                         }
 
                         config.isStudent = true
-                        config.group = timetable.group
+                        config.group = timetableInfo.group
                         Files.saveConfig(requireContext())
 
                         name_layout.isVisible = true
                         password_tv.setText(R.string.birthday)
                     }
                 }
+
+                shortToast(requireContext(), R.string.load_end)
             }
 
             bottomSheetBehavior.addBottomSheetCallback(
@@ -144,9 +150,9 @@ class SettingsFragment : Fragment() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 webView.evaluateJavascript(getAssets(requireContext(), "journalLogins.js")) {
                     afterLoad(
-                        it.substring(1, it.length - 1).split("|").find { line ->
-                            line.substringBefore("-") == group
-                        }?.substringAfter("-") ?: ""
+                        it.substring(1, it.length - 1).split("|")
+                            .find { line -> line.substringAfter(":").lowercase() == group.lowercase() }
+                            ?.substringBefore(":") ?: ""
                     )
                 }
             }

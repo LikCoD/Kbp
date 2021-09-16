@@ -165,5 +165,7 @@
         <item>16:50 – 18:20</item>
         <item>18:30 – 20:00</item>
     </string-array>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

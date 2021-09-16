@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:theme="@style/ThemeOverlay.Kbp.AppWidgetContainer"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/widget_background_round"
+              android:paddingHorizontal="@dimen/widget_margin_h"
+              android:paddingVertical="@dimen/widget_margin_v"
+              android:orientation="vertical">
+
+    <TextView
+            style="@style/head_text"
+            android:id="@+id/widget_timetable_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
+
+    <TextView
+            style="@style/head_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_timetable"
+            android:gravity="center"/>
+
+    <ListView
+            android:id="@+id/widget_timetable_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+</LinearLayout>

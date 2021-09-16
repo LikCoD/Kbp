@@ -28,4 +28,7 @@
     <dimen name="diary_days_of_week_selection_height">40dp</dimen>
     <dimen name="diary_days_of_week_selection_margin_v">8dp</dimen>
     <dimen name="diary_recycler_margin_v">24dp</dimen>
+
+    <dimen name="widget_margin_h">16dp</dimen>
+    <dimen name="widget_margin_v">8dp</dimen>
 </resources>

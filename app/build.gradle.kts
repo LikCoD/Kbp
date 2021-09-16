@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("android.extensions")
     id("kotlinx-serialization")
+    id("kotlin-android")
 }
 
 android {
@@ -10,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ldc.kbp"
-        minSdkVersion(23)
+        minSdkVersion(26)
         targetSdkVersion(31)
         versionCode = 19
         versionName = "1.9"

@@ -39,10 +39,10 @@ data class Timetable(
         var isReplaced: Boolean = false
     )
 
-    enum class UpdateState {
-        REPLACEMENT,
-        NO_REPLACEMENT,
-        NOT_UPDATED
+    enum class UpdateState(val value: String) {
+        REPLACEMENT("Змена"),
+        NO_REPLACEMENT("Замен нет"),
+        NOT_UPDATED("Не обновлено")
     }
 
     val daysInWeek: Int
