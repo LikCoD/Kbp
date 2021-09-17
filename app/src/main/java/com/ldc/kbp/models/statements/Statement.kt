@@ -61,7 +61,7 @@ object Statement {
         headerCols.addCell(createCell(departmentWords.getOrNull(1) ?: "", TextAlignment.LEFT))
         headerCols.addCell(createCell("Колледжа бизнеса и права", TextAlignment.RIGHT))
         headerCols.addCell(createCell(departmentWords.getOrNull(2) ?: "", TextAlignment.LEFT))
-        headerCols.addCell(createCell("Макаревичу Ю. В.", TextAlignment.RIGHT))
+        headerCols.addCell(createCell("Суворова М. Э.", TextAlignment.RIGHT))
 
         document.add(headerCols)
 
