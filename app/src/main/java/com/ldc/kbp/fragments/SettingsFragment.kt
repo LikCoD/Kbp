@@ -40,7 +40,7 @@ class SettingsFragment : Fragment() {
 
                 config.link = timetableInfo.link
 
-                when (Groups.categories.toList()[timetableInfo.categoryIndex]) {
+                when (Groups.categories[timetableInfo.categoryIndex]) {
                     "преподаватель" -> {
                         getUrlFromGroup(
                             requireContext(),

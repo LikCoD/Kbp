@@ -27,7 +27,7 @@ class TimetableWidget : AppWidgetProvider() {
             withContext(Dispatchers.IO) {
                 launch { Groups.loadTimetable() }.join()
                 val timetable = Timetable.loadTimetable(
-                    Groups.timetable.find { it.link == config.link } ?: Groups.timetable.toList()[0]
+                    Groups.timetable.find { it.link == config.link } ?: Groups.timetable[0]
                 )
 
                 for (i in appWidgetIds) {

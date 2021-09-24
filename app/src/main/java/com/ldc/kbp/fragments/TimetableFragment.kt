@@ -107,7 +107,7 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
 
         thread {
             if (link == config.link) update(lTimetable = mainTimetable)
-            else update(Groups.timetable.find { it.link == link } ?: Groups.timetable.toList()[0])
+            else update(Groups.timetable.find { it.link == link } ?: Groups.timetable[0])
 
             timetable_bottom_sheet.post {
                 searchFragment.updateGroups()

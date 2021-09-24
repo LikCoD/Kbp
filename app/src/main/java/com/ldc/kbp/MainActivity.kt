@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 launch { Groups.loadTimetable() }.join()
 
                 mainTimetable = Timetable.loadTimetable(Groups.timetable.find { it.link == config.link }
-                    ?: Groups.timetable.toList()[0])
+                    ?: Groups.timetable[0])
             }
 
             setContentView(R.layout.activity_main)

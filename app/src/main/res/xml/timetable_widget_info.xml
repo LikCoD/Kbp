@@ -7,5 +7,4 @@
                     android:initialLayout="@layout/widget_timetable"
                     android:resizeMode="vertical"
                     android:widgetCategory="home_screen"
-                    android:initialKeyguardLayout="@layout/widget_timetable">
-</appwidget-provider>
+                    android:initialKeyguardLayout="@layout/widget_timetable"/>

@@ -88,15 +88,11 @@ data class Timetable(
                                 val a = htmlSubject.select("a")
 
                                 fun isSelectedGroup(pos: Int? = null) =
-                                    when (Groups.categories.toList()[info.categoryIndex]) {
-                                        "преподаватель" -> {
-                                            if (pos == null)
-                                                info.group == a[1].text() || info.group == a[2].text()
-                                            else info.group == a[pos].text()
+                                    if (Groups.categories.contains("преподаватель")) {
+                                        if (pos == null) info.group == a[1].text() || info.group == a[2].text()
+                                        else info.group == a[pos].text()
+                                    } else false
 
-                                        }
-                                        else -> false
-                                    }
 
                                 fun getSubjects(replaced: Boolean): MutableList<Subject> {
                                     fun getSubject(pos: Int) = Subject(
@@ -109,7 +105,7 @@ data class Timetable(
 
                                     val subjects = mutableListOf<Subject>()
 
-                                    if (Groups.categories.toList()[info.categoryIndex] == "преподаватель") {
+                                    if (Groups.categories[info.categoryIndex] == "преподаватель") {
                                         when (info.group) {
                                             a[1].text() -> subjects.add(getSubject(1))
                                             a[2].text() -> subjects.add(getSubject(2))
@@ -132,8 +128,7 @@ data class Timetable(
                                 when {
                                     className.contains("added") ->
                                         replacementSubjects.addAll(getSubjects(true))
-                                    className.contains("removed") &&
-                                            status[dayIndex] != UpdateState.NOT_UPDATED ->
+                                    className.contains("removed") && status[dayIndex] != UpdateState.NOT_UPDATED ->
                                         standardSubjects.addAll(getSubjects(false))
                                     else -> {
                                         replacementSubjects.addAll(getSubjects(false))

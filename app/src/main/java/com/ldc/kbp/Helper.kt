@@ -47,7 +47,7 @@ fun getDir(dir: String) =
     File(Deprecates.getStorageDir(dir), "/Kbp").apply { if (!exists()) mkdirs() }
 
 fun getAssets(context: Context, name: String) =
-    BufferedReader(InputStreamReader(context.assets.open(name))).lines().toList().joinToString("")
+    BufferedReader(InputStreamReader(context.assets.open(name))).readLines().joinToString("")
 
 fun shortToast(context: Context, text: Int) =
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()

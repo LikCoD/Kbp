@@ -8,8 +8,8 @@ import kotlinx.android.synthetic.main.item_category.view.*
 
 class CategoryAdapter(
     context: Context,
-    items: Set<String>? = null
-) : Adapter<String>(context, items?.toList(), R.layout.item_category) {
+    items: List<String>? = null
+) : Adapter<String>(context, items, R.layout.item_category) {
 
     var selectionIndex: Int? = null
         set(value) {

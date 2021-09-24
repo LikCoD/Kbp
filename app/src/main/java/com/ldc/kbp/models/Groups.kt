@@ -23,9 +23,10 @@ object Groups {
                 }
 
                 timetable.sortedBy { it.categoryIndex }
+                timetable = timetable.distinct().toMutableList()
             }
         }
 
-        var timetable: MutableSet<Timetable> = mutableSetOf()
-        var categories: MutableSet<String> = mutableSetOf()
+        var timetable: MutableList<Timetable> = mutableListOf()
+        var categories: MutableList<String> = mutableListOf()
 }

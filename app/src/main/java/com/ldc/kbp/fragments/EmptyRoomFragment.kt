@@ -68,7 +68,7 @@ class EmptyRoomFragment : Fragment() {
                     else group.group.count { it.isDigit() } == 2
 
                 val groups = Groups.timetable.filter {
-                    Groups.categories.toList()[it.categoryIndex] == "аудитория"
+                    Groups.categories[it.categoryIndex] == "аудитория"
                 }.filter {
                     (isRoomOnFloor(0, it) && floor0_switcher.isChecked) ||
                             (isRoomOnFloor(1, it) && floor1_switcher.isChecked) ||
