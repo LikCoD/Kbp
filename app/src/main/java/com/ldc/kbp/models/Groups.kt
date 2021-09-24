@@ -16,7 +16,7 @@ object Groups {
 
                 val index = if (categories.contains(category)) categories.indexOf(category) else {
                     categories.add(category)
-                    categories.size - 1
+                    categories.lastIndex
                 }
 
                 timetable.add(Timetable(a.text(), a.attr("href"), index))
