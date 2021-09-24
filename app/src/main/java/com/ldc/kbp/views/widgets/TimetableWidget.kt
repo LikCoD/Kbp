@@ -8,6 +8,7 @@ import android.widget.RemoteViews
 import com.ldc.kbp.R
 import com.ldc.kbp.config
 import com.ldc.kbp.getCurrentWeek
+import com.ldc.kbp.getString
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.views.widgets.services.TimetableWidgetsService
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class TimetableWidget : AppWidgetProvider() {
 
@@ -32,6 +34,11 @@ class TimetableWidget : AppWidgetProvider() {
                     val rv = RemoteViews(context.packageName, R.layout.widget_timetable)
                     val data = arrayListOf<String?>()
 
+                    val nowDate = LocalDateTime.now()
+                    rv.setTextViewText(
+                        R.id.widget_timetable_last_update,
+                        "${LocalDate.now().getString()} ${nowDate.hour}:${nowDate.minute}"
+                    )
                     if (LocalDate.now().dayOfWeek.ordinal <= timetable.daysInWeek) {
                         rv.setTextViewText(
                             R.id.widget_timetable_status,

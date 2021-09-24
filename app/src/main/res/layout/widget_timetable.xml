@@ -8,6 +8,14 @@
               android:orientation="vertical">
 
     <TextView
+            android:textSize="16sp"
+            style="@style/head_text"
+            android:id="@+id/widget_timetable_last_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
+
+    <TextView
             style="@style/head_text"
             android:id="@+id/widget_timetable_status"
             android:layout_width="match_parent"
