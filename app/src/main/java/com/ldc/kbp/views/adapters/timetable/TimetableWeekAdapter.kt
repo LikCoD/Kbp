@@ -39,9 +39,9 @@ class TimetableWeekAdapter(
     fun changeMode(): Boolean {
         isReplacementShown = !isReplacementShown
 
-        items?.forEach { day ->
+        items?.forEachIndexed { index, day ->
             if (day!!.state == Timetable.UpdateState.REPLACEMENT)
-                dataSetChanged()
+                notifyItemChanged(index)
         }
 
         return isReplacementShown

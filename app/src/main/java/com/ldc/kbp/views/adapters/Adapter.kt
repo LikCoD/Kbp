@@ -27,7 +27,8 @@ abstract class Adapter<T>(val context: Context, items: List<T?>?, val layout: In
         }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun dataSetChanged() = notifyDataSetChanged()
+    fun dataSetChanged() =
+        notifyDataSetChanged()
 
     var onItemClickListener: ((Int, T) -> Unit) = { _, _ -> }
 

@@ -25,10 +25,7 @@ class TimetableAdapter(
     override fun onBindViewHolder(view: View, item: Timetable.Week?, position: Int) {
         recyclers.add(view.item_week_timetable_recycler)
 
-        val weekAdapter = TimetableWeekAdapter(
-            context,
-            item
-        ) { lesson, i -> onLessonExpand(lesson, i) }
+        val weekAdapter = TimetableWeekAdapter(context, item) { lesson, i -> onLessonExpand(lesson, i) }
 
         adapters.add(weekAdapter)
         view.item_week_timetable_recycler.adapter = weekAdapter
@@ -39,7 +36,7 @@ class TimetableAdapter(
     fun changeReplacementMode(): Boolean {
         isReplacementShown = !isReplacementShown
 
-        items?.forEachIndexed { index, _ -> adapters[index].changeMode() }
+        adapters.forEach { it.changeMode() }
 
         return isReplacementShown
     }

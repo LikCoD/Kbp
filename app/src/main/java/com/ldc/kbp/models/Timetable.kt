@@ -80,8 +80,8 @@ data class Timetable(
 
                 timeTableLines.forEachIndexed { lineIndex, line ->
                     line.select("td").drop(1).dropLast(1).forEachIndexed { dayIndex, htmlDay ->
-                        val replacementLessons = mutableListOf<Subject>()
-                        val standardLessons = mutableListOf<Subject>()
+                        val replacementLessons = mutableSetOf<Subject>()
+                        val standardLessons = mutableSetOf<Subject>()
 
                         htmlDay.children().forEach { htmlSubject ->
                             if (htmlSubject.className() != "empty-pair") {
@@ -125,12 +125,14 @@ data class Timetable(
                                     return subjects
                                 }
 
-                                val replacementSubjects = mutableListOf<Subject>()
-                                val standardSubjects = mutableListOf<Subject>()
+                                val replacementSubjects = mutableSetOf<Subject>()
+                                val standardSubjects = mutableSetOf<Subject>()
+
+                                val className = htmlSubject.className()
                                 when {
-                                    htmlSubject.className().contains("added") ->
+                                    className.contains("added") ->
                                         replacementSubjects.addAll(getSubjects(true))
-                                    htmlSubject.className().contains("removed") &&
+                                    className.contains("removed") &&
                                             status[dayIndex] != UpdateState.NOT_UPDATED ->
                                         standardSubjects.addAll(getSubjects(false))
                                     else -> {
@@ -141,7 +143,6 @@ data class Timetable(
 
                                 replacementLessons.addAll(replacementSubjects)
                                 standardLessons.addAll(standardSubjects)
-
                             }
                         }
 
@@ -150,11 +151,11 @@ data class Timetable(
 
                         days[dayIndex].replacementLessons.add(
                             if (replacementLessons.isEmpty()) null
-                            else Lesson(lineIndex + 1, replacementLessons)
+                            else Lesson(lineIndex + 1, replacementLessons.toMutableList())
                         )
                         days[dayIndex].standardLessons.add(
                             if (standardLessons.isEmpty()) null
-                            else Lesson(lineIndex + 1, standardLessons)
+                            else Lesson(lineIndex + 1, standardLessons.toMutableList())
                         )
                     }
                 }
