@@ -91,7 +91,7 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
                             subject_expand_recycler.isVisible = false
                         }
 
-                        searchFragment.hideKeyboard()
+                        searchFragment.hide()
                     }
                 }
 
@@ -135,7 +135,7 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
         search_image.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            searchFragment.showKeyboard()
+            searchFragment.show()
         }
 
         update_image.setOnClickListener { thread { update() } }

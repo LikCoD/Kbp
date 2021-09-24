@@ -80,7 +80,7 @@ class SettingsFragment : Fragment() {
                 object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
                         if (newState == BottomSheetBehavior.STATE_COLLAPSED)
-                            searchFragment.hideKeyboard()
+                            searchFragment.hide()
                     }
 
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {}
@@ -93,7 +93,7 @@ class SettingsFragment : Fragment() {
             search_image.setOnClickListener {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-                searchFragment.showKeyboard()
+                searchFragment.show()
             }
 
             department_auto.setAdapter(
@@ -131,11 +131,7 @@ class SettingsFragment : Fragment() {
 
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun getUrlFromGroup(
-        link: String,
-        group: String,
-        onLoad: (String) -> Unit
-    ) {
+    private fun getUrlFromGroup(link: String, group: String, onLoad: (String) -> Unit) {
         getHtmlBodyFromWebView(requireContext(), link, "journalLogins.js"){
             onLoad(it.substring(1, it.length - 1).split("|")
                 .find { line -> line.substringAfter(":").lowercase() == group.lowercase() }

@@ -31,8 +31,7 @@ class SearchFragment(var onSelected: (Groups.Timetable) -> Unit = {}) : Fragment
         with(inflater.inflate(R.layout.fragment_search, container, false)) {
             root = this
 
-            keyboard =
-                requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            keyboard = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 
             updateGroups()
 
@@ -71,13 +70,12 @@ class SearchFragment(var onSelected: (Groups.Timetable) -> Unit = {}) : Fragment
         searchAdapter.items =
             Groups.timetable.filter {
                 (it.group.lowercase().contains(text.lowercase()) || it.link.lowercase()
-                    .contains(text.lowercase())) &&
-                        (it.categoryIndex == categoryAdapter.selectionIndex ||
-                                categoryAdapter.selectionIndex == null)
+                    .contains(text.lowercase())) && (it.categoryIndex == categoryAdapter.selectionIndex ||
+                        categoryAdapter.selectionIndex == null)
             }
     }
 
-    fun showKeyboard() {
+    fun show() {
         search_edit.setText("")
         search_edit.requestFocus()
 
@@ -87,7 +85,7 @@ class SearchFragment(var onSelected: (Groups.Timetable) -> Unit = {}) : Fragment
         keyboard.showSoftInput(search_edit, 0)
     }
 
-    fun hideKeyboard() =
+    fun hide() =
         keyboard.hideSoftInputFromWindow(search_edit.windowToken, 0)
 
 }
