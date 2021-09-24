@@ -1,13 +1,10 @@
 package com.ldc.kbp.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -43,7 +40,6 @@ class SettingsFragment : Fragment() {
                 when (Groups.categories[timetableInfo.categoryIndex]) {
                     "преподаватель" -> {
                         getUrlFromGroup(
-                            requireContext(),
                             "https://nehai.by/ej/t.php",
                             timetableInfo.group
                         ) {
@@ -61,7 +57,6 @@ class SettingsFragment : Fragment() {
                     }
                     "группа" -> {
                         getUrlFromGroup(
-                            requireContext(),
                             "https://nehai.by/ej",
                             timetableInfo.group
                         ) {
@@ -137,26 +132,14 @@ class SettingsFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun getUrlFromGroup(
-        context: Context,
         link: String,
         group: String,
-        afterLoad: (String) -> Unit
+        onLoad: (String) -> Unit
     ) {
-        val webView = WebView(context)
-        webView.settings.domStorageEnabled = true
-        webView.settings.javaScriptEnabled = true
-
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                webView.evaluateJavascript(getAssets(requireContext(), "journalLogins.js")) {
-                    afterLoad(
-                        it.substring(1, it.length - 1).split("|")
-                            .find { line -> line.substringAfter(":").lowercase() == group.lowercase() }
-                            ?.substringBefore(":") ?: ""
-                    )
-                }
-            }
+        getHtmlBodyFromWebView(requireContext(), link, "journalLogins.js"){
+            onLoad(it.substring(1, it.length - 1).split("|")
+                .find { line -> line.substringAfter(":").lowercase() == group.lowercase() }
+                ?.substringBefore(":") ?: "")
         }
-        webView.loadUrl(link)
     }
 }

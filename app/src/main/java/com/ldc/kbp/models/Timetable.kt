@@ -87,13 +87,6 @@ data class Timetable(
                             if (htmlSubject.className() != "empty-pair") {
                                 val a = htmlSubject.select("a")
 
-                                fun isSelectedGroup(pos: Int? = null) =
-                                    if (Groups.categories.contains("преподаватель")) {
-                                        if (pos == null) info.group == a[1].text() || info.group == a[2].text()
-                                        else info.group == a[pos].text()
-                                    } else false
-
-
                                 fun getSubjects(replaced: Boolean): MutableList<Subject> {
                                     fun getSubject(pos: Int) = Subject(
                                         a[0].text(),
@@ -111,11 +104,8 @@ data class Timetable(
                                             a[2].text() -> subjects.add(getSubject(2))
                                         }
                                     } else {
-                                        subjects.add(getSubject(1))
-
-                                        if (a[2].text() != "")
-                                            if (isSelectedGroup(2)) subjects.add(0, getSubject(2))
-                                            else subjects.add(getSubject(2))
+                                        if (a[1].text() != "") subjects.add(getSubject(1))
+                                        if (a[2].text() != "") subjects.add(getSubject(2))
                                     }
 
                                     return subjects
