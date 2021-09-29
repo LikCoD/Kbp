@@ -50,8 +50,12 @@ data class Journal(
 
                 tr.select("td").dropLast(1).forEachIndexed { i, it ->
                     val date = trs[1].select("td")[i].text()
-                    val marks = it.select("span").map { Mark(it.text()) }
-                    subjects.last().cells.add(Cell(date, marks.toMutableList()))
+                    val marks = it.select("span").map { Mark(it.text()) }.toMutableList()
+
+                    if (marks.size > 1 && marks[0].mark.toIntOrNull() == null)
+                        marks.reverse()
+
+                    subjects.last().cells.add(Cell(date, marks))
                 }
             }
 
