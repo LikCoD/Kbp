@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ldc.kbp.R
 import com.ldc.kbp.config
+import com.ldc.kbp.disableActions
 import com.ldc.kbp.getHtmlBodyFromWebView
 import com.ldc.kbp.models.Journal
+import com.ldc.kbp.views.adapters.journal.JournalAverageAdapter
 import com.ldc.kbp.views.adapters.journal.JournalDateAdapter
 import com.ldc.kbp.views.adapters.journal.JournalSubjectsAdapter
 import com.ldc.kbp.views.adapters.journal.JournalSubjectsNameAdapter
@@ -60,7 +63,17 @@ class JournalFragment : Fragment() {
 
             journal_marks_scroll.setOnScrollChangeListener { _, x, y, _, _ ->
                 journal_date_scroll.scrollX = x
+                journal_subjects_name_scroll.scrollY = y
+                journal_average_scroll.scrollY = y
             }
+
+            journal_average_img.setOnClickListener {
+                journal_average_scroll.isVisible = !journal_average_scroll.isVisible
+            }
+
+            journal_date_scroll.disableActions()
+            journal_subjects_name_scroll.disableActions()
+            journal_average_scroll.disableActions()
 
             return this
         }
@@ -70,6 +83,7 @@ class JournalFragment : Fragment() {
     fun update(journal: Journal){
         JournalDateAdapter(requireContext(), journal.months, root.journal_date_recycler)
         JournalSubjectsNameAdapter(requireContext(), journal.months[0].subjects.map { it.name }, root.journal_subjects_recycler)
+        JournalAverageAdapter(requireContext(), journal.months.flatMap { it.subjects }, root.journal_average_recycler)
         root.journal_marks_recycler.adapter = JournalSubjectsAdapter(requireContext(), journal)
     }
 }

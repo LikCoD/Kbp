@@ -5,7 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 
-abstract class LinearAdapter<T>(val context: Context, items: List<T?>?, val layout: Int, private val parent: LinearLayout) {
+abstract class LinearAdapter<T>(
+    val context: Context,
+    items: List<T?>?,
+    val layout: Int,
+    private val parent: LinearLayout,
+    updatePermanently: Boolean = true
+) {
 
     var items = items
         set(value) {
@@ -30,5 +36,8 @@ abstract class LinearAdapter<T>(val context: Context, items: List<T?>?, val layo
 
     abstract fun onBindViewHolder(view: View, item: T?, position: Int)
 
-    init{ updateItems() }
+    init{
+        if (updatePermanently)
+            updateItems()
+    }
 }

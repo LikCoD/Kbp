@@ -5,6 +5,8 @@
               android:gravity="center">
 
     <TextView
+            android:gravity="start"
+            style="@style/head_text"
             android:id="@+id/item_journal_subject_name"
             android:layout_width="@dimen/journal_subject_width"
             android:lines="1"

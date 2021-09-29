@@ -115,3 +115,10 @@ fun getHtmlBodyFromWebView(
     }
     webView.loadUrl(link)
 }
+
+
+fun View.disableActions() = setOnTouchListener { view, _ ->
+    view.performClick()
+
+    true
+}

@@ -17,7 +17,7 @@ data class Journal(
     @Serializable
     data class Subject(
         var name: String = "",
-        var cells: MutableList<Cell?>
+        var cells: MutableList<Cell>
     )
 
     @Serializable

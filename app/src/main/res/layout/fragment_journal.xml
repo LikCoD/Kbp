@@ -8,13 +8,33 @@
         android:background="@color/background"
         tools:context=".fragments.JournalFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/journal_date_scroll"
+            app:layout_constraintBottom_toTopOf="@id/journal_subjects_name_scroll">
+
+        <ImageView
+                android:id="@+id/journal_average_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_average"
+                android:contentDescription="@string/app_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <HorizontalScrollView
+            android:layout_marginTop="8dp"
             android:id="@+id/journal_date_scroll"
-            android:layout_marginStart="@dimen/journal_subject_width"
+            android:layout_marginStart="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll"
+            app:layout_constraintStart_toEndOf="@+id/journal_subjects_name_scroll"
             app:layout_constraintTop_toTopOf="parent"
             android:scrollbars="none">
 
@@ -26,14 +46,22 @@
                 android:orientation="horizontal"/>
     </HorizontalScrollView>
 
-    <LinearLayout
-            android:id="@+id/journal_subjects_recycler"
+    <ScrollView
+            android:layout_marginStart="8dp"
+            android:id="@+id/journal_subjects_name_scroll"
             android:layout_width="@dimen/journal_subject_width"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:listitem="@layout/item_journal_cell"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"/>
+            app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll">
+
+        <LinearLayout
+                android:id="@+id/journal_subjects_recycler"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_journal_cell"/>
+    </ScrollView>
 
     <com.jrummyapps.android.widget.TwoDScrollView
             android:id="@+id/journal_marks_scroll"
@@ -41,7 +69,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/journal_date_scroll"
             app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll">
 
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="wrap_content"
@@ -51,4 +79,21 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_journal_subject"/>
     </com.jrummyapps.android.widget.TwoDScrollView>
+
+    <ScrollView
+            android:visibility="gone"
+            android:id="@+id/journal_average_scroll"
+            android:layout_width="@dimen/journal_cell_width"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+                android:id="@+id/journal_average_recycler"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:listitem="@layout/item_journal_cell"/>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

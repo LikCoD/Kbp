@@ -182,12 +182,6 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
         lessons_index_scroll.disableActions()
     }
 
-    private fun View.disableActions() = setOnTouchListener { view, _ ->
-        view.performClick()
-
-        true
-    }
-
     private fun update(info: Groups.Timetable? = null, lTimetable: Timetable? = null) {
         root.loading_tv.post { root.loading_tv.isVisible = true }
 
