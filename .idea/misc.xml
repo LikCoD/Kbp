@@ -62,6 +62,8 @@
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_round_button.xml" value="0.20833333333333334" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_statement_view.xml" value="0.2265625" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_week_selector.xml" value="0.2604166666666667" />
+        <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_widget_timetable_lesson.xml" value="0.38697916666666665" />
+        <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/widget_timetable.xml" value="0.27853260869565216" />
       </map>
     </option>
   </component>

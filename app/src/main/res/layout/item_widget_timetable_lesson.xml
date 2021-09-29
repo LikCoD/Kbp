@@ -3,6 +3,8 @@
 <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:gravity="start"
+        android:lines="1"
+        android:ellipsize="end"
         style="@style/head_text"
         android:id="@+id/item_widget_timetable_lesson_text"
         android:layout_width="match_parent"
