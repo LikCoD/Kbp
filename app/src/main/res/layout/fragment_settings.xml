@@ -272,7 +272,7 @@
             android:layout_width="75dp"
             android:layout_height="5dp"
             android:layout_marginVertical="@dimen/bottom_bar_line_margin"
-            android:background="@drawable/ic_line" />
+            android:background="@drawable/ic_bottom_line" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/groups_selector_fragment"

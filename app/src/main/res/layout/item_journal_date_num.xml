@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+        android:id="@+id/item_journal_date_num_tv"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:gravity="center"
+        android:layout_width="@dimen/journal_cell_width"
+        android:layout_height="wrap_content"/>

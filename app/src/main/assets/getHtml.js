@@ -1,3 +1,3 @@
 (function () {
-    return document.getElementsByName('body')
+    return '<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';
 })();
