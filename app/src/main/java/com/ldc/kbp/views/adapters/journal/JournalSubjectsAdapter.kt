@@ -3,16 +3,18 @@ package com.ldc.kbp.views.adapters.journal
 import android.content.Context
 import android.view.View
 import com.ldc.kbp.R
-import com.ldc.kbp.models.Journal
+import com.ldc.kbp.models.JournalTeacherSelector
 import com.ldc.kbp.views.adapters.Adapter
-import kotlinx.android.synthetic.main.item_journal_subject.view.*
+import kotlinx.android.synthetic.main.item_journal_subject_selector.view.*
 
 class JournalSubjectsAdapter(
     context: Context,
-    journal: Journal,
-) : Adapter<Journal.Subject>(context, journal.months.map { it.subjects }.flatten(), R.layout.item_journal_subject) {
+    journal: JournalTeacherSelector,
+) : Adapter<JournalTeacherSelector.Subjects>(context, journal.groups.values.toList(), R.layout.item_journal_subject_selector) {
 
-    override fun onBindViewHolder(view: View, item: Journal.Subject?, position: Int) {
-        JournalCellsAdapter(context, item!!.cells, view.item_journal_subject_layout)
+    override fun onBindViewHolder(view: View, item: JournalTeacherSelector.Subjects?, position: Int) {
+        view.item_journal_subject_selector_layout.adapter = JournalSubjectAdapter(context, item!!.subjects, position, onClick)
     }
+
+    var onClick: (Int, Int) -> Unit = { _, _ ->}
 }

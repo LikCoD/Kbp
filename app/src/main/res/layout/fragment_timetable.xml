@@ -129,6 +129,7 @@
         </com.jrummyapps.android.widget.TwoDScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <LinearLayout
             android:id="@+id/timetable_bottom_sheet"
             android:layout_width="match_parent"
@@ -136,8 +137,8 @@
             android:background="@drawable/bottom_sheet"
             android:gravity="center"
             android:orientation="vertical"
-            app:behavior_hideable="false"
             app:behavior_peekHeight="@dimen/bottom_bar_pick_height"
+            app:behavior_hideable="false"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
             app:layout_constraintBottom_toBottomOf="parent">
 

@@ -1,6 +1,5 @@
 package com.ldc.kbp.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -130,12 +129,12 @@ class SettingsFragment : Fragment() {
         }
 
 
-    @SuppressLint("SetJavaScriptEnabled")
     private fun getUrlFromGroup(link: String, group: String, onLoad: (String) -> Unit) {
-        getHtmlBodyFromWebView(requireContext(), link, "journalLogins.js"){
-            onLoad(it.substring(1, it.length - 1).split("|")
-                .find { line -> line.substringAfter(":").lowercase() == group.lowercase() }
-                ?.substringBefore(":") ?: "")
-        }
+        WebController(requireContext(), link, scriptName = "journalLogins.js") {_ ,it ->
+            val row = it.split("|")
+            val id = row.find { line -> line.substringAfter(":").lowercase() == group.lowercase() }
+
+            onLoad(id?.substringBefore(":") ?: "")
+        }.load()
     }
 }

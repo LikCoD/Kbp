@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.view.View
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -83,38 +85,6 @@ fun createDatePicker(context: Context, listener: (LocalDate) -> Unit): DatePicke
         }.build()
 
 fun ifFemale(t: String = "", f: String = "") = if (config.isFemale) t else f
-
-@SuppressLint("SetJavaScriptEnabled")
-fun getHtmlBodyFromWebView(
-    context: Context,
-    link: String,
-    scriptName: String = "getHtml.js",
-    setup: (WebView.() -> Unit)? = null,
-    onLoad: (String) -> Unit
-) {
-    val webView = WebView(context)
-    webView.settings.domStorageEnabled = true
-    webView.settings.javaScriptEnabled = true
-
-    webView.webViewClient = object : WebViewClient() {
-        override fun onPageFinished(view: WebView?, url: String?) {
-            if (view != null && setup != null)
-                view.setup()
-
-            webView.evaluateJavascript(getAssets(context, scriptName)) {
-                onLoad(
-                    it.replace("\\n", "")
-                        .replace("\\t", "")
-                        .replace("\\\"", "\"")
-                        .replace("\\u003C", "<")
-                        .replace("\"\"", "<")
-                        .drop(1).dropLast(1)
-                )
-            }
-        }
-    }
-    webView.loadUrl(link)
-}
 
 
 fun View.disableActions() = setOnTouchListener { view, _ ->
