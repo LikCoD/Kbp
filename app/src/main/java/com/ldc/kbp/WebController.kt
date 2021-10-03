@@ -24,6 +24,8 @@ class WebController(
         webView.loadUrl(link)
     }
 
+    fun js(script: String, callback: (String) -> Unit = {}) = webView.evaluateJavascript(script, callback)
+
     init {
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptEnabled = true
@@ -57,7 +59,7 @@ class WebController(
     }
 
     fun getHtml(onLoad: (String) -> Unit) {
-        webView.evaluateJavascript(getAssets(context, scriptName)) {
+        js(getAssets(context, scriptName)) {
             val html = it.replace("\\n", "")
                 .replace("\\t", "")
                 .replace("\\\"", "\"")

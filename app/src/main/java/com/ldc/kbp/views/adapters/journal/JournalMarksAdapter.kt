@@ -9,10 +9,11 @@ import kotlinx.android.synthetic.main.item_journal_marks.view.*
 
 class JournalMarksAdapter(
     context: Context,
-    journal: Journal,
-) : Adapter<Journal.Month>(context, journal.months, R.layout.item_journal_marks) {
+    items: List<Journal.Subject>,
+    val onClick: (Journal.Subject, Journal.Cell) -> Unit = { _, _ -> }
+) : Adapter<Journal.Subject>(context, items, R.layout.item_journal_month) {
 
-    override fun onBindViewHolder(view: View, item: Journal.Month?, position: Int) {
-        JournalMonthAdapter(context, item!!.subjects, view.item_journal_marks_layout)
+    override fun onBindViewHolder(view: View, item: Journal.Subject?, position: Int) {
+        JournalCellsAdapter(context, item, view.item_journal_marks_layout, onClick)
     }
 }

@@ -10,11 +10,15 @@ import kotlinx.android.synthetic.main.item_journal_subject_selector.view.*
 class JournalSubjectsAdapter(
     context: Context,
     journal: JournalTeacherSelector,
-) : Adapter<JournalTeacherSelector.Subjects>(context, journal.groups.values.toList(), R.layout.item_journal_subject_selector) {
+) : Adapter<JournalTeacherSelector.Subjects>(
+    context,
+    journal.groups.values.toList(),
+    R.layout.item_journal_subject_selector
+) {
 
     override fun onBindViewHolder(view: View, item: JournalTeacherSelector.Subjects?, position: Int) {
-        view.item_journal_subject_selector_layout.adapter = JournalSubjectAdapter(context, item!!.subjects, position, onClick)
+        view.item_journal_subject_selector_layout.adapter = JournalSubjectAdapter(context, item!!, onClick)
     }
 
-    var onClick: (Int, Int) -> Unit = { _, _ ->}
+    var onClick: (JournalTeacherSelector.Subjects?, JournalTeacherSelector.Subject?) -> Unit = { _, _ -> }
 }

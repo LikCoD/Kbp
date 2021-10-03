@@ -11,12 +11,17 @@ import kotlinx.android.synthetic.main.item_journal_cell.view.*
 
 class JournalCellsAdapter(
     context: Context,
-    items: List<Journal.Cell?>? = null,
+    val subject: Journal.Subject? = null,
     child: LinearLayout,
-) : LinearAdapter<Journal.Cell>(context, items, R.layout.item_journal_cell, child) {
+    val onClick: (Journal.Subject, Journal.Cell) -> Unit
+) : LinearAdapter<Journal.Cell>(context, subject?.cells, R.layout.item_journal_cell, child) {
 
     override fun onBindViewHolder(view: View, item: Journal.Cell?, position: Int) {
         if (item == null) return
+
+        view.item_journal_cell_card_view.setOnClickListener {
+            onClick(subject!!, item)
+        }
 
         when {
             item.marks.isEmpty() -> view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))

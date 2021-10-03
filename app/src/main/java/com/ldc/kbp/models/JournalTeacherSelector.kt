@@ -22,6 +22,7 @@ data class JournalTeacherSelector(
 
     @Serializable
     data class Subjects(
+        val index: Int,
         val subjects: List<Subject>
     )
 
@@ -33,7 +34,8 @@ data class JournalTeacherSelector(
              val groups = uls[0].select("li").mapIndexed { i, element ->  Group(element.text(), i) }
 
              uls.drop(1).forEachIndexed { index, el ->
-                 months[groups[index]] = Subjects(el.select("li").mapIndexed { i, element -> Subject(element.text(), i) })
+                 months[groups[index]] =
+                     Subjects(index, el.select("li").mapIndexed { i, element -> Subject(element.text(), i) })
              }
 
              return JournalTeacherSelector(months)
