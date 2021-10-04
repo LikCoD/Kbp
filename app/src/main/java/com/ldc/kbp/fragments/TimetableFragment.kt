@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
-import com.ldc.kbp.models.Bells
 import com.ldc.kbp.models.Deprecates
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
@@ -167,7 +166,7 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
             }
         }
 
-        timetable_scroll.setOnScrollChangeListener { _, x, y, _, _ ->
+        timetable_scroll.setOnScrollChangeListener { _, x, _, _, _ ->
             val selectedWeek = (x / itemWidth / timetable.daysInWeek).toInt()
             if (selectedWeek != weekSelectorAdapter.selectionIndex && multiWeekMode) {
                 weekSelectorAdapter.selectionIndex = selectedWeek
@@ -198,9 +197,6 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
                 WeekIndexAdapter(requireContext(), timetable.weeks.size, timetable.daysInWeek, days_of_week_layout)
 
             weekIndexAdapter.changeWeekMode(if (multiWeekMode) null else getCurrentWeek(timetable.weeks.size))
-
-            val bells = Bells(mutableListOf())
-            bells.load()
 
             lessonIndexAdapter =
                 LessonIndexAdapter(requireContext(), timetable.lessonsInDay, root.lessons_index_recycler)
