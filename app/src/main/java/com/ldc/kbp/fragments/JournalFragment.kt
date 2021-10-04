@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.R
 import com.ldc.kbp.WebController
 import com.ldc.kbp.config
-import com.ldc.kbp.disableActions
 import com.ldc.kbp.models.Journal
 import com.ldc.kbp.models.JournalTeacherSelector
+import com.ldc.kbp.views.PinnedScrollView
 import com.ldc.kbp.views.adapters.journal.*
 import kotlinx.android.synthetic.main.fragment_journal.view.*
 import org.jsoup.Jsoup
@@ -32,13 +33,10 @@ class JournalFragment : Fragment() {
             root = this
             val webController = WebController(
                 requireContext(),
-                "https://nehai.by/ej/index.php?logout",
-                true
+                "https://nehai.by/ej/index.php?logout"
             )
 
             val bottomSheetBehavior = BottomSheetBehavior.from(journal_bottom_sheet)
-
-            main_layout.addView(webController.webView.apply { isVisible = false })
 
             webController.onLoad = { url, html ->
                 if (config.isStudent) webController.setup = null
@@ -54,9 +52,8 @@ class JournalFragment : Fragment() {
                         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
                         webController.setup = null
-                        webController.loadRes = true
+                        webController.resName = "https://nehai.by/ej/css/marks.css"
                         webController.onLoadRes = {
-
                             journal_group_selector_layout.isVisible = false
 
                             update(it, false, webController, bottomSheetBehavior)
@@ -64,7 +61,6 @@ class JournalFragment : Fragment() {
                     }
                 }
             }
-
             webController.setup = {
                 if (config.isStudent) {
                     val surname = config.surname.substringBefore(" ")
@@ -85,25 +81,23 @@ class JournalFragment : Fragment() {
                     webController.load()
                 }
             }
-            webController.load()
 
-            journal_subjects_scroll.setOnScrollChangeListener { _, x, y, _, _ ->
-                journal_date_scroll.scrollX = x
-                journal_groups_name_scroll.scrollY = y
-                journal_average_scroll.scrollY = y
-            }
+            webController.load()
 
             journal_average_img.setOnClickListener {
                 journal_average_scroll.isVisible = !journal_average_scroll.isVisible
             }
 
             journal_browser_img.setOnClickListener {
-                webController.webView.isVisible = true
+                main_layout.removeAllViews()
+                main_layout.addView(webController.webView)
             }
 
-            journal_date_scroll.disableActions()
-            journal_groups_name_scroll.disableActions()
-            journal_average_scroll.disableActions()
+            journal_marks_scroll.containers = listOf(
+                PinnedScrollView.Container(journal_date_scroll, LinearLayout.HORIZONTAL, false),
+                PinnedScrollView.Container(journal_groups_name_scroll, LinearLayout.VERTICAL, false),
+                PinnedScrollView.Container(journal_average_scroll, LinearLayout.VERTICAL, false)
+            )
 
             return this
         }
@@ -118,11 +112,7 @@ class JournalFragment : Fragment() {
     ) {
         val journal = if (isStudent) Journal.parseJournal(html) else Journal.parseTeacherJournal(html)
 
-        JournalSubjectsNameAdapter(
-            requireContext(),
-            journal.subjects.map { it.name },
-            root.journal_subjects_recycler
-        )
+        JournalSubjectsNameAdapter(requireContext(), journal.subjects.map { it.name }, root.journal_subjects_recycler)
         JournalDateAdapter(requireContext(), journal.dates, root.journal_date_recycler)
         JournalAverageAdapter(requireContext(), journal.subjects, root.journal_average_recycler)
 
@@ -192,7 +182,7 @@ class JournalFragment : Fragment() {
         selectorAdapter.onClick = { index, pos ->
             behavior.isHideable = true
             behavior.state = BottomSheetBehavior.STATE_HIDDEN
-            webController.webView.evaluateJavascript("document.getElementsByTagName('ul')[${index!!.index + 2}].getElementsByTagName('li')[${pos!!.index}].click()") {}
+            webController.js("document.getElementsByTagName('ul')[${index!!.index + 2}].getElementsByTagName('li')[${pos!!.index}].click()")
         }
 
         root.journal_subjects_selector_recycler.adapter = selectorAdapter

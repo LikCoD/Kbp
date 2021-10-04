@@ -10,11 +10,10 @@ import android.webkit.WebViewClient
 class WebController(
     val context: Context,
     var link: String,
-    var isSetup: Boolean = false,
     var setup: (WebView.() -> Unit)? = null,
     val scriptName: String = "getHtml.js",
-    var loadRes: Boolean = false,
-    var onLoadRes: (String) -> Unit = {},
+    var resName: String = "",
+    var onLoadRes: ((String) -> Unit)? = null,
     var onLoad: (String?, String) -> Unit = {_, _ ->},
 ) {
     val webView = WebView(context)
@@ -36,23 +35,18 @@ class WebController(
         webView.settings.javaScriptCanOpenWindowsAutomatically = true
         webView.webChromeClient = WebChromeClient()
         webView.webViewClient = object : WebViewClient() {
-            var loadCount = 0
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                loadCount = 0
-                if (view != null && setup != null && isSetup)
+                if (view != null && setup != null)
                     setup?.invoke(view)
 
                 getHtml { onLoad(url, it) }
             }
 
             override fun onLoadResource(view: WebView?, url: String?) {
-                if (loadRes && loadCount == 2) {
-                    getHtml {
-                        onLoadRes(it)
-                    }
-                }
-                loadCount++
+                if (view != null && onLoadRes != null && resName == url)
+                    getHtml { onLoadRes!!.invoke(it) }
+
                 super.onLoadResource(view, url)
             }
         }

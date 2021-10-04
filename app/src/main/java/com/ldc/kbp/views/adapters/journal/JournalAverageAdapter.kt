@@ -17,10 +17,12 @@ class JournalAverageAdapter(
 
     private val marksAverage = mutableListOf<Double>()
 
+    fun getAverage(average: Double): String = DecimalFormat("##.00").format(average).take(4)
+
     override fun onBindViewHolder(view: View, item: Journal.Subject?, position: Int) {
         if (item == null) {
             val average = marksAverage.sum() / marksAverage.size
-            view.item_journal_cell_average.text = DecimalFormat("##.00").format(average)
+            view.item_journal_cell_average.text = getAverage(average)
             return
         }
 
@@ -31,7 +33,7 @@ class JournalAverageAdapter(
             val average = marks.sumOf { it.toDouble() } / marks.size
             marksAverage.add(average)
 
-            view.item_journal_cell_average.text = DecimalFormat("#.00").format(average)
+            view.item_journal_cell_average.text = getAverage(average)
         }
     }
 

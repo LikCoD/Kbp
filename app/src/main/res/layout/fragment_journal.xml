@@ -80,8 +80,8 @@
                     tools:listitem="@layout/item_journal_cell"/>
         </ScrollView>
 
-        <com.jrummyapps.android.widget.TwoDScrollView
-                android:id="@+id/journal_subjects_scroll"
+        <com.ldc.kbp.views.PinnedScrollView
+                android:id="@+id/journal_marks_scroll"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="@+id/journal_date_scroll"
@@ -96,13 +96,14 @@
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_journal_marks"/>
-        </com.jrummyapps.android.widget.TwoDScrollView>
+        </com.ldc.kbp.views.PinnedScrollView>
 
         <ScrollView
                 android:visibility="gone"
                 android:id="@+id/journal_average_scroll"
                 android:layout_width="@dimen/journal_cell_width"
                 android:layout_height="0dp"
+                android:scrollbars="none"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
                 app:layout_constraintEnd_toEndOf="parent">
