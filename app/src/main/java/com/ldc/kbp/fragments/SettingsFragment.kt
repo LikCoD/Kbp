@@ -26,6 +26,11 @@ class SettingsFragment : Fragment() {
         with(inflater.inflate(R.layout.fragment_settings, container, false)) {
             val bottomSheetBehavior = BottomSheetBehavior.from(settings_bottom_sheet)
 
+            if (!config.isStudent){
+                name_layout.isVisible = false
+                password_tv.setText(R.string.password)
+            }
+
             val searchFragment = SearchFragment { timetableInfo ->
                 thread { mainTimetable = Timetable.loadTimetable(timetableInfo) }
 
