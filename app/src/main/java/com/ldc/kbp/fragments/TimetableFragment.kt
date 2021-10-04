@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -12,6 +13,7 @@ import com.ldc.kbp.models.Bells
 import com.ldc.kbp.models.Deprecates
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.views.PinnedScrollView
 import com.ldc.kbp.views.adapters.RoundButtonsAdapter
 import com.ldc.kbp.views.adapters.timetable.LessonIndexAdapter
 import com.ldc.kbp.views.adapters.timetable.TimetableAdapter
@@ -63,8 +65,7 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
             .add(R.id.groups_selector_fragment, searchFragment).commit()
 
         itemWidth =
-            dimen(resources, R.dimen.item_subject_width) +
-                    dimen(resources, R.dimen.item_subject_margin) * 2
+            dimen(resources, R.dimen.item_subject_width) + dimen(resources, R.dimen.item_subject_margin) * 2
 
         itemHeight =
             dimen(resources, R.dimen.item_subject_height) +
@@ -173,13 +174,12 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
 
                 week_selector_recycler.scrollToPosition(selectedWeek)
             }
-
-            days_of_week_scroll.scrollX = x
-            lessons_index_scroll.scrollY = y
         }
 
-        days_of_week_scroll.disableActions()
-        lessons_index_scroll.disableActions()
+        timetable_scroll.containers = listOf(
+            PinnedScrollView.Container(days_of_week_scroll, LinearLayout.HORIZONTAL, false),
+            PinnedScrollView.Container(lessons_index_scroll, LinearLayout.VERTICAL, false)
+        )
     }
 
     private fun update(info: Groups.Timetable? = null, lTimetable: Timetable? = null) {

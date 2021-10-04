@@ -97,7 +97,7 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.jrummyapps.android.widget.TwoDScrollView
+        <com.ldc.kbp.views.PinnedScrollView
                 android:id="@+id/timetable_scroll"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -126,7 +126,7 @@
                         android:layout_height="60dp"/>
 
             </LinearLayout>
-        </com.jrummyapps.android.widget.TwoDScrollView>
+        </com.ldc.kbp.views.PinnedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
