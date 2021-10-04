@@ -19,7 +19,19 @@ class JournalCellsAdapter(
     override fun onBindViewHolder(view: View, item: Journal.Cell?, position: Int) {
         if (item == null) return
 
+        if (JournalMarksAdapter.selectedCell === item)
+            view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.orange90))
+
         view.item_journal_cell_card_view.setOnClickListener {
+            view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.orange90))
+            JournalMarksAdapter.selectedCellCard?.setCardBackgroundColor(
+                if (JournalMarksAdapter.selectedCell?.marks?.isEmpty() == true)
+                    context.getColor(R.color.timetable_empty_subject_bg) else context.getColor(R.color.timetable_subject_bg)
+            )
+
+            JournalMarksAdapter.selectedCellCard = view.item_journal_cell_card_view
+            JournalMarksAdapter.selectedCell = item
+
             onClick(subject!!, item)
         }
 

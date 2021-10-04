@@ -16,7 +16,7 @@ class JournalSubjectAdapter(
     override fun onBindViewHolder(view: View, item: JournalTeacherSelector.Subject?, position: Int) {
         view.item_journal_subject_name.text = item!!.name
 
-        view.item_journal_subject_name.setOnClickListener {
+        view.item_journal_cell_card_view.setOnClickListener {
             onClick(line, item)
         }
     }

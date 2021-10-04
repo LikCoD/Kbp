@@ -2,6 +2,7 @@ package com.ldc.kbp.views.adapters.journal
 
 import android.content.Context
 import android.view.View
+import androidx.cardview.widget.CardView
 import com.ldc.kbp.R
 import com.ldc.kbp.models.Journal
 import com.ldc.kbp.views.adapters.Adapter
@@ -15,5 +16,10 @@ class JournalMarksAdapter(
 
     override fun onBindViewHolder(view: View, item: Journal.Subject?, position: Int) {
         JournalCellsAdapter(context, item, view.item_journal_marks_layout, onClick)
+    }
+
+    companion object {
+        var selectedCellCard: CardView? = null
+        var selectedCell: Journal.Cell? = null
     }
 }

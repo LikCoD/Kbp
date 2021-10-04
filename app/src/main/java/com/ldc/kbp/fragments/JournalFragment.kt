@@ -49,15 +49,13 @@ class JournalFragment : Fragment() {
                     }
                     url == "https://nehai.by/ej/teather_journal.php" && !config.isStudent -> {
                         val selector = JournalTeacherSelector.parseTeacherSelector(html)
-                        updateSelector(selector, webController)
+                        updateSelector(selector, webController, bottomSheetBehavior)
 
                         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
                         webController.setup = null
                         webController.loadRes = true
                         webController.onLoadRes = {
-                            bottomSheetBehavior.isHideable = true
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
                             journal_group_selector_layout.isVisible = false
 
@@ -182,12 +180,18 @@ class JournalFragment : Fragment() {
         root.journal_marks_recycler.adapter = marksAdapter
     }
 
-    private fun updateSelector(selector: JournalTeacherSelector, webController: WebController) {
+    private fun updateSelector(
+        selector: JournalTeacherSelector,
+        webController: WebController,
+        behavior: BottomSheetBehavior<*>
+    ) {
         JournalSubjectsNameAdapter(requireContext(), selector.groups.keys.map { it.name }, root.journal_groups_recycler)
 
         val selectorAdapter = JournalSubjectsAdapter(requireContext(), selector)
 
         selectorAdapter.onClick = { index, pos ->
+            behavior.isHideable = true
+            behavior.state = BottomSheetBehavior.STATE_HIDDEN
             webController.webView.evaluateJavascript("document.getElementsByTagName('ul')[${index!!.index + 2}].getElementsByTagName('li')[${pos!!.index}].click()") {}
         }
 
