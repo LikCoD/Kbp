@@ -42,7 +42,7 @@ class EmptyRoomFragment : Fragment() {
                 }
             }
 
-            if (LocalDate.now().dayOfWeek.ordinal >= mainTimetable.daysInWeek)
+            if (LocalDate.now().dayOfWeek.ordinal <= mainTimetable.daysInWeek)
                 day_of_week_spinner.setSelection(LocalDate.now().dayOfWeek.ordinal)
 
             week_index_edit.setText((getCurrentWeek(mainTimetable.weeks.size) + 1).toString())

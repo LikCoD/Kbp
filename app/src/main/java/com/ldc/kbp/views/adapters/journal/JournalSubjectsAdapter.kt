@@ -20,5 +20,5 @@ class JournalSubjectsAdapter(
         view.item_journal_subject_selector_layout.adapter = JournalSubjectAdapter(context, item!!, onClick)
     }
 
-    var onClick: (JournalTeacherSelector.Subjects?, JournalTeacherSelector.Subject?) -> Unit = { _, _ -> }
+    var onClick: (JournalTeacherSelector.Subject) -> Unit = { }
 }

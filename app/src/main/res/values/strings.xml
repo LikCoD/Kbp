@@ -167,5 +167,8 @@
     </string-array>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="logins_not_match">Нет совпадающих логинов</string>
+    <string name="enter">Ввести</string>
+    <string name="id">Инфентификатор</string>
 
 </resources>

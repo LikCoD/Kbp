@@ -19,15 +19,15 @@ data class Timetable(
 
     @Serializable
     data class Day(
-        var replacementLessons: MutableList<Lesson?>,
-        var standardLessons: MutableList<Lesson?>,
-        var state: UpdateState
+        var replacementLessons: MutableList<Lesson>,
+        var standardLessons: MutableList<Lesson>
     )
 
     @Serializable
     data class Lesson(
         var index: Int,
-        var subjects: MutableList<Subject>
+        var state: UpdateState,
+        var subjects: MutableList<Subject>? = null
     )
 
     @Serializable
@@ -50,6 +50,9 @@ data class Timetable(
 
     val lessonsInDay: Int
         get() = weeks.getOrNull(0)?.days?.getOrNull(0)?.replacementLessons?.size ?: 0
+
+    val weeksCount: Int
+        get() = weeks.size
 
     companion object {
         fun loadTimetable(info: Groups.Timetable): Timetable {
@@ -132,15 +135,15 @@ data class Timetable(
                         }
 
                         if (lineIndex == 0)
-                            days.add(Day(mutableListOf(), mutableListOf(), status[dayIndex]))
+                            days.add(Day(mutableListOf(), mutableListOf()))
 
                         days[dayIndex].replacementLessons.add(
-                            if (replacementLessons.isEmpty()) null
-                            else Lesson(lineIndex + 1, replacementLessons.toMutableList())
+                            if (replacementLessons.isEmpty()) Lesson(lineIndex + 1, status[dayIndex])
+                            else Lesson(lineIndex + 1, status[dayIndex], replacementLessons.toMutableList())
                         )
                         days[dayIndex].standardLessons.add(
-                            if (standardLessons.isEmpty()) null
-                            else Lesson(lineIndex + 1, standardLessons.toMutableList())
+                            if (standardLessons.isEmpty()) Lesson(lineIndex + 1, status[dayIndex])
+                            else Lesson(lineIndex + 1, status[dayIndex], standardLessons.toMutableList())
                         )
                     }
                 }

@@ -40,14 +40,14 @@ class TimetableWidget : AppWidgetProvider() {
                         "${LocalDate.now().getString()} ${nowDate.hour}:${nowDate.minute}"
                     )
                     if (LocalDate.now().dayOfWeek.ordinal <= timetable.daysInWeek) {
-                        rv.setTextViewText(
+                       /* rv.setTextViewText(
                             R.id.widget_timetable_status,
                             timetable.weeks[getCurrentWeek(timetable.weeks.size)].days[LocalDate.now().dayOfWeek.ordinal].state.value
                         )
 
                         timetable.weeks[getCurrentWeek(timetable.weeks.size)].days[LocalDate.now().dayOfWeek.ordinal].replacementLessons.forEach {
                             data.add(it?.subjects?.get(0)?.subject)
-                        }
+                        }*/
                     }
 
 

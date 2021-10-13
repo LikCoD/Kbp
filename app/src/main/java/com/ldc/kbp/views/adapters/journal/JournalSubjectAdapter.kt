@@ -10,14 +10,14 @@ import kotlinx.android.synthetic.main.item_journal_subject.view.*
 class JournalSubjectAdapter(
     context: Context,
     private val line: JournalTeacherSelector.Subjects,
-    val onClick: (JournalTeacherSelector.Subjects?, JournalTeacherSelector.Subject?) -> Unit
+    val onClick: (JournalTeacherSelector.Subject) -> Unit
 ) : Adapter<JournalTeacherSelector.Subject>(context, line.subjects, R.layout.item_journal_subject) {
 
     override fun onBindViewHolder(view: View, item: JournalTeacherSelector.Subject?, position: Int) {
         view.item_journal_subject_name.text = item!!.name
 
         view.item_journal_cell_card_view.setOnClickListener {
-            onClick(line, item)
+            onClick(item)
         }
     }
 }

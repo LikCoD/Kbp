@@ -1,7 +1,7 @@
 package com.ldc.kbp.models
 
 import kotlinx.serialization.Serializable
-import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 @Serializable
 data class JournalTeacherSelector(
@@ -17,7 +17,8 @@ data class JournalTeacherSelector(
     @Serializable
     data class Subject(
         var name: String = "",
-        val index: Int,
+        val subjectId: String,
+        val groupId: String,
     )
 
     @Serializable
@@ -27,18 +28,19 @@ data class JournalTeacherSelector(
     )
 
     companion object {
-         fun parseTeacherSelector(html: String): JournalTeacherSelector {
-             val months = mutableMapOf<Group, Subjects>()
+        fun parseTeacherSelector(document: Document): JournalTeacherSelector {
+            val groups = mutableMapOf<Group, Subjects>()
 
-             val uls = Jsoup.parse(html).select("ul").drop(1)
-             val groups = uls[0].select("li").mapIndexed { i, element ->  Group(element.text(), i) }
+            val uls = document.select("ul")
+            val groupsName = uls[0].select("li").mapIndexed { i, element -> Group(element.text(), i) }
 
-             uls.drop(1).forEachIndexed { index, el ->
-                 months[groups[index]] =
-                     Subjects(index, el.select("li").mapIndexed { i, element -> Subject(element.text(), i) })
-             }
+            uls.drop(1).forEachIndexed { index, el ->
+                groups[groupsName[index]] =
+                    Subjects(index, el.select("li")
+                        .map { Subject(it.text(), it.attr("subjectid"), it.attr("groupid")) })
+            }
 
-             return JournalTeacherSelector(months)
-         }
+            return JournalTeacherSelector(groups)
+        }
     }
 }

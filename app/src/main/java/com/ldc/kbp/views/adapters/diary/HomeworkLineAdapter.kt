@@ -32,18 +32,20 @@ class HomeworkLineAdapter(
     var onHomeworkChangeListener: (Timetable.Subject, Homeworks.Homework) -> Unit = { _, _ -> }
 ) : Adapter<Timetable.Lesson?>(activity, items?.filterNotNull(), R.layout.item_homework_line) {
     override fun onBindViewHolder(view: View, item: Timetable.Lesson?, position: Int) {
-        view.item_homework_line_index.text = item!!.index.toString()
-        view.item_homework_line_subject.text = item.subjects[0].subject
+        val subject = item?.subjects?.get(0) ?: return
+
+        view.item_homework_line_index.text = item.index.toString()
+        view.item_homework_line_subject.text = subject.subject
         view.item_homework_line_text.text =
-            homeworksDay.subjects[item.subjects[0].subject]?.homework
+            homeworksDay.subjects[subject.subject]?.homework
 
         view.item_homework_line_text.setOnClickListener {
             HomeworkSetDialog(
                 context,
-                item.subjects[0],
-                homeworksDay.subjects[item.subjects[0].subject]
+                subject,
+                homeworksDay.subjects[subject.subject]
             ) {
-                onHomeworkChangeListener(item.subjects[0], it)
+                onHomeworkChangeListener(subject, it)
             }.show()
         }
 
@@ -56,7 +58,7 @@ class HomeworkLineAdapter(
                         context, "com.ldc.kbp.fragments.provider",
                         getFile(
                             Environment.DIRECTORY_PICTURES,
-                            "$date ${item.subjects[0].subject} ${getFilesInMedia(item)?.size ?: 0}"
+                            "$date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}"
                         )
                     )
                 )
@@ -79,7 +81,7 @@ class HomeworkLineAdapter(
 
     private fun getFilesInMedia(lesson: Timetable.Lesson): Array<File>? =
         getDir(Environment.DIRECTORY_PICTURES).listFiles { _, s ->
-            s.substringBefore(".").dropLast(2) == "$date ${lesson.subjects[0].subject}"
+            s.substringBefore(".").dropLast(2) == "$date ${lesson.subjects?.get(0)?.subject}"
         }
 
 

@@ -33,15 +33,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <ImageView
-                    android:id="@+id/journal_browser_img"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_browser"
-                    android:contentDescription="@string/app_name"
-                    app:layout_constraintStart_toEndOf="@+id/journal_average_img"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginStart="8dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <HorizontalScrollView
                 android:layout_marginTop="8dp"
@@ -94,7 +85,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/journal_marks_recycler"
                     android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_journal_marks"/>
         </com.ldc.kbp.views.PinnedScrollView>
 
@@ -158,13 +148,19 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/journal_view_marks_recycler"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <androidx.recyclerview.widget.RecyclerView
                 android:visibility="gone"
                 android:id="@+id/journal_add_mark_recycler"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:spanCount="2"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
-
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

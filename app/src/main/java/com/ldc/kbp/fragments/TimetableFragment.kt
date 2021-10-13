@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Deprecates
@@ -50,15 +51,21 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(timetable_bottom_sheet)
 
-        timetableAdapter = TimetableAdapter(requireContext())
-        weekSelectorAdapter = RoundButtonsAdapter(requireContext(), false)
-        val expandAdapter = TimetableExpandAdapter(requireContext())
-
         val searchFragment = SearchFragment {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
             thread { update(it) }
         }
+
+        timetableAdapter = TimetableAdapter(requireContext(), mainTimetable)
+
+        thread {
+            if (link == config.link) update(lTimetable = mainTimetable)
+            else update(Groups.timetable.find { it.link == link } ?: Groups.timetable[0])
+        }
+
+        weekSelectorAdapter = RoundButtonsAdapter(requireContext(), false)
+        val expandAdapter = TimetableExpandAdapter(requireContext())
 
         requireActivity().supportFragmentManager.beginTransaction()
             .add(R.id.groups_selector_fragment, searchFragment).commit()
@@ -72,6 +79,8 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
 
         subject_expand_recycler.adapter = expandAdapter
         timetable_recycler.adapter = timetableAdapter
+        timetable_recycler.layoutManager =
+            GridLayoutManager(requireContext(), mainTimetable.lessonsInDay, GridLayoutManager.HORIZONTAL, false)
         week_selector_recycler.adapter = weekSelectorAdapter
 
         week_selector_recycler.addItemDecoration(SpaceDecoration(20))
@@ -105,19 +114,8 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
             timetable_change_week_mode.setBackgroundResource(R.drawable.ic_circle)
         }
 
-        thread {
-            if (link == config.link) update(lTimetable = mainTimetable)
-            else update(Groups.timetable.find { it.link == link } ?: Groups.timetable[0])
-
-            timetable_bottom_sheet.post {
-                searchFragment.updateGroups()
-            }
-        }
-
-        timetableAdapter.onLessonExpand = { lesson, i ->
-            var s = lesson.subjects
-            s = (s.subList(i, s.size) + s.subList(0, i)).toMutableList()
-            expandAdapter.items = s
+        timetableAdapter.onLessonExpand = { lesson ->
+            expandAdapter.items = lesson.subjects
 
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
@@ -127,7 +125,7 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
         weekSelectorAdapter.onItemClickListener = { pos, _ ->
             if (multiWeekMode) timetable_scroll.smoothScrollTo((itemWidth * timetable.daysInWeek * pos).toInt(), 0)
             else {
-                timetableAdapter.changeWeekMode(pos)
+                timetableAdapter.shownWeek = pos
                 weekIndexAdapter.changeWeekMode(pos)
             }
         }
@@ -143,9 +141,9 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
         bell_image.setOnClickListener { lessonIndexAdapter.isBellShown = !lessonIndexAdapter.isBellShown }
 
         change_replacement_mode_tv.setOnClickListener {
-            change_replacement_mode_tv.setText(
-                if (timetableAdapter.changeReplacementMode()) R.string.hide_replacement else R.string.show_replacement
-            )
+            timetableAdapter.isReplacementShown = !timetableAdapter.isReplacementShown
+
+            change_replacement_mode_tv.setText(if (timetableAdapter.isReplacementShown) R.string.hide_replacement else R.string.show_replacement)
         }
 
         timetable_change_week_mode.setOnClickListener {
@@ -156,12 +154,12 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
             if (multiWeekMode) {
                 timetable_change_week_mode.setBackgroundResource(R.drawable.ic_circle_selected)
                 weekSelectorAdapter.updateItemOnClick = false
-                timetableAdapter.changeWeekMode(null)
+                timetableAdapter.shownWeek = null
                 weekIndexAdapter.changeWeekMode(null)
             } else {
                 timetable_change_week_mode.setBackgroundResource(R.drawable.ic_circle)
                 weekSelectorAdapter.updateItemOnClick = true
-                timetableAdapter.changeWeekMode(weekSelectorAdapter.selectionIndex)
+                timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
                 weekIndexAdapter.changeWeekMode(weekSelectorAdapter.selectionIndex)
             }
         }
@@ -189,7 +187,8 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
         root.timetable_recycler.post {
             requireActivity().toolbar.title = timetable.info?.group
 
-            timetableAdapter.changeData(timetable)
+            if (lTimetable == null)
+                timetableAdapter.timetable = timetable
 
             weekSelectorAdapter.items = timetable.weeks.indices.map { (it + 1).toString() }
 
@@ -208,13 +207,13 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
                     (LocalDate.now().dayOfWeek.ordinal + timetable.daysInWeek * getCurrentWeek(timetable.weeks.size)) * itemWidth.toInt()
                 } else {
                     weekSelectorAdapter.selectionIndex = getCurrentWeek(timetable.weeks.size)
-                    timetableAdapter.changeWeekMode(weekSelectorAdapter.selectionIndex)
+                    timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
                     (LocalDate.now().dayOfWeek.ordinal * itemWidth).toInt()
                 }
 
                 root.timetable_scroll.smoothScrollTo(
                     scrollX,
-                    (days.getOrElse(LocalDate.now().dayOfWeek.ordinal) { days[0] }.replacementLessons.indexOfFirst { it != null } * itemHeight).toInt()
+                    (days.getOrElse(LocalDate.now().dayOfWeek.ordinal) { days[0] }.replacementLessons.indexOfFirst { it.subjects != null } * itemHeight).toInt()
                 )
 
                 root.loading_tv.isVisible = false

@@ -46,7 +46,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.2.2")
     implementation("com.yarolegovich:discrete-scrollview:1.5.1")
     implementation("com.github.OzcanAlasalvar:DatePicker:1.0.4")
-    implementation("org.jsoup:jsoup:1.14.2")
+    implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.jaredrummler:twodscrollview:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
     implementation("androidx.core:core-ktx:1.7.0-alpha02")

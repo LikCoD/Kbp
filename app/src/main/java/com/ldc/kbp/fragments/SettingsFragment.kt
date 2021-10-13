@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
@@ -26,7 +27,7 @@ class SettingsFragment : Fragment() {
         with(inflater.inflate(R.layout.fragment_settings, container, false)) {
             val bottomSheetBehavior = BottomSheetBehavior.from(settings_bottom_sheet)
 
-            if (!config.isStudent){
+            if (!config.isStudent) {
                 name_layout.isVisible = false
                 password_tv.setText(R.string.password)
             }
@@ -41,12 +42,22 @@ class SettingsFragment : Fragment() {
 
                 config.link = timetableInfo.link
 
+                fun noGroupFound() = Snackbar.make(confirm_button, R.string.logins_not_match, Snackbar.LENGTH_SHORT)
+                    .setAction(R.string.enter) {
+                        journal_id_layout.isVisible = true
+                    }.show()
+
+
                 when (Groups.categories[timetableInfo.categoryIndex]) {
                     "преподаватель" -> {
                         getUrlFromGroup(
                             "https://nehai.by/ej/t.php",
                             timetableInfo.group
                         ) {
+                            if (it == null) {
+                                noGroupFound()
+                                return@getUrlFromGroup
+                            }
                             config.groupId = it
                             Files.saveConfig(requireContext())
                         }
@@ -64,6 +75,10 @@ class SettingsFragment : Fragment() {
                             "https://nehai.by/ej",
                             timetableInfo.group
                         ) {
+                            if (it == null) {
+                                noGroupFound()
+                                return@getUrlFromGroup
+                            }
                             config.groupId = it
                             Files.saveConfig(requireContext())
                         }
@@ -76,6 +91,8 @@ class SettingsFragment : Fragment() {
                         password_tv.setText(R.string.birthday)
                     }
                 }
+
+                journal_id.setText(config.groupId)
 
                 shortToast(requireContext(), R.string.load_end)
             }
@@ -114,6 +131,7 @@ class SettingsFragment : Fragment() {
             }
 
             name_et.setText(config.surname)
+            journal_id.setText(config.groupId)
             password_et.setText(config.password)
             department_auto.setText(config.department)
             multi_week_mode_switcher.isChecked = config.multiWeek
@@ -124,6 +142,7 @@ class SettingsFragment : Fragment() {
             confirm_button.setOnClickListener {
                 if (config.isStudent) config.surname = name_et.text.toString()
 
+                config.groupId = journal_id.text.toString()
                 config.password = password_et.text.toString()
                 config.department = department_auto.text.toString()
                 config.isFemale = sex_switcher.isChecked
@@ -134,12 +153,12 @@ class SettingsFragment : Fragment() {
         }
 
 
-    private fun getUrlFromGroup(link: String, group: String, onLoad: (String) -> Unit) {
-        WebController(requireContext(), link, scriptName = "journalLogins.js") {_ ,it ->
+    private fun getUrlFromGroup(link: String, group: String, onLoad: (String?) -> Unit) {
+        WebController(requireContext(), link, scriptName = "journalLogins.js") { _, it ->
             val row = it.split("|")
-            val id = row.find { line -> line.substringAfter(":").lowercase() == group.lowercase() }
+            val id = row.find { line -> line.substringAfter(":").lowercase().contains(group.lowercase()) }
 
-            onLoad(id?.substringBefore(":") ?: "")
+            onLoad(id?.substringBefore(":"))
         }.load()
     }
 }
