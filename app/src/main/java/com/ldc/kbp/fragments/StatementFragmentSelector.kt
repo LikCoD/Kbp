@@ -1,11 +1,13 @@
 package com.ldc.kbp.fragments
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.ldc.kbp.R
 import com.ldc.kbp.checkPermission
@@ -15,6 +17,7 @@ import com.ldc.kbp.models.statements.StatementsType
 import kotlinx.android.synthetic.main.fragment_statement_selector.view.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 class StatementFragmentSelector : Fragment() {
 
     override fun onCreateView(

@@ -1,5 +1,6 @@
 package com.ldc.kbp.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +43,7 @@ class EmptyRoomFragment : Fragment() {
                 }
             }
 
-            if (LocalDate.now().dayOfWeek.ordinal <= mainTimetable.daysInWeek)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && LocalDate.now().dayOfWeek.ordinal <= mainTimetable.daysInWeek)
                 day_of_week_spinner.setSelection(LocalDate.now().dayOfWeek.ordinal)
 
             week_index_edit.setText((getCurrentWeek(mainTimetable.weeks.size) + 1).toString())

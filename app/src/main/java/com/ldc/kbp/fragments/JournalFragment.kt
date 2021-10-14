@@ -10,14 +10,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.ldc.kbp.HttpRequests
-import com.ldc.kbp.R
-import com.ldc.kbp.config
+import com.ldc.kbp.*
 import com.ldc.kbp.models.Journal
 import com.ldc.kbp.models.JournalTeacherSelector
-import com.ldc.kbp.shortSnackbar
 import com.ldc.kbp.views.PinnedScrollView
 import com.ldc.kbp.views.adapters.journal.*
+import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import kotlinx.android.synthetic.main.fragment_journal.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -35,8 +33,7 @@ class JournalFragment : Fragment() {
 
     @Throws(IllegalStateException::class)
     fun loginStudent(surname: String, groupId: String, birthday: String): Document {
-        val sCode = httpRequests.get("https://nehai.by/ej/templates/login_parent.php")
-            .substringAfter("value=\"")
+        val sCode = httpRequests.get("https://nehai.by/ej/templates/login_parent.php").substringAfter("value=\"")
             .substringBefore("\">")
 
         val result = httpRequests.post(
@@ -57,15 +54,12 @@ class JournalFragment : Fragment() {
 
     @Throws(IllegalStateException::class)
     fun loginTeacher(surname: String, password: String): Document {
-        val sCode = httpRequests.get("https://nehai.by/ej/templates/login_teacher.php")
-            .substringAfter("value=\"")
+        val sCode = httpRequests.get("https://nehai.by/ej/templates/login_teacher.php").substringAfter("value=\"")
             .substringBefore("\">")
 
-        val result =
-            httpRequests.post(
-                "https://nehai.by/ej/ajax.php",
-                "action=login_teather&login=$surname&password=$password&S_Code=$sCode"
-            )
+        val result = httpRequests.post(
+            "https://nehai.by/ej/ajax.php", "action=login_teather&login=$surname&password=$password&S_Code=$sCode"
+        )
 
         when (result) {
             "Попытка подмены токена, повторите попытку отправки формы!" -> error(R.string.token_error)
@@ -78,15 +72,44 @@ class JournalFragment : Fragment() {
         return Jsoup.connect("https://nehai.by/ej/templates/teacher_journal.php").get()
     }
 
+    private lateinit var info: JournalTeacherSelector.Subject
+    private var pairType = 0
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         with(inflater.inflate(R.layout.fragment_journal, container, false)) {
             root = this
+
             val bottomSheetBehavior = BottomSheetBehavior.from(journal_bottom_sheet)
+
+            val categoryAdapter = CategoryAdapter(requireContext(), listOf("Лекция", "Практика", "Лабораторная"), false)
+            categoryAdapter.onItemClickListener = { pos, _ -> pairType = pos }
+            categoryAdapter.selectionIndex = 0
+
+            category_recycler.adapter = categoryAdapter
+
+            val datePickerPopup = createDatePicker(requireContext()) { date ->
+                journal_add_date_layout.isVisible = true
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+                val dateText = "${date.year}-${date.month}-${date.day}"
+                date_tv.text = dateText
+            }
+
+            confirm_button.setOnClickListener {
+                val pairType = categoryAdapter.selectionIndex
+                val description = description_edit.text.toString()
+                journal_add_date_layout.isVisible = false
+
+                val newHtml = httpRequests.post(
+                    "https://nehai.by/ej/ajax.php",
+                    "action=add_date&new_date=${date_tv.text}&subject_id=${info.subjectId}&group_id=${info.groupId}&pair_type=$pairType&pair_disc=$description"
+                )
+
+                update(Jsoup.parse(newHtml), false, bottomSheetBehavior)
+            }
 
             thread {
                 val html: Document
@@ -108,8 +131,14 @@ class JournalFragment : Fragment() {
                 }
             }
 
+            root.journal_add_date_img.isVisible = !config.isStudent
+
             journal_average_img.setOnClickListener {
                 journal_average_scroll.isVisible = !journal_average_scroll.isVisible
+            }
+
+            journal_add_date_img.setOnClickListener {
+                datePickerPopup.show()
             }
 
             journal_marks_scroll.containers = listOf(
@@ -124,9 +153,7 @@ class JournalFragment : Fragment() {
 
 
     private fun update(
-        document: Document,
-        isStudent: Boolean = true,
-        behavior: BottomSheetBehavior<*>? = null
+        document: Document, isStudent: Boolean = true, behavior: BottomSheetBehavior<*>? = null
     ) {
         val journal = if (isStudent) Journal.parseJournal(document) else Journal.parseTeacherJournal(document)
 
@@ -200,18 +227,19 @@ class JournalFragment : Fragment() {
     }
 
     private fun updateSelector(
-        selector: JournalTeacherSelector,
-        behavior: BottomSheetBehavior<*>
+        selector: JournalTeacherSelector, behavior: BottomSheetBehavior<*>
     ) {
         JournalSubjectsNameAdapter(requireContext(), selector.groups.keys.map { it.name }, root.journal_groups_recycler)
 
         val selectorAdapter = JournalSubjectsAdapter(requireContext(), selector)
 
         selectorAdapter.onClick = { subject ->
-            thread {
-                behavior.isHideable = true
-                behavior.state = BottomSheetBehavior.STATE_HIDDEN
+            info = subject
 
+            behavior.isHideable = true
+            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+            thread {
                 val html = httpRequests.post(
                     "https://nehai.by/ej/ajax.php",
                     "action=show_table&subject_id=${subject.subjectId}&group_id=${subject.groupId}"

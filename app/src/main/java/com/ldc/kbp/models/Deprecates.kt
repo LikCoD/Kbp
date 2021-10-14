@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.app.ShareCompat
 import com.itextpdf.layout.element.Table
 import java.io.File
+import java.util.*
 
 object Deprecates {
     fun getScreenSize(activity: Activity): Point =

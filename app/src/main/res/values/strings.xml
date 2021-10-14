@@ -170,5 +170,6 @@
     <string name="logins_not_match">Нет совпадающих логинов</string>
     <string name="enter">Ввести</string>
     <string name="id">Инфентификатор</string>
+    <string name="description">Описание</string>
 
 </resources>

@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ldc.kbp"
-        minSdkVersion(26)
+        minSdkVersion(24)
         targetSdkVersion(31)
         versionCode = 20
         versionName = "2.0"

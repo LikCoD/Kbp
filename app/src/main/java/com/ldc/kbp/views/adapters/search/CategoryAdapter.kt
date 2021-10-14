@@ -8,7 +8,8 @@ import kotlinx.android.synthetic.main.item_category.view.*
 
 class CategoryAdapter(
     context: Context,
-    items: List<String>? = null
+    items: List<String>? = null,
+    var emptySelection: Boolean = true
 ) : Adapter<String>(context, items, R.layout.item_category) {
 
     var selectionIndex: Int? = null
@@ -28,7 +29,7 @@ class CategoryAdapter(
 
         view.item_category_tv.text = item
         view.item_category_card.setOnClickListener {
-            selectionIndex = if (selectionIndex == position) null else position
+            selectionIndex = if (selectionIndex == position && emptySelection) null else position
             onItemClickListener(position, item!!)
         }
     }

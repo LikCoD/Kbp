@@ -1,24 +1,18 @@
 package com.ldc.kbp
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.os.Build
 import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import com.ldc.kbp.models.Config
-import com.ldc.kbp.models.Deprecates
-import com.ldc.kbp.models.Homeworks
-import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.models.*
 import com.ozcanalasalvar.library.view.datePicker.DatePicker
 import com.ozcanalasalvar.library.view.popup.DatePickerPopup
 import java.io.BufferedReader
@@ -60,9 +54,11 @@ fun shortSnackbar(view: View, text: Int) = Snackbar.make(view, text, Snackbar.LE
 
 fun normalizeDate(date: Int) = if (date < 10) "0$date" else date
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDate.getString() =
     "${normalizeDate(dayOfMonth)}.${normalizeDate(monthValue)}.${normalizeDate(year)}"
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun getCurrentWeek(weekCount: Int, date: LocalDate = LocalDate.now()): Int {
     val nowDate = LocalDate.now()
     var septemberStartDate = LocalDate.of(
@@ -76,13 +72,16 @@ fun getCurrentWeek(weekCount: Int, date: LocalDate = LocalDate.now()): Int {
     return abs((ChronoUnit.WEEKS.between(septemberStartDate, date) % weekCount).toInt())
 }
 
-fun createDatePicker(context: Context, listener: (LocalDate) -> Unit): DatePickerPopup =
+fun createDatePicker(context: Context, listener: (Date) -> Unit): DatePickerPopup =
     DatePickerPopup.Builder()
         .from(context)
         .pickerMode(DatePicker.MONTH_ON_FIRST)
         .listener { _, _, day, month, year ->
-            listener(LocalDate.of(year, month + 1, day))
+            listener(Date(day, month + 1, year))
         }.build()
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun Date.toLocalDate() = LocalDate.of(year, month, day)
 
 fun ifFemale(t: String = "", f: String = "") = if (config.isFemale) t else f
 

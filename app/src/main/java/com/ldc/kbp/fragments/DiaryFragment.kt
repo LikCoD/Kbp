@@ -1,9 +1,11 @@
 package com.ldc.kbp.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
@@ -15,6 +17,8 @@ import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.fragment_diary.view.*
 import java.time.LocalDate
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 class DiaryFragment : Fragment() {
     private var dayOfWeek: Int = -1
         set(value) {
@@ -52,7 +56,9 @@ class DiaryFragment : Fragment() {
 
             dayOfWeek = LocalDate.now().dayOfWeek.value
 
-            val datePickerPopup = createDatePicker(requireContext()) { date ->
+            val datePickerPopup = createDatePicker(requireContext()) { d ->
+                val date = d.toLocalDate()
+
                 dayOfWeek = date.dayOfWeek.value
 
                 diaryDayAdapter.startWeekDate = date.minusDays(dayOfWeek.toLong())
@@ -79,12 +85,9 @@ class DiaryFragment : Fragment() {
             }
 
             diary_days_of_week_prev.setOnClickListener {
-
                 diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.minusWeeks(1)
                 diaryDayAdapter.items =
-                    mainTimetable.weeks[
-                            getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)
-                    ].days
+                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
 
                 daysOfWeekSelectorAdapter.selectionIndex = mainTimetable.daysInWeek - 1
 
@@ -95,9 +98,7 @@ class DiaryFragment : Fragment() {
             diary_days_of_week_next.setOnClickListener {
                 diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
                 diaryDayAdapter.items =
-                    mainTimetable.weeks[
-                            getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)
-                    ].days
+                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
 
                 daysOfWeekSelectorAdapter.selectionIndex = 0
 

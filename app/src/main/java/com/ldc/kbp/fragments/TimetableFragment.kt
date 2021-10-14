@@ -1,5 +1,6 @@
 package com.ldc.kbp.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -200,24 +201,25 @@ class TimetableFragment(val link: String = config.link) : Fragment() {
             lessonIndexAdapter =
                 LessonIndexAdapter(requireContext(), timetable.lessonsInDay, root.lessons_index_recycler)
 
-            root.timetable_scroll.post {
-                val days = timetable.weeks[getCurrentWeek(timetable.weeks.size)].days
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                root.timetable_scroll.post {
+                    val days = timetable.weeks[getCurrentWeek(timetable.weeks.size)].days
 
-                val scrollX = if (multiWeekMode) {
-                    (LocalDate.now().dayOfWeek.ordinal + timetable.daysInWeek * getCurrentWeek(timetable.weeks.size)) * itemWidth.toInt()
-                } else {
-                    weekSelectorAdapter.selectionIndex = getCurrentWeek(timetable.weeks.size)
-                    timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
-                    (LocalDate.now().dayOfWeek.ordinal * itemWidth).toInt()
+                    val scrollX = if (multiWeekMode) {
+                        (LocalDate.now().dayOfWeek.ordinal + timetable.daysInWeek * getCurrentWeek(timetable.weeks.size)) * itemWidth.toInt()
+                    } else {
+                        weekSelectorAdapter.selectionIndex = getCurrentWeek(timetable.weeks.size)
+                        timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
+                        (LocalDate.now().dayOfWeek.ordinal * itemWidth).toInt()
+                    }
+
+                    root.timetable_scroll.smoothScrollTo(
+                        scrollX,
+                        (days.getOrElse(LocalDate.now().dayOfWeek.ordinal) { days[0] }.replacementLessons.indexOfFirst { it.subjects != null } * itemHeight).toInt()
+                    )
+
+                    root.loading_tv.isVisible = false
                 }
-
-                root.timetable_scroll.smoothScrollTo(
-                    scrollX,
-                    (days.getOrElse(LocalDate.now().dayOfWeek.ordinal) { days[0] }.replacementLessons.indexOfFirst { it.subjects != null } * itemHeight).toInt()
-                )
-
-                root.loading_tv.isVisible = false
-            }
         }
     }
 }
