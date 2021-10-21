@@ -168,6 +168,8 @@ class TimetableFragment(private val info: Groups.Timetable? = null) : Fragment()
             launch(Dispatchers.IO) {
                 timetable = if (info == null) mainTimetable else Timetable.loadTimetable(info)
 
+                if (info == timetable.info) mainTimetable = timetable
+
                 launch(Dispatchers.Main) {
                     requireActivity().toolbar.title = timetable.info?.group
 
@@ -175,8 +177,7 @@ class TimetableFragment(private val info: Groups.Timetable? = null) : Fragment()
 
                     weekSelectorAdapter.items = timetable.weeks.indices.map { (it + 1).toString() }
 
-                    weekIndexAdapter.shownWeek =
-                        if (timetable_multi_week.isSelected) null else getCurrentWeek()
+                    weekIndexAdapter.shownWeek = if (timetable_multi_week.isSelected) null else getCurrentWeek()
 
                     var sX = LocalDate.now().dayOfWeek.ordinal
                     val sY = timetable.firstLessonIndex
