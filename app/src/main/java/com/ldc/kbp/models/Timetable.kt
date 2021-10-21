@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import org.threeten.bp.LocalDate
 
 @Serializable
 data class Timetable(
@@ -53,6 +54,14 @@ data class Timetable(
 
     val weeksCount: Int
         get() = weeks.size
+
+    val firstLessonIndex: Int
+        get() {
+            val days = weeks[getCurrentWeek(weeksCount)].days
+            val day = days.getOrElse(LocalDate.now().dayOfWeek.ordinal) { days[0] }
+
+            return day.replacementLessons.indexOfFirst { it.subjects != null }
+        }
 
     companion object {
         fun loadTimetable(info: Groups.Timetable): Timetable {

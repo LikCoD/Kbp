@@ -1,52 +1,69 @@
 package com.ldc.kbp.views.adapters.timetable
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
 import com.ldc.kbp.R
-import com.ldc.kbp.dimen
 import com.ldc.kbp.models.Deprecates
-import com.ldc.kbp.views.adapters.LinearAdapter
 import kotlinx.android.synthetic.main.item_bell.view.*
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
 class LessonIndexAdapter(
-    context: Context,
-    itemsCount: Int,
-    child: LinearLayout,
-) : LinearAdapter<Int>(
-    context,
-    (0 until itemsCount).toList(),
-    R.layout.item_bell,
-    child
-) {
-    var isBellShown: Boolean = false
-        set(value) {
-            field = value
+    private val context: Context,
+    private val itemsCount: Int,
+) : RecyclerView.Adapter<LessonIndexAdapter.ViewHolder>() {
 
-            updateItems()
-        }
+    private val bellsLayout = mutableListOf<View>()
+    private var isBellShown = false
 
-    override fun onBindViewHolder(view: View, item: Int?, position: Int) {
-        view.item_bell_index_tv.text = (position + 1).toString()
+    fun updateBells() {
+        isBellShown = !isBellShown
 
-        view.item_bell_workdays_time_tv.text = context.resources.getStringArray(R.array.bell_workdays)[position]
-        view.item_bell_saturday_time_tv.text = context.resources.getStringArray(R.array.bell_saturday)[position]
-
-        if (LocalDate.now().dayOfWeek.ordinal == 5){
-            Deprecates.setTextAppearance(view.item_bell_saturday, R.style.head_text)
-            Deprecates.setTextAppearance(view.item_bell_saturday_time_tv, R.style.head_text)
-        }else{
-            Deprecates.setTextAppearance(view.item_bell_workdays, R.style.head_text)
-            Deprecates.setTextAppearance(view.item_bell_workdays_time_tv, R.style.head_text)
-        }
-
-        val itemSubjectHeight = dimen(context.resources, R.dimen.item_subject_height).toInt()
-
-        view.item_bell_layout.layoutParams = if (isBellShown)
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, itemSubjectHeight)
-        else LinearLayout.LayoutParams(0, itemSubjectHeight)
+        bellsLayout.forEach { it.isVisible = isBellShown }
     }
 
-    init { updateItems() }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.item_bell, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        fun TextView.highlight() = Deprecates.setTextAppearance(this, R.style.head_text)
+
+        holder.indexTv.text = (position + 1).toString()
+
+        holder.workdaysTime.text = context.resources.getStringArray(R.array.bell_workdays)[position]
+        holder.weekendsTime.text = context.resources.getStringArray(R.array.bell_saturday)[position]
+
+        when (LocalDate.now().dayOfWeek.ordinal) {
+            in 0..4 -> {
+                holder.workdaysTime.highlight()
+                holder.workdaysType.highlight()
+            }
+            5 -> {
+                holder.weekendsTime.highlight()
+                holder.weekendsType.highlight()
+            }
+        }
+
+        bellsLayout.add(holder.bellsLayout)
+    }
+
+    override fun getItemCount(): Int = itemsCount
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val indexTv: TextView = itemView.item_bell_index_tv
+
+        val workdaysTime: TextView = itemView.item_bell_workdays_time_tv
+        val weekendsTime: TextView = itemView.item_bell_weekends_time_tv
+        val workdaysType: TextView = itemView.item_bell_workdays
+        val weekendsType: TextView = itemView.item_bell_weekends
+
+        val bellsLayout: ConstraintLayout = itemView.item_bell_layout
+    }
 }

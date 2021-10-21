@@ -1,6 +1,5 @@
 package com.ldc.kbp.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -219,13 +218,11 @@ class SapperFragment : Fragment() {
                             mainView.flag_stats_tv.text =
                                 "$flag: $flagsCount/$mine: $minesCount"
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                (requireActivity().getSystemService("vibrator") as Vibrator).vibrate(
-                                    VibrationEffect.createOneShot(
-                                        75, VibrationEffect.CONTENTS_FILE_DESCRIPTOR
-                                    )
+                            (requireActivity().getSystemService("vibrator") as Vibrator).vibrate(
+                                VibrationEffect.createOneShot(
+                                    75, VibrationEffect.CONTENTS_FILE_DESCRIPTOR
                                 )
-                            }
+                            )
                         }
 
                         true

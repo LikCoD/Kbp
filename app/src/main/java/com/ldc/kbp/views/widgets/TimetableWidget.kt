@@ -16,8 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import java.util.*
 
 class TimetableWidget : AppWidgetProvider() {

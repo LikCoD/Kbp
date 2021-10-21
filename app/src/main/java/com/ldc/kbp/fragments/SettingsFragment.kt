@@ -9,12 +9,19 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.ldc.kbp.*
+import com.ldc.kbp.R
+import com.ldc.kbp.config
+import com.ldc.kbp.mainTimetable
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.onStateChanged
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import java.net.URL
 import kotlin.concurrent.thread
 
 class SettingsFragment : Fragment() {
@@ -38,29 +45,25 @@ class SettingsFragment : Fragment() {
                 group_name_tv.text = timetableInfo.group
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-                shortToast(requireContext(), R.string.loading)
-
                 config.link = timetableInfo.link
+                config.timetableInfo = timetableInfo
 
-                fun noGroupFound() = Snackbar.make(confirm_button, R.string.logins_not_match, Snackbar.LENGTH_SHORT)
-                    .setAction(R.string.enter) {
-                        journal_id_layout.isVisible = true
-                    }.show()
-
+                fun checkGroup(id: String?) {
+                    if (id == null) {
+                        journal_id.setText(timetableInfo.group)
+                        Snackbar.make(confirm_button, R.string.logins_not_match, Snackbar.LENGTH_SHORT)
+                            .setAction(R.string.enter) {
+                                journal_id_layout.isVisible = true
+                            }.show()
+                    } else config.groupId = id
+                }
 
                 when (Groups.categories[timetableInfo.categoryIndex]) {
                     "преподаватель" -> {
-                        getUrlFromGroup(
-                            "https://nehai.by/ej/t.php",
-                            timetableInfo.group
-                        ) {
-                            if (it == null) {
-                                noGroupFound()
-                                return@getUrlFromGroup
-                            }
-                            config.groupId = it
-                            Files.saveConfig(requireContext())
-                        }
+                        val id =
+                            getUrlFromGroup("https://nehai.by/ej/templates/login_teacher.php", timetableInfo.group)
+
+                        checkGroup(id)
 
                         config.isStudent = false
                         config.group = ""
@@ -71,17 +74,10 @@ class SettingsFragment : Fragment() {
                         password_tv.setText(R.string.password)
                     }
                     "группа" -> {
-                        getUrlFromGroup(
-                            "https://nehai.by/ej",
-                            timetableInfo.group
-                        ) {
-                            if (it == null) {
-                                noGroupFound()
-                                return@getUrlFromGroup
-                            }
-                            config.groupId = it
-                            Files.saveConfig(requireContext())
-                        }
+                        val id =
+                            getUrlFromGroup("https://nehai.by/ej/templates/login_parent.php", timetableInfo.group.lowercase())
+
+                        checkGroup(id)
 
                         config.isStudent = true
                         config.group = timetableInfo.group
@@ -91,22 +87,12 @@ class SettingsFragment : Fragment() {
                         password_tv.setText(R.string.birthday)
                     }
                 }
-
-                journal_id.setText(config.groupId)
-
-                shortToast(requireContext(), R.string.load_end)
             }
 
-            bottomSheetBehavior.addBottomSheetCallback(
-                object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if (newState == BottomSheetBehavior.STATE_COLLAPSED)
-                            searchFragment.hide()
-                    }
-
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                }
-            )
+            bottomSheetBehavior.onStateChanged { _, newState ->
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED)
+                    searchFragment.hide()
+            }
 
             requireActivity().supportFragmentManager.beginTransaction()
                 .add(R.id.groups_selector_fragment, searchFragment).commit()
@@ -152,13 +138,21 @@ class SettingsFragment : Fragment() {
             return this
         }
 
+    private fun getUrlFromGroup(link: String, group: String): String? {
+        var id: String
 
-    private fun getUrlFromGroup(link: String, group: String, onLoad: (String?) -> Unit) {
-        WebController(requireContext(), link, scriptName = "journalLogins.js") { _, it ->
-            val row = it.split("|")
-            val id = row.find { line -> line.substringAfter(":").lowercase().contains(group.lowercase()) }
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                id = URL(link)
+                    .openConnection()
+                    .getInputStream()
+                    .bufferedReader()
+                    .readText()
+                    .substringBefore("\">$group")
+                    .substringAfterLast("value=\"")
+            }
+        }
 
-            onLoad(id?.substringBefore(":"))
-        }.load()
+        return if (id.contains("</select>")) null else id
     }
 }

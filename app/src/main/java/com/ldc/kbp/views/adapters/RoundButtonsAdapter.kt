@@ -12,6 +12,8 @@ class RoundButtonsAdapter(
     firstSelectionIndex: Int = 0
 ) : Adapter<String>(context, items, R.layout.item_round_button) {
 
+    val list = mutableListOf<View>()
+
     var selectionIndex = firstSelectionIndex
         set(value) {
             notifyItemChanged(selectionIndex)
@@ -32,5 +34,7 @@ class RoundButtonsAdapter(
             if (updateItemOnClick)
                 selectionIndex = position
         }
+
+        list.add(view)
     }
 }

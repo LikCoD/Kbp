@@ -1,12 +1,11 @@
 package com.ldc.kbp.models
 
-import androidx.appcompat.app.AppCompatDelegate
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
-    var theme: Int = AppCompatDelegate.MODE_NIGHT_YES,
     var link: String = "?cat=group&id=66",
+    var timetableInfo: Groups.Timetable = Groups.Timetable("Т-095", "?cat=group&id=66", 3),
     var isStudent: Boolean = true,
     var groupId: String = "",
     var password: String = "",

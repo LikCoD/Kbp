@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.0.3")
+    implementation("joda-time:joda-time:2.10.12")
     implementation("com.github.OKatrych:RightSheetBehavior:1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.2.2")
@@ -48,7 +49,12 @@ dependencies {
     implementation("com.github.OzcanAlasalvar:DatePicker:1.0.4")
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("com.jaredrummler:twodscrollview:1.0.1")
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    runtimeOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+    runtimeOnly("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+
     implementation("androidx.core:core-ktx:1.7.0-alpha02")
     implementation("androidx.appcompat:appcompat:1.4.0-alpha03")
     implementation("com.google.android.material:material:1.5.0-alpha03")

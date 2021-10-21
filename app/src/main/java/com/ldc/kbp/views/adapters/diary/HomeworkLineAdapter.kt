@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.item_homework_line.view.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 import kotlin.concurrent.thread
 
 class HomeworkLineAdapter(

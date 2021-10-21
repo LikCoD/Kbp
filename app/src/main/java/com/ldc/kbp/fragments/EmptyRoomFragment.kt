@@ -15,7 +15,7 @@ import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.shortSnackbar
 import com.ldc.kbp.mainTimetable
 import kotlinx.android.synthetic.main.fragment_empty_room.view.*
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 import kotlin.concurrent.thread
 
 class EmptyRoomFragment : Fragment() {
@@ -38,12 +38,12 @@ class EmptyRoomFragment : Fragment() {
 
             rooms_list.setOnItemClickListener { v, _, i, _ ->
                 requireActivity().supportFragmentManager.beginTransaction().let {
-                    it.replace(R.id.nav_host_fragment, TimetableFragment(Groups.timetable.find { it.group == v.getItemAtPosition(i).toString() }!!.link))
+                    it.replace(R.id.nav_host_fragment, TimetableFragment(Groups.timetable.find { it.group == v.getItemAtPosition(i).toString() }!!))
                     it.commit()
                 }
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && LocalDate.now().dayOfWeek.ordinal <= mainTimetable.daysInWeek)
+            if (LocalDate.now().dayOfWeek.ordinal <= mainTimetable.daysInWeek)
                 day_of_week_spinner.setSelection(LocalDate.now().dayOfWeek.ordinal)
 
             week_index_edit.setText((getCurrentWeek(mainTimetable.weeks.size) + 1).toString())

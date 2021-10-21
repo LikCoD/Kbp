@@ -94,8 +94,7 @@ class JournalFragment : Fragment() {
                 journal_add_date_layout.isVisible = true
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-                val dateText = "${date.year}-${date.month}-${date.day}"
-                date_tv.text = dateText
+                date_tv.text = date.toString()
             }
 
             confirm_button.setOnClickListener {
@@ -127,7 +126,6 @@ class JournalFragment : Fragment() {
                     }
                 } catch (ex: IllegalStateException) {
                     shortSnackbar(root, ex.message!!.toInt())
-                    return@thread
                 }
             }
 

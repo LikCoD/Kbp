@@ -11,7 +11,7 @@ import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_diary_day.view.*
 import java.io.File
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
 class DiaryDayAdapter(
     private val activity: Activity,

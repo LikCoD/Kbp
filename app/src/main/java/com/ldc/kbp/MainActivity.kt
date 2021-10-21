@@ -3,20 +3,20 @@ package com.ldc.kbp
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ldc.kbp.fragments.SapperFragment
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,33 +30,32 @@ class MainActivity : AppCompatActivity() {
         Files.getConfig(this)
         Files.getHomeworkList(this)
 
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                launch { Groups.loadTimetable() }.join()
+        AndroidThreeTen.init(application)
 
-                mainTimetable =
-                    Timetable.loadTimetable(Groups.timetable.find { it.link == config.link } ?: Groups.timetable[0])
-            }
+        runBlocking(Dispatchers.IO) {
+            Groups.loadTimetable()
 
-            setContentView(R.layout.activity_main)
-            setSupportActionBar(toolbar)
-
-            val navController = findNavController(R.id.nav_host_fragment)
-            appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.nav_timetable,
-                    R.id.nav_diary,
-                    R.id.nav_journal,
-                    R.id.nav_empty_room,
-                    R.id.nav_statement,
-                    R.id.nav_settings
-                ),
-                drawer_layout
-            )
-
-            setupActionBarWithNavController(navController, appBarConfiguration)
-            nav_view.setupWithNavController(navController)
+            mainTimetable = Timetable.loadTimetable(config.timetableInfo)
         }
+
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_timetable,
+                R.id.nav_diary,
+                R.id.nav_journal,
+                R.id.nav_empty_room,
+                R.id.nav_statement,
+                R.id.nav_settings
+            ),
+            drawer_layout
+        )
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        nav_view.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -12,9 +12,8 @@ import com.ldc.kbp.*
 import com.ldc.kbp.models.statements.Statement
 import com.ldc.kbp.models.statements.StatementsType
 import kotlinx.android.synthetic.main.fragment_statement_data.view.*
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 class StatementDataFragment : Fragment() {
 
     override fun onCreateView(
@@ -24,7 +23,7 @@ class StatementDataFragment : Fragment() {
     ): View? {
         with(inflater.inflate(R.layout.fragment_statement_data, container, false)) {
             val datePicker = createDatePicker(context) {
-                date_picker_date_tv.text = it.toLocalDate().getString()
+                date_picker_date_tv.text = it.getString()
             }
 
             date_picker_date_tv.text = LocalDate.now().getString()

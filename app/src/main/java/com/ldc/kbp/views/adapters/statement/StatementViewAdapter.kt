@@ -1,25 +1,21 @@
 package com.ldc.kbp.views.adapters.statement
 
 import android.content.Context
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
-import androidx.annotation.RequiresApi
 import com.itextpdf.layout.element.Paragraph
 import com.ldc.kbp.R
 import com.ldc.kbp.createDatePicker
 import com.ldc.kbp.getString
 import com.ldc.kbp.models.statements.StatementViewInfo
 import com.ldc.kbp.models.statements.Views
-import com.ldc.kbp.toLocalDate
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_statement_view.view.*
 
-@RequiresApi(Build.VERSION_CODES.O)
 class StatementViewAdapter(
     context: Context,
     items: List<StatementViewInfo>? = null
@@ -35,8 +31,8 @@ class StatementViewAdapter(
         when (item.view) {
             Views.DATE -> {
                 val datePickerPopup = createDatePicker(context) {
-                    view.item_statement_view_description.text = it.toLocalDate().getString()
-                    viewsText[position] = { it.toLocalDate().getString() }
+                    view.item_statement_view_description.text = it.getString()
+                    viewsText[position] = { it.getString() }
                 }
                 view.item_statement_view.addView(ImageView(context).apply {
                     setImageResource(R.drawable.ic_calendar)

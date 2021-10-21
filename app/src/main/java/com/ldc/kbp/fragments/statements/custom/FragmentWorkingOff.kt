@@ -13,9 +13,8 @@ import com.itextpdf.layout.property.TextAlignment
 import com.ldc.kbp.*
 import com.ldc.kbp.models.statements.Statement
 import kotlinx.android.synthetic.main.fragment_statement_working_off.view.*
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 class FragmentWorkingOff : Fragment() {
 
     override fun onCreateView(
@@ -30,7 +29,7 @@ class FragmentWorkingOff : Fragment() {
             )
 
             val datePicker = createDatePicker(context) {
-                date_picker_date_tv.text = it.toLocalDate().getString()
+                date_picker_date_tv.text = it.getString()
             }
 
             date_picker_date_tv.text = LocalDate.now().getString()

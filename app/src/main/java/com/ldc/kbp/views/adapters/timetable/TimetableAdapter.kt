@@ -15,16 +15,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ldc.kbp.R
 import com.ldc.kbp.models.Timetable
 import kotlinx.android.synthetic.main.item_lesson.view.*
+import kotlinx.coroutines.*
 
 class TimetableAdapter(val context: Context, timetable: Timetable) :
     RecyclerView.Adapter<TimetableAdapter.ViewHolder>() {
 
     var timetable = timetable
-    set(value) {
-        field = value
+        set(value) {
+            field = value
 
-        updateInfo()
-    }
+            updateInfo()
+        }
 
     var isReplacementShown = true
         set(value) {
@@ -44,11 +45,11 @@ class TimetableAdapter(val context: Context, timetable: Timetable) :
             updateInfo()
         }
 
-    private fun updateInfo(){
+    private fun updateInfo() {
         if (shownWeek == null) {
             replacementLessons = timetable.weeks.flatMap { it.days }.flatMap { it.replacementLessons }
             standardLessons = timetable.weeks.flatMap { it.days }.flatMap { it.standardLessons }
-        }else{
+        } else {
             replacementLessons = timetable.weeks[shownWeek!!].days.flatMap { it.replacementLessons }
             standardLessons = timetable.weeks[shownWeek!!].days.flatMap { it.standardLessons }
         }
@@ -83,47 +84,49 @@ class TimetableAdapter(val context: Context, timetable: Timetable) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val lesson = (if (isReplacementShown) replacementLessons[position] else standardLessons[position])
+        CoroutineScope(Dispatchers.Main).launch {
+            val lesson = (if (isReplacementShown) replacementLessons[position] else standardLessons[position])
+            val subjects = lesson.subjects
 
-        holder.layout.foreground = if (lesson.state == Timetable.UpdateState.NOT_UPDATED)
-            ColorDrawable(context.getColor(R.color.not_updated)) else null
+            holder.layout.foreground =
+                if (lesson.state == Timetable.UpdateState.NOT_UPDATED) ColorDrawable(context.getColor(R.color.not_updated)) else null
 
-        val subjects = lesson.subjects
+            if (subjects == null) {
+                holder.layout.post {
+                    holder.card.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
 
-        if (subjects == null){
-            holder.card.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
+                    holder.expandBtn.isVisible = false
 
-            holder.expandBtn.isVisible = false
+                    holder.subjectTv.text = ""
+                    holder.teacherTv.text = ""
+                    holder.groupTv.text = ""
+                    holder.roomTv.text = ""
+                }
+                return@launch
+            }
 
-            holder.subjectTv.text = ""
-            holder.teacherTv.text = ""
-            holder.groupTv.text = ""
-            holder.roomTv.text = ""
+            var selectedSubject = 0
+            holder.layout.post {
+                if (subjects.size > 1) {
+                    holder.expandBtn.isVisible = true
 
-            return
+                    holder.expandBtn.setOnClickListener {
+                        onLessonExpand?.invoke(lesson)
+                    }
+
+                    holder.nextBtn.setOnClickListener {
+                        selectedSubject = checkBounds(subjects, selectedSubject + 1)
+                        updateSubject(holder, subjects[selectedSubject])
+                    }
+                    holder.prevBtn.setOnClickListener {
+                        selectedSubject = checkBounds(subjects, selectedSubject - 1)
+                        updateSubject(holder, subjects[selectedSubject])
+                    }
+                }
+
+                updateSubject(holder, subjects[0])
+            }
         }
-
-        var selectedSubject = 0
-        if (subjects.size > 1) {
-            updateSubject(holder, subjects[selectedSubject])
-
-            holder.expandBtn.isVisible = true
-
-            holder.expandBtn.setOnClickListener {
-                onLessonExpand?.invoke(lesson)
-            }
-
-            holder.nextBtn.setOnClickListener {
-                selectedSubject = checkBounds(subjects, selectedSubject + 1)
-                updateSubject(holder, subjects[selectedSubject])
-            }
-            holder.prevBtn.setOnClickListener {
-                selectedSubject = checkBounds(subjects, selectedSubject - 1)
-                updateSubject(holder, subjects[selectedSubject])
-            }
-        }
-
-        updateSubject(holder, subjects[0])
     }
 
     override fun getItemCount(): Int {

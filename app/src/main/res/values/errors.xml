@@ -1,0 +1,7 @@
+<resources>
+    <string name="network_error">Network error</string>
+    <string name="token_error">Token error</string>
+    <string name="incorrect_data">Incorrect data</string>
+    <string name="unknown_response">Unknown response</string>
+    <string name="no_answer">No answer from server</string>
+</resources>

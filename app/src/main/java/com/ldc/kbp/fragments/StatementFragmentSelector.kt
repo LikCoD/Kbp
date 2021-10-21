@@ -17,7 +17,6 @@ import com.ldc.kbp.models.statements.StatementsType
 import kotlinx.android.synthetic.main.fragment_statement_selector.view.*
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 class StatementFragmentSelector : Fragment() {
 
     override fun onCreateView(

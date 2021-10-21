@@ -15,10 +15,9 @@ import com.ldc.kbp.views.adapters.diary.DiaryDayAdapter
 import com.ldc.kbp.views.adapters.diary.PhotosAdapter
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.fragment_diary.view.*
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 class DiaryFragment : Fragment() {
     private var dayOfWeek: Int = -1
         set(value) {
@@ -56,9 +55,7 @@ class DiaryFragment : Fragment() {
 
             dayOfWeek = LocalDate.now().dayOfWeek.value
 
-            val datePickerPopup = createDatePicker(requireContext()) { d ->
-                val date = d.toLocalDate()
-
+            val datePickerPopup = createDatePicker(requireContext()) { date ->
                 dayOfWeek = date.dayOfWeek.value
 
                 diaryDayAdapter.startWeekDate = date.minusDays(dayOfWeek.toLong())

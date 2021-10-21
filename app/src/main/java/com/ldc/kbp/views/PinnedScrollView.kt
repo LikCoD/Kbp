@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import com.jrummyapps.android.widget.TwoDScrollView
 import com.ldc.kbp.disableActions
 
-class PinnedScrollView @JvmOverloads constructor(
+open class PinnedScrollView @JvmOverloads constructor(
     context: Context? = null,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
