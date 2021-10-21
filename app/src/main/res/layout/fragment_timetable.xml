@@ -83,6 +83,7 @@
                 android:id="@+id/timetable_scroll"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                app:layoutOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/lessons_index_scroll"
@@ -90,7 +91,6 @@
 
 
                 <Space
-                        android:id="@+id/recycler_space"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"/>
 
