@@ -50,11 +50,12 @@ class TimetableFragment(private val info: Groups.Timetable? = null) : Fragment()
 
         val bottomSheetBehavior = BottomSheetBehavior.from(timetable_bottom_sheet)
 
-        val searchFragment = SearchFragment {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        val searchFragment =
+            SearchFragment(groups_selector_fragment, Groups.timetable, { it.group to it.category }) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            update(it)
-        }
+                update(it)
+            }
 
         timetableAdapter = TimetableAdapter(requireContext(), mainTimetable)
         weekSelectorAdapter = RoundButtonsAdapter(requireContext(), false)
@@ -73,9 +74,6 @@ class TimetableFragment(private val info: Groups.Timetable? = null) : Fragment()
         lessons_index_scroll.setup(lessonIndexAdapter)
 
         update(info)
-
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.groups_selector_fragment, searchFragment).commit()
 
         itemWidth = dimen(resources, R.dimen.item_subject_width) +
                 dimen(resources, R.dimen.item_subject_margin) * 2
@@ -168,7 +166,7 @@ class TimetableFragment(private val info: Groups.Timetable? = null) : Fragment()
             launch(Dispatchers.IO) {
                 timetable = if (info == null) mainTimetable else Timetable.loadTimetable(info)
 
-                if (info == timetable.info) mainTimetable = timetable
+                if (info == mainTimetable.info) mainTimetable = timetable
 
                 launch(Dispatchers.Main) {
                     requireActivity().toolbar.title = timetable.info?.group

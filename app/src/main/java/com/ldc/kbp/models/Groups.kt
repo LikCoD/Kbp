@@ -5,7 +5,7 @@ import org.jsoup.Jsoup
 
 object Groups {
     @Serializable
-    data class Timetable(val group: String, val link: String, val categoryIndex: Int)
+    data class Timetable(val group: String, val link: String, val category: String)
 
     fun loadTimetable() {
         if (timetable.isEmpty()) {
@@ -14,19 +14,13 @@ object Groups {
                 val category = it.select("span").text()
                 val a = it.select("a")
 
-                val index = if (categories.contains(category)) categories.indexOf(category) else {
-                    categories.add(category)
-                    categories.lastIndex
-                }
-
-                timetable.add(Timetable(a.text(), a.attr("href"), index))
+                timetable.add(Timetable(a.text(), a.attr("href"), category))
             }
 
-            timetable.sortedBy { it.categoryIndex }
+            timetable.sortedBy { it.category }
             timetable = timetable.distinct().toMutableList()
         }
     }
 
     var timetable: MutableList<Timetable> = mutableListOf()
-    var categories: MutableList<String> = mutableListOf()
 }

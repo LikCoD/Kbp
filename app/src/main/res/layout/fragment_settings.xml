@@ -308,11 +308,11 @@
             android:layout_marginVertical="@dimen/bottom_bar_line_margin"
             android:background="@drawable/ic_bottom_line" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <include
             android:id="@+id/groups_selector_fragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_bar_group_selection_height"
-            tools:layout="@layout/fragment_search" />
+            layout="@layout/fragment_search" />
 
     </LinearLayout>
 

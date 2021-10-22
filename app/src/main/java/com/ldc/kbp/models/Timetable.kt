@@ -110,7 +110,7 @@ data class Timetable(
 
                                     val subjects = mutableListOf<Subject>()
 
-                                    if (Groups.categories[info.categoryIndex] == "преподаватель") {
+                                    if (info.category == "преподаватель") {
                                         when (info.group) {
                                             a[1].text() -> subjects.add(getSubject(1))
                                             a[2].text() -> subjects.add(getSubject(2))

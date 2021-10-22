@@ -19,34 +19,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/item_selector_category"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ellipsize="end"
-            android:lines="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/item_selector_index"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/item_selector_group"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:ellipsize="end"
-            android:lines="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/item_selector_link"
-            app:layout_constraintStart_toEndOf="@+id/item_selector_category"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/item_selector_link"
-            android:layout_width="110dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="start"
             android:lines="1"
+            android:layout_marginStart="50dp"
+            app:layout_constraintStart_toEndOf="@+id/item_selector_index"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

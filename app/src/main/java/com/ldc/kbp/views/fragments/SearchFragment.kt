@@ -1,63 +1,52 @@
 package com.ldc.kbp.views.fragments
 
 import android.app.Activity
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.R
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import com.ldc.kbp.views.adapters.search.SearchAdapter
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
 
-class SearchFragment(var onSelected: (Groups.Timetable) -> Unit = {}) : Fragment() {
-    private lateinit var searchAdapter: SearchAdapter
+class SearchFragment<T>(
+    val layout: View,
+    val items: List<T>,
+    var build: (T) -> Pair<String, String>,
+    var onSelected: (T) -> Unit = {}
+) {
+
+    private lateinit var searchAdapter: SearchAdapter<T>
     private lateinit var categoryAdapter: CategoryAdapter
 
-    private lateinit var keyboard: InputMethodManager
+    private val activity = layout.context
 
-    private lateinit var root: View
+    private var keyboard = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        with(inflater.inflate(R.layout.fragment_search, container, false)) {
-            root = this
+    init {
+        updateGroups()
 
-            keyboard = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        layout.search_edit.doOnTextChanged { _, _, _, _ -> updateSearch() }
 
-            updateGroups()
+        layout.groups_recycler.setOnTouchListener { view, _ ->
+            view.performClick()
+            view.parent.requestDisallowInterceptTouchEvent(true)
 
-            search_edit.doOnTextChanged { text, _, _, _ -> updateSearch(text.toString()) }
-
-            groups_recycler.setOnTouchListener { view, _ ->
-                view.performClick()
-                view.parent.requestDisallowInterceptTouchEvent(true)
-
-                false
-            }
-            
-            return this
+            false
         }
+    }
 
-    fun updateGroups() {
+    private fun updateGroups() {
         if (Groups.timetable.isEmpty()) return
 
-        searchAdapter = SearchAdapter(requireContext(), Groups.timetable)
-        categoryAdapter = CategoryAdapter(requireContext(), Groups.categories)
+        searchAdapter = SearchAdapter(activity, items, build)
+        categoryAdapter = CategoryAdapter(activity, items.map { build(it).second }.distinct())
 
-        root.category_recycler.adapter = categoryAdapter
-        root.groups_recycler.adapter = searchAdapter
+        layout.category_recycler.adapter = categoryAdapter
+        layout.groups_recycler.adapter = searchAdapter
 
         searchAdapter.onItemClickListener = { _, item ->
-            keyboard.hideSoftInputFromWindow(requireView().windowToken, 0)
+            keyboard.hideSoftInputFromWindow(layout.windowToken, 0)
 
             onSelected(item)
         }
@@ -66,26 +55,28 @@ class SearchFragment(var onSelected: (Groups.Timetable) -> Unit = {}) : Fragment
 
     }
 
-    private fun updateSearch(text: String = search_edit.text.toString()) {
+    private fun updateSearch() {
+        val text: String = layout.search_edit.text.toString().lowercase()
+
         searchAdapter.items =
-            Groups.timetable.filter {
-                (it.group.lowercase().contains(text.lowercase()) || it.link.lowercase()
-                    .contains(text.lowercase())) && (it.categoryIndex == categoryAdapter.selectionIndex ||
-                        categoryAdapter.selectionIndex == null)
+            items.filter {
+                val built = build(it)
+                val category = categoryAdapter.selectedItem == null || built.second == categoryAdapter.selectedItem
+                built.first.lowercase().contains(text) && category
             }
     }
 
     fun show() {
-        search_edit.setText("")
-        search_edit.requestFocus()
+        layout.search_edit.setText("")
+        layout.search_edit.requestFocus()
 
         Thread.sleep(250)
 
-        search_edit.requestFocus()
-        keyboard.showSoftInput(search_edit, 0)
+        layout.search_edit.requestFocus()
+        keyboard.showSoftInput(layout.search_edit, 0)
     }
 
     fun hide() =
-        keyboard.hideSoftInputFromWindow(search_edit.windowToken, 0)
+        keyboard.hideSoftInputFromWindow(layout.search_edit.windowToken, 0)
 
 }

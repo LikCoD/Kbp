@@ -54,9 +54,10 @@
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/fragment_subject.xml" value="0.28125" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/fragment_timetable.xml" value="0.1" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_bell.xml" value="0.13677536231884058" />
+        <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_category.xml" value="0.17395833333333333" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_day_timetable.xml" value="0.37135416666666665" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_diary_day.xml" value="0.20833333333333334" />
-        <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_group_selector.xml" value="0.37135416666666665" />
+        <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_group_selector.xml" value="0.33" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_homework.xml" value="0.37135416666666665" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_homework_line.xml" value="0.36564102564102563" />
         <entry key="..\:/Kotlin/Kbp/app/src/main/res/layout/item_journal_cell.xml" value="0.21784420289855072" />

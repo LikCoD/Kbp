@@ -18,6 +18,9 @@ import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.onStateChanged
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
+import kotlinx.android.synthetic.main.fragment_settings.view.groups_selector_fragment
+import kotlinx.android.synthetic.main.fragment_settings.view.search_image
+import kotlinx.android.synthetic.main.fragment_timetable.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -39,7 +42,8 @@ class SettingsFragment : Fragment() {
                 password_tv.setText(R.string.password)
             }
 
-            val searchFragment = SearchFragment { timetableInfo ->
+            val searchFragment =
+                SearchFragment(groups_selector_fragment, Groups.timetable, { it.group to it.category }) { timetableInfo ->
                 thread { mainTimetable = Timetable.loadTimetable(timetableInfo) }
 
                 group_name_tv.text = timetableInfo.group
@@ -58,7 +62,7 @@ class SettingsFragment : Fragment() {
                     } else config.groupId = id
                 }
 
-                when (Groups.categories[timetableInfo.categoryIndex]) {
+                when (timetableInfo.category) {
                     "преподаватель" -> {
                         val id =
                             getUrlFromGroup("https://nehai.by/ej/templates/login_teacher.php", timetableInfo.group)
@@ -94,8 +98,8 @@ class SettingsFragment : Fragment() {
                     searchFragment.hide()
             }
 
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.groups_selector_fragment, searchFragment).commit()
+           /* requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.groups_selector_fragment, searchFragment).commit()*/
 
             search_image.setOnClickListener {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
