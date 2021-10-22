@@ -50,12 +50,11 @@ class TimetableFragment(private val info: Groups.Timetable? = null) : Fragment()
 
         val bottomSheetBehavior = BottomSheetBehavior.from(timetable_bottom_sheet)
 
-        val searchFragment =
-            SearchFragment(groups_selector_fragment, Groups.timetable, { it.group to it.category }) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        val searchFragment = SearchFragment(groups_selector_fragment, Groups.timetable, { it.group to it.category }) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-                update(it)
-            }
+            update(it)
+        }
 
         timetableAdapter = TimetableAdapter(requireContext(), mainTimetable)
         weekSelectorAdapter = RoundButtonsAdapter(requireContext(), false)
