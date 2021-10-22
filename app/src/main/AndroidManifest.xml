@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.ldc.kbp"
-          android:targetSandboxVersion="1">
+          android:targetSandboxVersion="1"
+          tools:targetApi="o">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -49,7 +50,7 @@
 
         <provider
                 android:name="androidx.core.content.FileProvider"
-                android:authorities="com.ldc.kbp.fragments.provider"
+                android:authorities="com.ldc.kbp.file.provider"
                 android:exported="false"
                 android:grantUriPermissions="true">
             <meta-data

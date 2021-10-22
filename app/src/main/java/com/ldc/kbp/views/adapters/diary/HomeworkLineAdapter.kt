@@ -17,10 +17,10 @@ import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.views.adapters.Adapter
 import com.ldc.kbp.views.dialogs.HomeworkSetDialog
 import kotlinx.android.synthetic.main.item_homework_line.view.*
+import org.threeten.bp.LocalDate
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
-import org.threeten.bp.LocalDate
 import kotlin.concurrent.thread
 
 class HomeworkLineAdapter(
@@ -36,15 +36,10 @@ class HomeworkLineAdapter(
 
         view.item_homework_line_index.text = item.index.toString()
         view.item_homework_line_subject.text = subject.subject
-        view.item_homework_line_text.text =
-            homeworksDay.subjects[subject.subject]?.homework
+        view.item_homework_line_text.text = homeworksDay.subjects[subject.subject]?.homework
 
         view.item_homework_line_text.setOnClickListener {
-            HomeworkSetDialog(
-                context,
-                subject,
-                homeworksDay.subjects[subject.subject]
-            ) {
+            HomeworkSetDialog(context, subject, homeworksDay.subjects[subject.subject]) {
                 onHomeworkChangeListener(subject, it)
             }.show()
         }
@@ -52,15 +47,12 @@ class HomeworkLineAdapter(
         view.item_homework_line_take_photo.setOnClickListener {
             checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity) {
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                val file = getFile(
+                    Environment.DIRECTORY_PICTURES, "${item.index}. $date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}"
+                )
 
                 intent.putExtra(
-                    MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(
-                        context, "com.ldc.kbp.fragments.provider",
-                        getFile(
-                            Environment.DIRECTORY_PICTURES,
-                            "$date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}"
-                        )
-                    )
+                    MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, "com.ldc.kbp.file.provider", file)
                 )
 
                 startActivityForResult(activity, intent, 0, null)
@@ -81,14 +73,12 @@ class HomeworkLineAdapter(
 
     private fun getFilesInMedia(lesson: Timetable.Lesson): Array<File>? =
         getDir(Environment.DIRECTORY_PICTURES).listFiles { _, s ->
-            s.substringBefore(".").dropLast(2) == "$date ${lesson.subjects?.get(0)?.subject}"
+            s.contains("${lesson.index}. $date ${lesson.subjects?.get(0)?.subject}")
         }
 
 
     private fun InputStream.getBitmap(): Bitmap = BitmapFactory.decodeStream(this).run {
-        Bitmap.createBitmap(
-            this, 0, 0, width, height, Matrix().apply { postRotate(90F) }, true
-        )
+        Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(90F) }, true)
     }
 
 }

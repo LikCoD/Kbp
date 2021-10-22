@@ -1,11 +1,9 @@
 package com.ldc.kbp.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
@@ -21,10 +19,11 @@ import org.threeten.bp.LocalDate
 class DiaryFragment : Fragment() {
     private var dayOfWeek: Int = -1
         set(value) {
-            field = if (value == 7) {
-                diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
-                1
-            } else value
+            field =
+                if (value == 7) {
+                    diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
+                    1
+                } else value
         }
     private lateinit var diaryDayAdapter: DiaryDayAdapter
 
@@ -34,103 +33,97 @@ class DiaryFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        with(inflater.inflate(R.layout.fragment_diary, container, false)) {
-            root = this
+    ): View? = inflater.inflate(R.layout.fragment_diary, container, false).apply {
+        root = this
 
-            diaryDayAdapter =
-                DiaryDayAdapter(
-                    requireActivity(),
-                    homeworkList,
-                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size)].days,
-                    LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
-                )
-            val daysOfWeekSelectorAdapter = RoundButtonsAdapter(
-                requireContext(),
-                false,
-                resources.getStringArray(R.array.days_of_weeks).slice(0 until mainTimetable.daysInWeek)
+        diaryDayAdapter =
+            DiaryDayAdapter(
+                requireActivity(),
+                homeworkList,
+                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size)].days,
+                LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
             )
+        val daysOfWeekSelectorAdapter = RoundButtonsAdapter(
+            requireContext(),
+            false,
+            resources.getStringArray(R.array.days_of_weeks).toList().subList(0, mainTimetable.daysInWeek)
+        )
 
-            val photosAdapter = PhotosAdapter(requireActivity())
+        val photosAdapter = PhotosAdapter(requireActivity())
 
-            dayOfWeek = LocalDate.now().dayOfWeek.value
+        dayOfWeek = LocalDate.now().dayOfWeek.value
 
-            val datePickerPopup = createDatePicker(requireContext()) { date ->
-                dayOfWeek = date.dayOfWeek.value
+        val datePickerPopup = createDatePicker(requireContext()) { date ->
+            dayOfWeek = date.dayOfWeek.value
 
-                diaryDayAdapter.startWeekDate = date.minusDays(dayOfWeek.toLong())
+            diaryDayAdapter.startWeekDate = date.minusDays(dayOfWeek.toLong())
 
-                diaryDayAdapter.items =
-                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, date)].days
+            diaryDayAdapter.items =
+                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, date)].days
 
-                diary_day_recycler.smoothScrollToPosition(dayOfWeek - 1)
-            }
-
-            val bottomSheetBehavior = BottomSheetBehavior.from(diary_bottom_sheet)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-            diary_day_recycler.adapter = diaryDayAdapter
-            days_of_week_selector_recycler.adapter = daysOfWeekSelectorAdapter
-            diary_photos_recycler.adapter = photosAdapter
-
-            days_of_week_selector_recycler.addItemDecoration(SpaceDecoration(20))
-
-            daysOfWeekSelectorAdapter.onItemClickListener = { pos, _ ->
-                dayOfWeek = diaryDayAdapter.startWeekDate.plusDays(pos.toLong()).dayOfWeek.value
-
-                diary_day_recycler.smoothScrollToPosition(pos)
-            }
-
-            diary_days_of_week_prev.setOnClickListener {
-                diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.minusWeeks(1)
-                diaryDayAdapter.items =
-                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
-
-                daysOfWeekSelectorAdapter.selectionIndex = mainTimetable.daysInWeek - 1
-
-                days_of_week_selector_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
-                diary_day_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
-            }
-
-            diary_days_of_week_next.setOnClickListener {
-                diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
-                diaryDayAdapter.items =
-                    mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
-
-                daysOfWeekSelectorAdapter.selectionIndex = 0
-
-                days_of_week_selector_recycler.scrollToPosition(0)
-                diary_day_recycler.scrollToPosition(0)
-            }
-
-            diary_day_recycler.addOnItemChangedListener { _, adapterPosition ->
-                if (daysOfWeekSelectorAdapter.selectionIndex != adapterPosition) {
-                    daysOfWeekSelectorAdapter.selectionIndex = adapterPosition
-
-                    days_of_week_selector_recycler.smoothScrollToPosition(adapterPosition)
-                }
-            }
-
-            diaryDayAdapter.onImageAddListener = { i, photo, file ->
-                diary_photos_recycler.post { photosAdapter.addPhoto(photo, file) }
-
-                if (i == 0) bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-
-            diaryDayAdapter.onHomeworkChanged = {
-                homeworkList = it
-
-                Files.saveHomeworkList(requireContext())
-            }
-
-            photosAdapter.onAllItemDeleted = {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-
-            select_date_img.setOnClickListener { datePickerPopup.show() }
-
-            return this
+            diary_day_recycler.smoothScrollToPosition(dayOfWeek - 1)
         }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(diary_bottom_sheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        diary_day_recycler.adapter = diaryDayAdapter
+        days_of_week_selector_recycler.adapter = daysOfWeekSelectorAdapter
+        diary_photos_recycler.adapter = photosAdapter
+
+        days_of_week_selector_recycler.addItemDecoration(SpaceDecoration(20))
+
+        daysOfWeekSelectorAdapter.onItemClickListener = { pos, _ ->
+            dayOfWeek = diaryDayAdapter.startWeekDate.plusDays(pos.toLong()).dayOfWeek.value
+
+            diary_day_recycler.smoothScrollToPosition(pos)
+        }
+
+        diary_days_of_week_prev.setOnClickListener {
+            diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.minusWeeks(1)
+            diaryDayAdapter.items =
+                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
+
+            daysOfWeekSelectorAdapter.selectionIndex = mainTimetable.daysInWeek - 1
+
+            days_of_week_selector_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
+            diary_day_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
+        }
+
+        diary_days_of_week_next.setOnClickListener {
+            diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
+            diaryDayAdapter.items =
+                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
+
+            daysOfWeekSelectorAdapter.selectionIndex = 0
+
+            days_of_week_selector_recycler.scrollToPosition(0)
+            diary_day_recycler.scrollToPosition(0)
+        }
+
+        diary_day_recycler.addOnItemChangedListener { _, adapterPosition ->
+            if (daysOfWeekSelectorAdapter.selectionIndex != adapterPosition) {
+                daysOfWeekSelectorAdapter.selectionIndex = adapterPosition
+
+                days_of_week_selector_recycler.smoothScrollToPosition(adapterPosition)
+            }
+        }
+
+        diaryDayAdapter.onImageAddListener = { i, photo, file ->
+            diary_photos_recycler.post { photosAdapter.addPhoto(photo, file) }
+
+            if (i == 0) bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        diaryDayAdapter.onHomeworkChanged = {
+            homeworkList = it
+
+            Files.saveHomeworkList(requireContext())
+        }
+
+        photosAdapter.onAllItemDeleted = { bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN }
+
+        select_date_img.setOnClickListener { datePickerPopup.show() }
     }
 
     override fun onResume() {
