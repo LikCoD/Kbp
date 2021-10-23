@@ -14,6 +14,7 @@ import com.itextpdf.layout.Document
 import com.itextpdf.layout.borders.Border
 import com.itextpdf.layout.element.Cell
 import com.itextpdf.layout.element.Paragraph
+import com.itextpdf.layout.element.Table
 import com.itextpdf.layout.property.TextAlignment
 import com.ldc.kbp.getFile
 import com.ldc.kbp.models.Deprecates
@@ -55,7 +56,7 @@ object Statement {
 
         val departmentWords = department.split(" ")
 
-        val headerCols = Deprecates.pdfTable(2)
+        val headerCols = Table(2).apply { useAllAvailableWidth() }
         headerCols.addCell(createCell(departmentWords.getOrNull(0) ?: "", TextAlignment.LEFT))
         headerCols.addCell(createCell("Директору", TextAlignment.RIGHT))
         headerCols.addCell(createCell(departmentWords.getOrNull(1) ?: "", TextAlignment.LEFT))
@@ -101,7 +102,7 @@ object Statement {
         document.add(Paragraph("Учащий(ая)ся").apply { setMarginTop(30F) })
 
         if (group != "") {
-            val footerCols = Deprecates.pdfTable(2)
+            val footerCols = Table(2).apply { useAllAvailableWidth() }
             footerCols.addCell(createCell("учебной группы $group", TextAlignment.LEFT))
             footerCols.addCell(createCell(name, TextAlignment.RIGHT))
 
@@ -110,7 +111,7 @@ object Statement {
 
         document.close()
 
-        val uri = FileProvider.getUriForFile(activity, "com.ldc.kbp.fragments.provider", file)
+        val uri = FileProvider.getUriForFile(activity, "com.ldc.kbp.file.provider", file)
 
         val intent = Deprecates.shareIntentBuilder(activity)
             .setType("application/pdf")
