@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_journal_cell.view.*
 class JournalAddMarksAdapter(
     context: Context,
     items: List<String>,
-    val onClick: ((String, Int) -> Unit)? = null
+    private val onClick: ((String, Int) -> Unit)? = null
 ) : Adapter<String>(context, items, R.layout.item_journal_cell) {
 
     override fun onBindViewHolder(view: View, item: String?, position: Int) {

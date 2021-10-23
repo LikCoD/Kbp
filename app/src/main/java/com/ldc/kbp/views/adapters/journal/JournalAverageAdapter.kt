@@ -2,18 +2,16 @@ package com.ldc.kbp.views.adapters.journal
 
 import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import com.ldc.kbp.R
 import com.ldc.kbp.models.Journal
-import com.ldc.kbp.views.adapters.LinearAdapter
+import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_journal_cell.view.*
 import java.text.DecimalFormat
 
 class JournalAverageAdapter(
     context: Context,
     items: List<Journal.Subject>? = null,
-    child: LinearLayout,
-) : LinearAdapter<Journal.Subject?>(context, items?.plus(null), R.layout.item_journal_cell, child, false) {
+) : Adapter<Journal.Subject?>(context, items?.plus(null), R.layout.item_journal_cell) {
 
     private val marksAverage = mutableListOf<Double>()
 
@@ -36,6 +34,4 @@ class JournalAverageAdapter(
             view.item_journal_cell_average.text = getAverage(average)
         }
     }
-
-    init { updateItems() }
 }

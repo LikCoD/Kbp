@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_journal_subject.view.*
 
 class JournalSubjectAdapter(
     context: Context,
-    private val line: JournalTeacherSelector.Subjects,
+    line: JournalTeacherSelector.Subjects,
     val onClick: (JournalTeacherSelector.Subject) -> Unit
 ) : Adapter<JournalTeacherSelector.Subject>(context, line.subjects, R.layout.item_journal_subject) {
 

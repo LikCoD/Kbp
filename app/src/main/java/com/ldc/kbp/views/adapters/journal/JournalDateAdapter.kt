@@ -2,20 +2,17 @@ package com.ldc.kbp.views.adapters.journal
 
 import android.content.Context
 import android.view.View
-import android.widget.LinearLayout
 import com.ldc.kbp.R
-import com.ldc.kbp.views.adapters.LinearAdapter
+import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_journal_date_num.view.*
 
 class JournalDateAdapter(
     context: Context,
     items: List<String>,
-    child: LinearLayout,
-) : LinearAdapter<String>(
+) : Adapter<String>(
     context,
     items,
-    R.layout.item_journal_date_num,
-    child
+    R.layout.item_journal_date_num
 ) {
     override fun onBindViewHolder(view: View, item: String?, position: Int) {
         view.item_journal_date_num_tv.text = item!!

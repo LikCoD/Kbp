@@ -87,7 +87,7 @@ fun createDatePicker(context: Context, listener: (LocalDate) -> Unit): DatePicke
         .from(context)
         .pickerMode(DatePicker.MONTH_ON_FIRST)
         .listener { _, _, day, month, year ->
-            listener(LocalDate.of(day, month + 1, year))
+            listener(LocalDate.of(year, month + 1, day))
         }.build()
 
 fun ifFemale(t: String = "", f: String = "") = if (config.isFemale) t else f

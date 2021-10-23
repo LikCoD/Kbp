@@ -21,7 +21,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/journal_date_scroll"
-                app:layout_constraintBottom_toTopOf="@id/journal_groups_name_scroll">
+                app:layout_constraintBottom_toTopOf="@id/journal_subjects_name_scroll">
 
             <ImageView
                     android:id="@+id/journal_average_img"
@@ -46,42 +46,27 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <HorizontalScrollView
+        <com.ldc.kbp.views.NoScrollableRecyclerView
                 android:layout_marginTop="8dp"
                 android:id="@+id/journal_date_scroll"
                 android:layout_marginStart="8dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll"
-                app:layout_constraintStart_toEndOf="@+id/journal_groups_name_scroll"
+                app:layout_constraintStart_toEndOf="@+id/journal_subjects_name_scroll"
                 app:layout_constraintTop_toTopOf="parent"
-                android:scrollbars="none">
+                android:scrollbars="none"/>
 
-
-            <LinearLayout
-                    android:id="@+id/journal_date_recycler"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
-        </HorizontalScrollView>
-
-        <ScrollView
+        <com.ldc.kbp.views.NoScrollableRecyclerView
                 android:scrollbars="none"
                 android:layout_marginStart="8dp"
-                android:id="@+id/journal_groups_name_scroll"
+                android:id="@+id/journal_subjects_name_scroll"
                 android:layout_width="@dimen/journal_subject_width"
                 android:layout_height="0dp"
+                app:recyclerOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll">
-
-            <LinearLayout
-                    android:id="@+id/journal_subjects_recycler"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    tools:listitem="@layout/item_journal_cell"/>
-        </ScrollView>
+                app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"/>
 
         <com.ldc.kbp.views.PinnedScrollView
                 android:id="@+id/journal_marks_scroll"
@@ -100,23 +85,16 @@
                     tools:listitem="@layout/item_journal_marks"/>
         </com.ldc.kbp.views.PinnedScrollView>
 
-        <ScrollView
+        <com.ldc.kbp.views.NoScrollableRecyclerView
                 android:visibility="gone"
                 android:id="@+id/journal_average_scroll"
                 android:layout_width="@dimen/journal_cell_width"
                 android:layout_height="0dp"
                 android:scrollbars="none"
+                app:recyclerOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
-                app:layout_constraintEnd_toEndOf="parent">
-
-            <LinearLayout
-                    android:id="@+id/journal_average_recycler"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    tools:listitem="@layout/item_journal_cell"/>
-        </ScrollView>
+                app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -136,28 +114,15 @@
                 android:layout_height="5dp"
                 android:background="@drawable/ic_bottom_line"/>
 
-        <LinearLayout
-                android:id="@+id/journal_group_selector_layout"
+
+        <androidx.recyclerview.widget.RecyclerView
                 android:layout_marginHorizontal="16dp"
-                android:layout_width="wrap_content"
+                android:id="@+id/journal_subjects_selector_recycler"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp"
-                    android:id="@+id/journal_groups_recycler"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/journal_subjects_selector_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
-        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/journal_view_marks_recycler"
