@@ -13,7 +13,7 @@ class SearchFragment<T>(
     val layout: View,
     val items: List<T>,
     var build: (T) -> Pair<String, String>,
-    var onSelected: (T) -> Unit = {}
+    var onSelected: ((T) -> Unit)? = null
 ) {
 
     private lateinit var searchAdapter: SearchAdapter<T>
@@ -48,7 +48,7 @@ class SearchFragment<T>(
         searchAdapter.onItemClickListener = { _, item ->
             keyboard.hideSoftInputFromWindow(layout.windowToken, 0)
 
-            onSelected(item)
+            onSelected?.invoke(item)
         }
 
         categoryAdapter.onItemClickListener = { _, _ -> updateSearch() }
