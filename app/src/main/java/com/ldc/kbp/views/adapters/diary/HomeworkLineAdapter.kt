@@ -10,7 +10,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.FileProvider
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Homeworks
 import com.ldc.kbp.models.Timetable
@@ -48,12 +47,12 @@ class HomeworkLineAdapter(
             checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, activity) {
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 val file = getFile(
-                    Environment.DIRECTORY_PICTURES, "${item.index}. $date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}"
+                    Environment.DIRECTORY_PICTURES,
+                    "${item.index}. $date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}",
+                    "jpg"
                 )
 
-                intent.putExtra(
-                    MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, "com.ldc.kbp.file.provider", file)
-                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, getUrlViaProvider(context, file))
 
                 startActivityForResult(activity, intent, 0, null)
             }

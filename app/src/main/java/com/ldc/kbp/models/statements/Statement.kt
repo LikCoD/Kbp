@@ -3,7 +3,6 @@ package com.ldc.kbp.models.statements
 import android.app.Activity
 import android.content.Intent
 import android.os.Environment
-import androidx.core.content.FileProvider
 import com.itextpdf.io.font.FontProgramFactory
 import com.itextpdf.io.font.PdfEncodings
 import com.itextpdf.kernel.font.PdfFontFactory
@@ -16,7 +15,9 @@ import com.itextpdf.layout.element.Cell
 import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.element.Table
 import com.itextpdf.layout.property.TextAlignment
+import com.ldc.kbp.getAssetsBytes
 import com.ldc.kbp.getFile
+import com.ldc.kbp.getUrlViaProvider
 import com.ldc.kbp.models.Deprecates
 import java.io.File
 
@@ -32,17 +33,13 @@ object Statement {
     var phone: String? = null
 
     fun createStatement(activity: Activity, paragraphs: List<Paragraph>): File {
-        val file = getFile(Environment.DIRECTORY_DOCUMENTS, "/Заявление от $date.$type.pdf")
+        val file = getFile(Environment.DIRECTORY_DOCUMENTS, "/Заявление от $date.$type", "pdf")
 
-        val document =
-            Document(PdfDocument(PdfWriter(file.path)).apply { catalog.lang = PdfString("ru-RU") })
+        val document = Document(PdfDocument(PdfWriter(file.path)).apply { catalog.lang = PdfString("ru-RU") })
 
         document.setFont(
             PdfFontFactory.createFont(
-                FontProgramFactory.createFont(
-                    activity.assets.open("times-new-roman.ttf").readBytes()
-                ),
-                PdfEncodings.IDENTITY_H
+                FontProgramFactory.createFont(getAssetsBytes(activity, "times-new-roman.ttf")), PdfEncodings.IDENTITY_H
             )
         )
 
@@ -111,7 +108,7 @@ object Statement {
 
         document.close()
 
-        val uri = FileProvider.getUriForFile(activity, "com.ldc.kbp.file.provider", file)
+        val uri = getUrlViaProvider(activity, file)
 
         val intent = Deprecates.shareIntentBuilder(activity)
             .setType("application/pdf")

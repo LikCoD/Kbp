@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.itextpdf.layout.element.Paragraph
-import com.itextpdf.layout.property.HorizontalAlignment
-import com.ldc.kbp.*
+import com.ldc.kbp.R
+import com.ldc.kbp.createDatePicker
+import com.ldc.kbp.getString
+import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.statements.Statement
+import com.ldc.kbp.shortSnackbar
 import kotlinx.android.synthetic.main.fragment_statement_working_off.view.*
 import org.threeten.bp.LocalDate
 
@@ -19,49 +22,60 @@ class FragmentWorkingOff : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        with(inflater.inflate(R.layout.fragment_statement_working_off, container, false)) {
-            val subjects: ArrayList<String> = ArrayList()
-            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-                requireContext(), android.R.layout.simple_list_item_1, subjects
+    ): View? = inflater.inflate(R.layout.fragment_statement_working_off, container, false).apply {
+        val subjects: ArrayList<String> = ArrayList()
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            requireContext(), android.R.layout.simple_list_item_1, subjects
+        )
+
+        val datePicker = createDatePicker(context) {
+            date_picker_date_tv.text = it.getString()
+        }
+
+        date_picker_date_tv.text = LocalDate.now().getString()
+
+        show_date_picker_img.setOnClickListener { datePicker.show() }
+
+        reason_auto.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                resources.getStringArray(R.array.reasons)
             )
+        )
 
-            val datePicker = createDatePicker(context) {
-                date_picker_date_tv.text = it.getString()
-            }
+        working_off_list.adapter = adapter
 
-            date_picker_date_tv.text = LocalDate.now().getString()
-
-            show_date_picker_img.setOnClickListener { datePicker.show() }
-
-            reason_auto.setAdapter(
-                ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_list_item_1,
-                    resources.getStringArray(R.array.reasons)
-                )
+        subject_auto.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                Groups.timetable.filter { it.category == "предмет" }.map { it.group }
             )
+        )
 
-            working_off_list.adapter = adapter
-
-            add_btn.setOnClickListener {
-                if (date_picker_date_tv.text != "" && subject_et.text.toString() != "") {
-                    subjects.add("\"${subject_et.text}\": ${date_picker_date_tv.text};")
-                    adapter.notifyDataSetChanged()
-
-                    subject_et.setText("")
-                } else shortSnackbar(save_btn, R.string.enter_data)
+        add_btn.setOnClickListener {
+            if (date_picker_date_tv.text == "" || subject_auto.text.toString() == "") {
+                shortSnackbar(save_btn, R.string.enter_data)
+                return@setOnClickListener
             }
+            subjects.add("\"${subject_auto.text}\": ${date_picker_date_tv.text};")
+            adapter.notifyDataSetChanged()
+
+            subject_auto.setText("")
+        }
 
 
-            save_btn.setOnClickListener {
-                val arr = mutableListOf(Paragraph("Прошу разрешить мне отработать практические занятия пропущенные по ${reason_auto.text} причине по следующим учебным дисциплинам:"),)
-                arr += subjects.map { Paragraph(it).apply { setHorizontalAlignment(HorizontalAlignment.CENTER) } }
-
-                Statement.createStatement(requireActivity(), arr)
+        save_btn.setOnClickListener {
+            if (reason_auto.text.toString() == "") {
+                shortSnackbar(save_btn, R.string.enter_data)
+                return@setOnClickListener
             }
+            val arr =
+                mutableListOf(Paragraph("Прошу разрешить мне отработать практические занятия пропущенные по ${reason_auto.text} причине по следующим учебным дисциплинам:"))
+            arr += subjects.map { Paragraph(it) }
 
-            return this
+            Statement.createStatement(requireActivity(), arr)
         }
     }
 

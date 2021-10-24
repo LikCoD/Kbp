@@ -5,27 +5,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.os.Build
+import android.net.Uri
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
+import androidx.core.content.FileProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.ldc.kbp.models.*
+import com.ldc.kbp.models.Config
+import com.ldc.kbp.models.Deprecates
+import com.ldc.kbp.models.Homeworks
+import com.ldc.kbp.models.Timetable
 import com.ozcanalasalvar.library.view.datePicker.DatePicker
 import com.ozcanalasalvar.library.view.popup.DatePickerPopup
-import kotlinx.android.synthetic.main.fragment_timetable.view.*
 import org.joda.time.DateTime
 import org.joda.time.Weeks
-import java.io.BufferedReader
-import java.io.File
-import java.io.InputStreamReader
 import org.threeten.bp.LocalDate
-import org.threeten.bp.ZoneId
-import java.time.temporal.ChronoUnit
+import java.io.File
 import kotlin.math.abs
 
 var config = Config()
@@ -45,13 +42,16 @@ fun checkPermission(permission: String, activity: Activity, func: () -> Unit) =
         )
     } else func()
 
-fun getFile(dir: String, name: String) = File(getDir(dir), "/$name.jpg")
+fun getFile(dir: String, name: String, extension: String) = File(getDir(dir), "/$name.$extension")
 
 fun getDir(dir: String) =
     File(Deprecates.getStorageDir(dir), "/Kbp").apply { if (!exists()) mkdirs() }
 
-fun getAssets(context: Context, name: String) =
-    BufferedReader(InputStreamReader(context.assets.open(name))).readLines().joinToString("")
+fun getAssetsBytes(context: Context, name: String) =
+    context.assets.open(name).readBytes()
+
+fun getUrlViaProvider(context: Context, file: File): Uri =
+    FileProvider.getUriForFile(context, "com.ldc.kbp.file.provider", file)
 
 fun shortToast(context: Context, text: Int) =
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
