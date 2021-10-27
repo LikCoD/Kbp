@@ -18,10 +18,6 @@ import com.ldc.kbp.models.Timetable
 import com.ldc.kbp.onStateChanged
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import java.net.URL
 import kotlin.concurrent.thread
 
 class SettingsFragment : Fragment() {
@@ -38,8 +34,19 @@ class SettingsFragment : Fragment() {
             password_tv.setText(R.string.password)
         }
 
-        val searchFragment = SearchFragment(groups_selector_fragment, Groups.timetable, { it.group to it.category })
-        searchFragment.onSelected = { timetableInfo ->
+        val groups =
+            Groups.groupsJournal.map { it to "Группа" } + Groups.teachersJournal.map { it to "Предподаватель" }
+
+        val noLoginsSelector = SearchFragment(no_login_groups_selector_fragment, groups, { it.name }) {
+            config.groupId = it.id
+            Files.saveConfig(requireContext())
+
+            no_login_groups_selector_fragment.isVisible = false
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        val search = SearchFragment(groups_selector_fragment, Groups.timetable.map { it to it.category }, { it.group })
+        search.onSelected = { timetableInfo ->
             thread { mainTimetable = Timetable.loadTimetable(timetableInfo) }
 
             group_name_tv.text = timetableInfo.group
@@ -48,23 +55,24 @@ class SettingsFragment : Fragment() {
             config.link = timetableInfo.link
             config.timetableInfo = timetableInfo
 
-            fun checkGroup(id: String?) {
-                if (id == null) {
-                    journal_id.setText(timetableInfo.group)
+            fun checkGroup(simpleInfo: Groups.SimpleInfo?) {
+                if (simpleInfo == null) {
                     Snackbar.make(confirm_button, R.string.logins_not_match, Snackbar.LENGTH_SHORT)
                         .setAction(R.string.enter) {
-                            journal_id_layout.isVisible = true
+                            groups_selector_fragment.isVisible = false
+
+                            noLoginsSelector.show()
+
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                         }.show()
                 } else {
-                    config.groupId = id
-                    journal_id.setText(id)
+                    config.groupId = simpleInfo.id
                 }
             }
 
             when (timetableInfo.category) {
                 "преподаватель" -> {
-                    val id =
-                        getUrlFromGroup("https://nehai.by/ej/templates/login_teacher.php", timetableInfo.group)
+                    val id = Groups.teachersJournal.find { it.name.lowercase() == timetableInfo.group.lowercase() }
 
                     config.isStudent = false
                     config.group = ""
@@ -76,10 +84,7 @@ class SettingsFragment : Fragment() {
                     checkGroup(id)
                 }
                 "группа" -> {
-                    val id =
-                        getUrlFromGroup(
-                            "https://nehai.by/ej/templates/login_parent.php", timetableInfo.group.lowercase()
-                        )
+                    val id = Groups.groupsJournal.find { it.name.lowercase() == timetableInfo.group.lowercase() }
 
                     config.isStudent = true
                     config.group = timetableInfo.group
@@ -95,13 +100,15 @@ class SettingsFragment : Fragment() {
 
         bottomSheetBehavior.onStateChanged { _, newState ->
             if (newState == BottomSheetBehavior.STATE_COLLAPSED)
-                searchFragment.hide()
+                search.hide()
         }
 
         search_image.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            searchFragment.show()
+            no_login_groups_selector_fragment.isVisible = false
+
+            search.show()
         }
 
         department_auto.setAdapter(
@@ -118,7 +125,6 @@ class SettingsFragment : Fragment() {
         }
 
         name_et.setText(config.surname)
-        journal_id.setText(config.groupId)
         password_et.setText(config.password)
         department_auto.setText(config.department)
         multi_week_mode_switcher.isChecked = config.multiWeek
@@ -129,30 +135,11 @@ class SettingsFragment : Fragment() {
         confirm_button.setOnClickListener {
             if (config.isStudent) config.surname = name_et.text.toString()
 
-            config.groupId = journal_id.text.toString()
             config.password = password_et.text.toString()
             config.department = department_auto.text.toString()
             config.isFemale = sex_switcher.isChecked
 
             Files.saveConfig(requireContext())
         }
-    }
-
-    private fun getUrlFromGroup(link: String, group: String): String? {
-        var id: String
-
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                id = URL(link)
-                    .openConnection()
-                    .getInputStream()
-                    .bufferedReader()
-                    .readText()
-                    .substringBefore("\">$group")
-                    .substringAfterLast("value=\"")
-            }
-        }
-
-        return if (id.contains("</select>")) null else id
     }
 }

@@ -3,6 +3,7 @@ package com.ldc.kbp.views.fragments
 import android.app.Activity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.ldc.kbp.models.Groups
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
@@ -11,8 +12,8 @@ import kotlinx.android.synthetic.main.fragment_search.view.*
 
 class SearchFragment<T>(
     val layout: View,
-    val items: List<T>,
-    var build: (T) -> Pair<String, String>,
+    val items: List<Pair<T, String>>,
+    var build: (T) -> String,
     var onSelected: ((T) -> Unit)? = null
 ) {
 
@@ -39,8 +40,10 @@ class SearchFragment<T>(
     private fun updateGroups() {
         if (Groups.timetable.isEmpty()) return
 
-        searchAdapter = SearchAdapter(activity, items, build)
-        categoryAdapter = CategoryAdapter(activity, items.map { build(it).second }.distinct())
+        val unzipped = items.unzip()
+
+        searchAdapter = SearchAdapter(activity, unzipped.first, build)
+        categoryAdapter = CategoryAdapter(activity, unzipped.second.distinct())
 
         layout.category_recycler.adapter = categoryAdapter
         layout.groups_recycler.adapter = searchAdapter
@@ -58,15 +61,16 @@ class SearchFragment<T>(
     private fun updateSearch() {
         val text: String = layout.search_edit.text.toString().lowercase()
 
-        searchAdapter.items =
-            items.filter {
-                val built = build(it)
-                val category = categoryAdapter.selectedItem == null || built.second == categoryAdapter.selectedItem
-                built.first.lowercase().contains(text) && category
-            }
+        searchAdapter.items = items.filter {
+            val built = build(it.first)
+            val category = categoryAdapter.selectedItem == null || it.second == categoryAdapter.selectedItem
+            built.lowercase().contains(text) && category
+        }.unzip().first
     }
 
     fun show() {
+        layout.isVisible = true
+
         layout.search_edit.setText("")
         layout.search_edit.requestFocus()
 
