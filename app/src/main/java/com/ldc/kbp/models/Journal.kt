@@ -9,8 +9,14 @@ import org.jsoup.select.Elements
 @Serializable
 data class Journal(
     var subjects: MutableList<Subject>,
-    var dates: List<String>
+    var dates: List<Date>
 ) {
+
+    @Serializable
+    data class Date(
+        var month: Int,
+        var dates: List<Int>
+    )
 
     @Serializable
     data class Subject(
@@ -34,19 +40,26 @@ data class Journal(
     ) {
         fun remove(requests: HttpRequests, cell: Cell) = requests.post(
             "https://nehai.by/ej/ajax.php",
-            "action=set_mark&student_id=${cell.studentId}&pair_id=${cell.pairId}&mark_id=$markId&value=X"
+            "action" to "set_mark",
+            "student_id" to cell.studentId,
+            "pair_id" to cell.pairId,
+            "mark_id" to markId,
+            "value" to "X"
         )
     }
 
     companion object {
         private fun parse(names: List<String>, trs: Elements): Journal {
-            val dates = trs[0].select("td").dropLast(1).flatMapIndexed { index, element ->
-                List(element.attr("colspan").toInt()) {
-                    val monthNum = index + 9
-                    if (monthNum > 12) monthNum - 12 else monthNum
-                }
-            }.zip(trs[1].select("td")) { month: Int, date: Element ->
-                "${month}\n${date.text()}"
+            val datesNumbers = trs[1].select("td")
+            var currentNumber = 0
+
+            val dates = trs[0].select("td").dropLast(1).mapIndexed { index, element ->
+                val daysInMonth = element.attr("colspan").toInt()
+                val monthNum = if (index + 9 > 12) index - 3 else index + 9
+
+                Date(monthNum, List(daysInMonth) {
+                    datesNumbers[it + currentNumber].text().toInt()
+                }).also { currentNumber += daysInMonth }
             }
 
             val subjects = mutableListOf<Subject>()
@@ -57,7 +70,6 @@ data class Journal(
                 tr.select("td").dropLast(1).forEachIndexed { i, td ->
                     var pairId = ""
                     var studentId = ""
-
 
                     val marks = td.select("div").flatMap { div ->
                         pairId = div.attr("pair-id")
@@ -91,7 +103,8 @@ data class Journal(
         fun parseTeacherJournal(document: Document): Journal {
             val tables = document.select("table")
 
-            val surnames = tables[0].select("tr").drop(2).dropLast(1).map { it.text() }.toMutableList()
+            val surnames =
+                tables[0].select("tr").drop(2).dropLast(1).map { it.text() }.toMutableList()
             surnames.remove("Показать лабораторные")
 
             val trs = tables.getOrNull(1)?.select("tr")

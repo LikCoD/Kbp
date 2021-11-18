@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
         tools:context=".fragments.JournalFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_layout"
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                     android:contentDescription="@string/app_name"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
             <ImageView
                     android:id="@+id/journal_add_date_img"
@@ -43,9 +43,19 @@
                     android:contentDescription="@string/app_name"
                     app:layout_constraintStart_toEndOf="@+id/journal_average_img"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+                style="@style/head_text"
+                android:id="@+id/month_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll"
+                app:layout_constraintStart_toEndOf="@+id/journal_subjects_name_scroll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
         <com.ldc.kbp.views.NoScrollableRecyclerView
                 android:layout_marginTop="8dp"
                 android:id="@+id/journal_date_scroll"
@@ -54,8 +64,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll"
                 app:layout_constraintStart_toEndOf="@+id/journal_subjects_name_scroll"
-                app:layout_constraintTop_toTopOf="parent"
-                android:scrollbars="none"/>
+                app:layout_constraintTop_toBottomOf="@+id/month_text"
+                android:scrollbars="none" />
 
         <com.ldc.kbp.views.NoScrollableRecyclerView
                 android:scrollbars="none"
@@ -66,7 +76,7 @@
                 app:recyclerOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"/>
+                app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll" />
 
         <com.ldc.kbp.views.PinnedScrollView
                 android:id="@+id/journal_marks_scroll"
@@ -82,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/journal_marks_recycler"
                     android:orientation="vertical"
-                    tools:listitem="@layout/item_journal_marks"/>
+                    tools:listitem="@layout/item_journal_marks" />
         </com.ldc.kbp.views.PinnedScrollView>
 
         <com.ldc.kbp.views.NoScrollableRecyclerView
@@ -94,7 +104,7 @@
                 app:recyclerOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -112,8 +122,31 @@
                 android:layout_marginVertical="@dimen/bottom_bar_line_margin"
                 android:layout_width="75dp"
                 android:layout_height="5dp"
-                android:background="@drawable/ic_bottom_line"/>
+                android:background="@drawable/ic_bottom_line" />
 
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_week_selector"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+            <TextView
+                    style="@style/head_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/month" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/month_selector_recycler"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="6"
+                    tools:listitem="@layout/item_round_button" />
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_marginHorizontal="16dp"
@@ -121,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -129,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <androidx.recyclerview.widget.RecyclerView
                 android:visibility="gone"
@@ -138,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:spanCount="2"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -157,7 +190,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="@+id/description_edit"
-                    app:layout_constraintTop_toTopOf="@+id/description_edit"/>
+                    app:layout_constraintTop_toTopOf="@+id/description_edit" />
 
             <EditText
                     android:id="@+id/description_edit"
@@ -170,7 +203,7 @@
                     android:labelFor="@+id/category_recycler"
                     app:layout_constraintStart_toEndOf="@+id/date_tv"
                     app:layout_constraintEnd_toEndOf="@+id/confirm_button"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                     android:layout_marginHorizontal="8dp"
@@ -179,7 +212,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/add"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                     android:layout_marginVertical="8dp"
@@ -191,7 +224,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/confirm_button"/>
+                    app:layout_constraintTop_toBottomOf="@+id/confirm_button" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

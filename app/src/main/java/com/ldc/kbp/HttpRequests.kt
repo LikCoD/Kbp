@@ -6,9 +6,11 @@ import javax.net.ssl.HttpsURLConnection
 
 class HttpRequests {
 
-    fun get(url: String, params: String? = null): String {
+    fun get(url: String, vararg params: Pair<String, String> = emptyArray()): String {
         try {
-            val client: HttpURLConnection = URL("$url?$params").openConnection() as HttpURLConnection
+            val paramsList = params.joinToString("&"){"${it.first}=${it.second}"}
+
+            val client = URL("$url?$paramsList").openConnection() as HttpURLConnection
 
             client.requestMethod = "GET"
             client.setRequestProperty("User-Agent", "Mozilla/5.0")
@@ -21,7 +23,7 @@ class HttpRequests {
         }
     }
 
-    fun post(url: String, params: String? = null): String {
+    fun post(url: String, vararg params: Pair<String, String> = emptyArray()): String {
         try {
             val client = URL(url).openConnection() as HttpsURLConnection
 
@@ -29,9 +31,11 @@ class HttpRequests {
             client.setRequestProperty("User-Agent", "Mozilla/5.0")
 
             client.doOutput = true
-            if (params != null)
+            if (params.isNotEmpty())
                 OutputStreamWriter(client.outputStream).use { wr ->
-                    wr.write(params)
+                    val paramsLine = params.joinToString("&"){"${it.first}=${it.second}"}
+
+                    wr.write(paramsLine)
                     wr.flush()
                 }
 

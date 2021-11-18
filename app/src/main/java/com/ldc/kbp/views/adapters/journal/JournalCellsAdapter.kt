@@ -15,7 +15,9 @@ class JournalCellsAdapter(
     context: Context,
     val journal: Journal? = null,
     var onClick: ((Journal.Cell, Int) -> Unit)? = null
-) : Adapter<Journal.Cell>(context, journal?.subjects?.flatMap { it.cells }, R.layout.item_journal_cell) {
+) : Adapter<Journal.Cell>(context, journal?.subjects?.flatMap {
+    it.cells.takeLast(journal.dates.last().dates.size)
+}, R.layout.item_journal_cell) {
 
     private var selectedIndex: Int? = null
     private var selectedCard: CardView? = null
@@ -70,7 +72,9 @@ class JournalCellsAdapter(
                 }
             }
 
-            if (selectedIndex == position) view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.orange90))
+            if (selectedIndex == position) view.item_journal_cell_card_view.setCardBackgroundColor(
+                context.getColor(R.color.orange90)
+            )
         }
     }
 }
