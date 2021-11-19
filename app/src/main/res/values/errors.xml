@@ -1,7 +1,7 @@
 <resources>
-    <string name="network_error">Network error</string>
-    <string name="token_error">Token error</string>
-    <string name="incorrect_data">Incorrect data</string>
-    <string name="unknown_response">Unknown response</string>
-    <string name="no_answer">No answer from server</string>
+    <string name="network_error">Ошибка сети</string>
+    <string name="token_error">Ошибка токена</string>
+    <string name="incorrect_data">Неверные данные</string>
+    <string name="unknown_response">Неизвестная ошибка</string>
+    <string name="no_answer">Нет ответа от сервера</string>
 </resources>

@@ -237,41 +237,6 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/journal_id_layout"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp">
-
-                    <TextView
-                            android:id="@+id/journal_tv"
-                            style="@style/head_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/id"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    <EditText
-                            android:id="@+id/journal_id"
-                            android:layout_width="170dp"
-                            android:layout_height="wrap_content"
-                            android:textAlignment="textEnd"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:inputType="text"
-                            android:autofillHints="name"
-                            android:labelFor="@id/journal_tv"
-                            android:hint="@string/id"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
             </LinearLayout>
 
         </ScrollView>
@@ -309,10 +274,17 @@
             android:background="@drawable/ic_bottom_line" />
 
         <include
-            android:id="@+id/groups_selector_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_bar_group_selection_height"
-            layout="@layout/fragment_search" />
+                android:id="@+id/groups_selector_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_group_selection_height"
+                layout="@layout/fragment_search" />
+
+        <include
+                android:id="@+id/no_login_groups_selector_fragment"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_group_selection_height"
+                layout="@layout/fragment_search" />
 
     </LinearLayout>
 

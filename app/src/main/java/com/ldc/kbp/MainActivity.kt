@@ -3,6 +3,7 @@ package com.ldc.kbp
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -15,6 +16,7 @@ import com.ldc.kbp.models.Groups
 import com.ldc.kbp.models.Timetable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +41,11 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            Groups.loadGroupsFromJournal()
+            Groups.loadTeachersFromJournal()
+        }
 
         val navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(
