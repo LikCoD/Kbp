@@ -24,7 +24,8 @@ class JournalAverageAdapter(
             return
         }
 
-        val marks = item.cells.flatMap { it.marks.map { c -> c.mark } }.filter { it.toIntOrNull() != null }
+        val marks = item.months.flatMap { it.cells }.flatMap { it.marks }.map { it.mark }.filter { it.toIntOrNull() != null }
+
         if (marks.isEmpty())
             view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
         else {

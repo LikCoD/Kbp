@@ -10,12 +10,12 @@ import kotlinx.android.synthetic.main.item_journal_date_num.view.*
 class JournalDateAdapter(
     context: Context,
     items: Journal.Date,
-) : Adapter<Int>(
+) : Adapter<String>(
     context,
     items.dates,
     R.layout.item_journal_date_num
 ) {
-    override fun onBindViewHolder(view: View, item: Int?, position: Int) {
+    override fun onBindViewHolder(view: View, item: String?, position: Int) {
         view.item_journal_date_num_tv.text = item!!.toString()
     }
 }

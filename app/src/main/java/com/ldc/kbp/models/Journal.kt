@@ -8,21 +8,26 @@ import org.jsoup.select.Elements
 
 @Serializable
 data class Journal(
-    var subjects: MutableList<Subject>,
+    var subjects: List<Subject>,
     var dates: List<Date>
 ) {
 
     @Serializable
     data class Date(
         var month: Int,
-        var dates: List<Int>
+        var dates: List<String>
     )
 
     @Serializable
     data class Subject(
         var name: String = "",
         var index: Int = 0,
-        var cells: MutableList<Cell>
+        var months: MutableList<Month>
+    )
+
+    @Serializable
+    data class Month(
+        var cells: List<Cell>
     )
 
     @Serializable
@@ -53,39 +58,40 @@ data class Journal(
             val datesNumbers = trs[1].select("td")
             var currentNumber = 0
 
-            val dates = trs[0].select("td").dropLast(1).mapIndexed { index, element ->
-                val daysInMonth = element.attr("colspan").toInt()
-                val monthNum = if (index + 9 > 12) index - 3 else index + 9
+            val dates: MutableList<Date> = mutableListOf()
+            val subjectsLine = trs.drop(2).dropLast(1)
+            val subjects = names.mapIndexed { i, el -> Subject(el, i, mutableListOf()) }
+            trs[0].select("td").dropLast(1).mapIndexed { monthIndex, month ->
+                val daysInMonth = month.attr("colspan").toInt()
+                val date = Date(
+                    if (monthIndex + 9 > 12) monthIndex - 3 else monthIndex + 9,
+                    List(daysInMonth) { datesNumbers[it + currentNumber].text() }
+                )
 
-                Date(monthNum, List(daysInMonth) {
-                    datesNumbers[it + currentNumber].text().toInt()
-                }).also { currentNumber += daysInMonth }
-            }
+                List(subjects.size) { i ->
+                    val cells = List(daysInMonth){ index ->
+                        var pairId = ""
+                        var studentId = ""
 
-            val subjects = mutableListOf<Subject>()
+                        val marks = subjectsLine[i].select("td")[index + currentNumber].select("div").flatMap { div ->
+                            pairId = div.attr("pair-id")
+                            studentId = div.attr("st-id")
+                            div.select("span").map {
+                                Mark(
+                                    it.text(),
+                                    it.attr("data-mark-id")
+                                )
+                            }
+                        }.filter { it.mark != "" }.toMutableList()
 
-            trs.drop(2).dropLast(1).forEachIndexed { index, tr ->
-                subjects.add(Subject(names[index], index, mutableListOf()))
+                        Cell(index + currentNumber, pairId, studentId, marks)
+                    }
 
-                tr.select("td").dropLast(1).forEachIndexed { i, td ->
-                    var pairId = ""
-                    var studentId = ""
-
-                    val marks = td.select("div").flatMap { div ->
-                        pairId = div.attr("pair-id")
-                        studentId = div.attr("st-id")
-                        div.select("span").map {
-                            Mark(
-                                it.text(),
-                                it.attr("data-mark-id")
-                            )
-                        }
-                    }.filter { it.mark != "" }.toMutableList()
-
-                    marks.sortBy { it.mark.length }
-
-                    subjects.last().cells.add(Cell(i, pairId, studentId, marks))
+                    subjects[i].months.add(Month(cells))
                 }
+
+                dates.add(date)
+                currentNumber += daysInMonth
             }
 
             return Journal(subjects, dates)

@@ -18,7 +18,6 @@ import com.ldc.kbp.views.adapters.journal.*
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.fragment_journal.view.*
-import kotlinx.android.synthetic.main.fragment_timetable.view.*
 import kotlinx.coroutines.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -121,13 +120,9 @@ class JournalFragment : Fragment() {
         weekSelectorAdapter.onItemClickListener = { i, month ->
             dateAdapter.items = journal.dates[i].dates
 
-            val start = journal.dates.subList(0, i).sumOf { it.dates.size }
-
             cellsManager.spanCount = journal.dates[i].dates.size
 
-            cellsAdapter.items = journal.subjects.flatMap {
-                it.cells.subList(start, start + journal.dates[i].dates.size)
-            }
+            cellsAdapter.items = journal.subjects.flatMap { it.months[i].cells }
 
             root.month_text.text = requireContext().resources.getStringArray(R.array.months)[month.toInt() - 1]
         }
@@ -190,14 +185,11 @@ class JournalFragment : Fragment() {
     }
 
 
-    private fun update(
-        document: Document, behavior: BottomSheetBehavior<*>, isStudent: Boolean = true
-    ) = MainScope().launch {
+    private fun update(document: Document, behavior: BottomSheetBehavior<*>, isStudent: Boolean = true)
+    = MainScope().launch {
         journal = if (isStudent) Journal.parseJournal(document) else Journal.parseTeacherJournal(document)
 
-        root.journal_subjects_name_scroll.setup(
-            JournalSubjectsNameAdapter(requireContext(), journal.subjects.map { it.name })
-        )
+        root.journal_subjects_name_scroll.setup(JournalSubjectsNameAdapter(requireContext(), journal.subjects.map { it.name }))
 
         root.month_text.text = requireContext().resources.getStringArray(R.array.months)[journal.dates.last().month - 1]
 
@@ -243,10 +235,7 @@ class JournalFragment : Fragment() {
                         if (action == "X") {
                             when {
                                 selectedMark == null -> cell.marks.removeIf {
-                                    it.remove(
-                                        httpRequests,
-                                        cell
-                                    ) == "0"
+                                    it.remove(httpRequests, cell) == "0"
                                 }
                                 selectedMark!!.remove(
                                     httpRequests,
