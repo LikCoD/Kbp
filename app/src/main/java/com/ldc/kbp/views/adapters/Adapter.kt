@@ -7,7 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class Adapter<T>(val context: Context, items: List<T?>?, val layout: Int) :
+abstract class Adapter<T>(
+    val context: Context,
+    items: List<T?>?,
+    val layout: Int,
+    var onItemClickListener: ((Int, T) -> Unit) = { _, _ -> }
+) :
     RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     var items = items
@@ -29,8 +34,6 @@ abstract class Adapter<T>(val context: Context, items: List<T?>?, val layout: In
     @SuppressLint("NotifyDataSetChanged")
     fun dataSetChanged() =
         notifyDataSetChanged()
-
-    var onItemClickListener: ((Int, T) -> Unit) = { _, _ -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(LayoutInflater.from(context).inflate(layout, parent, false))

@@ -3,7 +3,6 @@ package com.ldc.kbp.models
 import com.ldc.kbp.HttpRequests
 import kotlinx.serialization.Serializable
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 @Serializable
@@ -69,7 +68,7 @@ data class Journal(
                 )
 
                 List(subjects.size) { i ->
-                    val cells = List(daysInMonth){ index ->
+                    val cells = List(daysInMonth) { index ->
                         var pairId = ""
                         var studentId = ""
 
@@ -109,9 +108,8 @@ data class Journal(
         fun parseTeacherJournal(document: Document): Journal {
             val tables = document.select("table")
 
-            val surnames =
-                tables[0].select("tr").drop(2).dropLast(1).map { it.text() }.toMutableList()
-            surnames.remove("Показать лабораторные")
+            val surnames = tables[0].getElementsByClass("pupilName").mapIndexed { i, el -> "${i + 1} ${el.text()}" }
+
 
             val trs = tables.getOrNull(1)?.select("tr")
 
