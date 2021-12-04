@@ -21,7 +21,7 @@ class DiaryFragment : Fragment() {
         set(value) {
             field =
                 if (value == 7) {
-                    diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
+                    diaryDayAdapter.plusWeek()
                     1
                 } else value
         }
@@ -40,13 +40,13 @@ class DiaryFragment : Fragment() {
             DiaryDayAdapter(
                 requireActivity(),
                 homeworkList,
-                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size)].days,
+                mainSchedule,
                 LocalDate.now().minusDays(LocalDate.now().dayOfWeek.value.toLong())
             )
         val daysOfWeekSelectorAdapter = RoundButtonsAdapter(
             requireContext(),
             false,
-            resources.getStringArray(R.array.days_of_weeks).toList().subList(0, mainTimetable.daysInWeek)
+            resources.getStringArray(R.array.days_of_weeks).toList().subList(0, mainSchedule.info.daysCount)
         )
 
         val photosAdapter = PhotosAdapter(requireActivity())
@@ -56,10 +56,7 @@ class DiaryFragment : Fragment() {
         val datePickerPopup = createDatePicker(requireContext()) { date ->
             dayOfWeek = date.dayOfWeek.value
 
-            diaryDayAdapter.startWeekDate = date.minusDays(dayOfWeek.toLong())
-
-            diaryDayAdapter.items =
-                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, date)].days
+            diaryDayAdapter.setDate(date)
 
             diary_day_recycler.smoothScrollToPosition(dayOfWeek - 1)
         }
@@ -80,20 +77,16 @@ class DiaryFragment : Fragment() {
         }
 
         diary_days_of_week_prev.setOnClickListener {
-            diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.minusWeeks(1)
-            diaryDayAdapter.items =
-                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
+            diaryDayAdapter.minusWeek()
 
-            daysOfWeekSelectorAdapter.selectionIndex = mainTimetable.daysInWeek - 1
+            daysOfWeekSelectorAdapter.selectionIndex = mainSchedule.info.daysCount - 1
 
-            days_of_week_selector_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
-            diary_day_recycler.scrollToPosition(mainTimetable.daysInWeek - 1)
+            days_of_week_selector_recycler.scrollToPosition(mainSchedule.info.daysCount - 1)
+            diary_day_recycler.scrollToPosition(mainSchedule.info.daysCount - 1)
         }
 
         diary_days_of_week_next.setOnClickListener {
-            diaryDayAdapter.startWeekDate = diaryDayAdapter.startWeekDate.plusWeeks(1)
-            diaryDayAdapter.items =
-                mainTimetable.weeks[getCurrentWeek(mainTimetable.weeks.size, diaryDayAdapter.startWeekDate)].days
+            diaryDayAdapter.plusWeek()
 
             daysOfWeekSelectorAdapter.selectionIndex = 0
 

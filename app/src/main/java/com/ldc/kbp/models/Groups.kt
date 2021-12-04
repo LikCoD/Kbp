@@ -3,32 +3,38 @@ package com.ldc.kbp.models
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import org.jsoup.Jsoup
+import java.net.URL
 
 object Groups {
     @Serializable
     data class Timetable(val group: String, val link: String, val category: String)
 
     @Serializable
+    data class Schedule(val name: String, val type: String)
+
+    @Serializable
     data class SimpleInfo(val name: String, val id: String)
 
     fun loadTimetable() {
-        val timetableMutableList = mutableListOf<Timetable>()
-
-        Jsoup.connect("http://kbp.by/rasp/timetable/view_beta_kbp/?q=").get()
-            .getElementsByClass("block_back")[0].children().drop(1).map {
-            val category = it.select("span").text()
-            val a = it.select("a")
-
-            timetableMutableList.add(Timetable(a.text(), a.attr("href"), category))
-        }
-
-        timetable = timetableMutableList.distinct()
+        timetable = Json.decodeFromStream(URL("https://kbp-server.herokuapp.com/types?educationPlaceId=0").openStream())
     }
 
     fun loadGroupsFromJournal() {
         groupsJournal = parseJournalViaUrl("https://nehai.by/ej/templates/login_parent.php")
     }
+
+    fun getRusType(schedule: Schedule) =
+        when (schedule.type){
+            "room" -> "Кабинет"
+            "group" -> "Группа"
+            "teacher" -> "Учитель"
+            "subject" -> "Предмет"
+            else -> "-"
+        }
+
 
     fun loadTeachersFromJournal() {
         teachersJournal = parseJournalViaUrl("https://nehai.by/ej/templates/login_teacher.php")
@@ -38,7 +44,7 @@ object Groups {
         Jsoup.connect(url).get().select("option").map { SimpleInfo(it.text(), it.attr("value")) }
     }
 
-    var timetable: List<Timetable> = emptyList()
+    var timetable: List<Schedule> = emptyList()
 
     var groupsJournal: List<SimpleInfo> = emptyList()
     var teachersJournal: List<SimpleInfo> = emptyList()

@@ -1,39 +1,35 @@
 package com.ldc.kbp
 
+import com.ldc.kbp.models.Schedule
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import org.jsoup.Jsoup
 import org.junit.Test
 import kotlin.concurrent.thread
 
 
 class ExampleUnitTest {
+
+    val list = listOf(A(0, "A"), A(2, "D"), null, A(4, "D"))
+
+    @Serializable
+    data class A(val b: Int, val c: String,)
+    @Serializable
+    data class MAIN(val list: List<A?>)
+
+
     @Test
     fun main() {
-        thread {
-            val connection = Jsoup.connect("https://nehai.by/ej/templates/login_parent.php")
 
-            val sCode = connection.get()
-                .toString()
-                .substringAfter("value=\"")
-                .substringBefore("\">")
+        println(Json.encodeToString(MAIN(list)))
+        Json.decodeFromString<MAIN>("{\"list\":[{\"b\":0,\"c\":\"A\"},{\"b\":2,\"c\":\"D\"},null,{\"b\":4,\"c\":\"D\"}]}")
 
+       // Schedule(listOf(null, null, null, null, Schedule.Subjects(0, 0, 4, true, listOf(Schedule.Subject("Математика", "Гальцова О.В.","427", "Т-095", Schedule.Type.STAY)))), Schedule.Info(2, 6, 7, "group", "T-095"))
 
-            val cookiesStore = connection.cookieStore()
+        Json.decodeFromString<Schedule>("{\"subjects\": [null, null, null, null, {\"weekIndex\": 0, \"columnIndex\": 0, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"427\", \"subject\": \"Математика\", \"teacher\": \"Гальцова О.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 0, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ОАиП\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 0, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"401\", \"subject\": \"АрифмЛогВТ\", \"teacher\": \"Фоменко Н.К.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 0, \"columnIndex\": 1, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"413\", \"subject\": \"ОснИнжГраф\", \"teacher\": \"Кудласевич В.С.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 1, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ОАиП\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 1, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"410\", \"subject\": \"ИнтрументПО\", \"teacher\": \"Миско А.С.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 1, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"427\", \"subject\": \"Математика\", \"teacher\": \"Гальцова О.В.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 0, \"columnIndex\": 2, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"414\", \"subject\": \"СтандСертифик\", \"teacher\": \"Воронцова А.Н.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 2, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"508\", \"subject\": \"АнглЯзы\", \"teacher\": \"Смелова А.Д\", \"type\": \"STAY\"}, {\"group\": \"Т-095\", \"room\": \"508\", \"subject\": \"АнглЯзы\", \"teacher\": \"Шавярнвоская Я.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 2, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"314\", \"subject\": \"ОснПрава\", \"teacher\": \"Шалайко В.Н.\", \"type\": \"STAY\"}]}, null, null, null, null, null, null, {\"weekIndex\": 0, \"columnIndex\": 3, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"419\", \"subject\": \"ТРПО\", \"teacher\": \"Комаровский А.С.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 3, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"18а\", \"subject\": \"ФизКультура\", \"teacher\": \"Виткевич Г.И.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 3, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"425\", \"subject\": \"ОСГН\", \"teacher\": \"Спильниченко И.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 0, \"columnIndex\": 4, \"rowIndex\": 3, \"isStay\": false, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"ADDED\"}]}, {\"weekIndex\": 0, \"columnIndex\": 4, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 4, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 4, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 0, \"columnIndex\": 5, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"403\", \"subject\": \"СистемПО\", \"teacher\": \"Сватко И.Б.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 5, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"427\", \"subject\": \"Математика\", \"teacher\": \"Гальцова О.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 0, \"columnIndex\": 5, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ОАиП\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, null, null, null, null, null, null, null, null, null, null, null, null, null, null, {\"weekIndex\": 1, \"columnIndex\": 0, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"508\", \"subject\": \"АнглЯзы\", \"teacher\": \"Смелова А.Д\", \"type\": \"STAY\"}, {\"group\": \"Т-095\", \"room\": \"508\", \"subject\": \"АнглЯзы\", \"teacher\": \"Шавярнвоская Я.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 0, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ОАиП\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 0, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"401\", \"subject\": \"АрифмЛогВТ\", \"teacher\": \"Фоменко Н.К.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 1, \"columnIndex\": 1, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"413\", \"subject\": \"ОснИнжГраф\", \"teacher\": \"Кудласевич В.С.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 1, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"18а\", \"subject\": \"ФизКультура\", \"teacher\": \"Виткевич Г.И.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 1, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"410\", \"subject\": \"ИнтрументПО\", \"teacher\": \"Миско А.С.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 1, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"427\", \"subject\": \"Математика\", \"teacher\": \"Гальцова О.В.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 1, \"columnIndex\": 2, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"414\", \"subject\": \"СтандСертифик\", \"teacher\": \"Воронцова А.Н.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 2, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"508\", \"subject\": \"АнглЯзы\", \"teacher\": \"Смелова А.Д\", \"type\": \"STAY\"}, {\"group\": \"Т-095\", \"room\": \"508\", \"subject\": \"АнглЯзы\", \"teacher\": \"Шавярнвоская Я.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 2, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"314\", \"subject\": \"ОснПрава\", \"teacher\": \"Шалайко В.Н.\", \"type\": \"STAY\"}]}, null, null, null, null, null, null, {\"weekIndex\": 1, \"columnIndex\": 3, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"419\", \"subject\": \"ТРПО\", \"teacher\": \"Комаровский А.С.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 3, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"18а\", \"subject\": \"ФизКультура\", \"teacher\": \"Виткевич Г.И.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 3, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"425\", \"subject\": \"ОСГН\", \"teacher\": \"Спильниченко И.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 1, \"columnIndex\": 4, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"418\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 4, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 4, \"rowIndex\": 5, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 4, \"rowIndex\": 6, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"408\", \"subject\": \"ПрактРабПроф\", \"teacher\": \"Рогалевич А.В.\", \"type\": \"STAY\"}]}, null, null, null, null, {\"weekIndex\": 1, \"columnIndex\": 5, \"rowIndex\": 3, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"403\", \"subject\": \"СистемПО\", \"teacher\": \"Сватко И.Б.\", \"type\": \"STAY\"}]}, {\"weekIndex\": 1, \"columnIndex\": 5, \"rowIndex\": 4, \"isStay\": true, \"subjects\": [{\"group\": \"Т-095\", \"room\": \"427\", \"subject\": \"Математика\", \"teacher\": \"Гальцова О.В.\", \"type\": \"STAY\"}]}], \"info\": {\"weeksCount\": 2, \"daysCount\": 6, \"subjectsCount\": 7, \"type\": \"group\", \"name\": \"Т-095\"}}")
 
-            val result = Jsoup.connect("https://nehai.by/ej/ajax.php")
-                .data("action", "login_parent")
-                .data("student_name", "Сергеюк")
-                .data("group_id", "435")
-                .data("birth_day", "24.04.2005")
-                .data("S_Code", sCode)
-                .cookieStore(cookiesStore)
-                .post()
-                .text()
-
-            Jsoup.connect("https://nehai.by/ej/templates/parent_journal.php").cookieStore(cookiesStore).get()
-
-            println(result)
-        }
-
-        Thread.sleep(100000)
     }
 }

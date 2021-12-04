@@ -13,61 +13,51 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.ldc.kbp.R
-import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.item_lesson.view.*
-import kotlinx.coroutines.*
 
-class TimetableAdapter(val context: Context, timetable: Timetable) :
+class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int? = null) :
     RecyclerView.Adapter<TimetableAdapter.ViewHolder>() {
 
-    var timetable = timetable
+    var schedule = schedule
         set(value) {
             field = value
 
-            updateInfo()
+            notifyDataSetChanged()
         }
 
     var isReplacementShown = true
         set(value) {
             field = value
 
-            replacementLessons.forEachIndexed { i, lesson ->
-                if (lesson.subjects != standardLessons[i].subjects)
+            schedule.subjects.forEachIndexed { i, subjects ->
+                if (subjects?.isStay == false)
                     notifyItemChanged(i)
             }
         }
 
 
-    var shownWeek: Int? = null
+    var shownWeek: Int? = shownWeek
         set(value) {
+            if (value != field)
+                updateWeeks()
+
             field = value
-
-            updateInfo()
         }
 
-    private fun updateInfo() {
-        if (shownWeek == null) {
-            replacementLessons = timetable.weeks.flatMap { it.days }.flatMap { it.replacementLessons }
-            standardLessons = timetable.weeks.flatMap { it.days }.flatMap { it.standardLessons }
-        } else {
-            replacementLessons = timetable.weeks[shownWeek!!].days.flatMap { it.replacementLessons }
-            standardLessons = timetable.weeks[shownWeek!!].days.flatMap { it.standardLessons }
-        }
-
+    private fun updateWeeks() {
         notifyDataSetChanged()
     }
 
-    private var replacementLessons = timetable.weeks.flatMap { it.days }.flatMap { it.replacementLessons }
-    private var standardLessons = timetable.weeks.flatMap { it.days }.flatMap { it.standardLessons }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_lesson, parent, false)
         return ViewHolder(parent, view)
     }
 
-    private fun updateSubject(holder: ViewHolder, subject: Timetable.Subject) {
+    private fun updateSubject(holder: ViewHolder, subject: Schedule.Subject) {
         val cardColor =
-            if (subject.isReplaced) R.color.timetable_replacement_subject_bg else R.color.timetable_subject_bg
+            if (subject.type == Schedule.Type.ADDED) R.color.timetable_replacement_subject_bg else R.color.timetable_subject_bg
 
         holder.card.setCardBackgroundColor(context.getColor(cardColor))
 
@@ -77,64 +67,73 @@ class TimetableAdapter(val context: Context, timetable: Timetable) :
         holder.groupTv.text = subject.group
     }
 
-    private fun checkBounds(subjects: List<Timetable.Subject>, position: Int): Int = when {
+    private fun checkBounds(subjects: List<Schedule.Subject>, position: Int): Int = when {
         position >= subjects.size -> 0
         position < 0 -> subjects.lastIndex
         else -> position
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val lesson = (if (isReplacementShown) replacementLessons[position] else standardLessons[position])
-            val subjects = lesson.subjects
+        var currentDay = position / schedule.info.subjectsCount
+        if (shownWeek != null)
+            currentDay += shownWeek!! * schedule.info.daysCount
 
-            holder.layout.foreground =
-                if (lesson.state == Timetable.UpdateState.NOT_UPDATED) ColorDrawable(context.getColor(R.color.not_updated)) else null
+        val subject =
+            if (shownWeek == null) schedule.subjects[position] else schedule.subjects[position + shownWeek!! * schedule.info.daysCount * schedule.info.subjectsCount]
 
-            if (subjects == null) {
-                holder.layout.post {
-                    holder.card.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
+        holder.layout.foreground =
+            if (schedule.status[currentDay].status == Schedule.StatusInfo.NOT_UPDATED)
+                ColorDrawable(context.getColor(R.color.not_updated)) else null
 
-                    holder.expandBtn.isVisible = false
-
-                    holder.subjectTv.text = ""
-                    holder.teacherTv.text = ""
-                    holder.groupTv.text = ""
-                    holder.roomTv.text = ""
-                }
-                return@launch
-            }
-
-            var selectedSubject = 0
-            holder.layout.post {
-                if (subjects.size > 1) {
-                    holder.expandBtn.isVisible = true
-
-                    holder.expandBtn.setOnClickListener {
-                        onLessonExpand?.invoke(lesson)
-                    }
-
-                    holder.nextBtn.setOnClickListener {
-                        selectedSubject = checkBounds(subjects, selectedSubject + 1)
-                        updateSubject(holder, subjects[selectedSubject])
-                    }
-                    holder.prevBtn.setOnClickListener {
-                        selectedSubject = checkBounds(subjects, selectedSubject - 1)
-                        updateSubject(holder, subjects[selectedSubject])
-                    }
-                }
-
-                updateSubject(holder, subjects[0])
-            }
+        val subjects = subject?.subjects?.filter {
+            it.type == Schedule.Type.STAY
+                    || (isReplacementShown && it.type == Schedule.Type.ADDED)
+                    || (!isReplacementShown && it.type == Schedule.Type.REMOVED)
         }
+
+        if (subjects == null || subjects.isEmpty()) {
+            holder.layout.post {
+                holder.card.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
+
+                holder.expandBtn.isVisible = false
+
+                holder.subjectTv.text = ""
+                holder.teacherTv.text = ""
+                holder.groupTv.text = ""
+                holder.roomTv.text = ""
+            }
+            return
+        }
+
+        var selectedSubject = 0
+
+        holder.layout.post {
+            if (subject.subjects.size > 1) {
+                holder.expandBtn.isVisible = true
+
+                holder.expandBtn.setOnClickListener {
+                    onExpand?.invoke(subject)
+                }
+
+                holder.nextBtn.setOnClickListener {
+                    selectedSubject = checkBounds(subjects, selectedSubject + 1)
+                    updateSubject(holder, subjects[selectedSubject])
+                }
+                holder.prevBtn.setOnClickListener {
+                    selectedSubject = checkBounds(subjects, selectedSubject - 1)
+                    updateSubject(holder, subjects[selectedSubject])
+                }
+            }
+
+            updateSubject(holder, subject.subjects[0])
+        }
+
     }
 
-    override fun getItemCount(): Int {
-        val lessonsInWeek = timetable.daysInWeek * timetable.lessonsInDay
-        return if (shownWeek == null) timetable.weeksCount * lessonsInWeek else lessonsInWeek
-    }
+    override fun getItemCount(): Int =
+        if (shownWeek == null) schedule.subjects.size else schedule.subjects.size / schedule.info.weeksCount
 
-    var onLessonExpand: ((Timetable.Lesson) -> Unit)? = null
+    var onExpand: ((Schedule.Subjects) -> Unit)? = null
 
     class ViewHolder(val parent: View, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val layout: ConstraintLayout = itemView.item_subject_layout

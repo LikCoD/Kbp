@@ -50,7 +50,7 @@ class FragmentWorkingOff : Fragment() {
             ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
-                Groups.timetable.filter { it.category == "предмет" }.map { it.group }
+                Groups.timetable.filter { it.type == "subject" }.map { it.name }
             )
         )
 

@@ -5,12 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import com.ldc.kbp.models.Homeworks
 import com.ldc.kbp.R
-import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.dialog_homework_set.*
 
 class HomeworkSetDialog(
     context: Context,
-    private val subject: Timetable.Subject,
+    private val subject: Schedule.Subject,
     private val homework: Homeworks.Homework?,
     var onHomeworkAccept: (Homeworks.Homework) -> Unit = {}
 ) : Dialog(context, R.style.dialog_homework_set) {

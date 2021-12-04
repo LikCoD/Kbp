@@ -13,10 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.ldc.kbp.models.Config
-import com.ldc.kbp.models.Deprecates
-import com.ldc.kbp.models.Homeworks
-import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.models.*
 import com.ozcanalasalvar.library.view.datePicker.DatePicker
 import com.ozcanalasalvar.library.view.popup.DatePickerPopup
 import org.joda.time.DateTime
@@ -27,7 +24,7 @@ import kotlin.math.abs
 
 var config = Config()
 var homeworkList = Homeworks()
-lateinit var mainTimetable: Timetable
+lateinit var mainSchedule: Schedule
 
 fun dimen(resources: Resources, dimen: Int) = resources.getDimension(dimen).toInt()
 
@@ -64,7 +61,7 @@ fun LocalDate.getString() =
     "${normalizeDate(dayOfMonth)}.${normalizeDate(monthValue)}.${normalizeDate(year)}"
 
 fun getCurrentWeek(
-    weekCount: Int = mainTimetable.weeksCount,
+    weekCount: Int = mainSchedule.info.weeksCount - 1 ,
     date: LocalDate = LocalDate.now()
 ): Int {
     val nowDate = LocalDate.now()

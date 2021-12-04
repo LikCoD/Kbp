@@ -13,7 +13,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ldc.kbp.fragments.SapperFragment
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         runBlocking(Dispatchers.IO) {
             Groups.loadTimetable()
 
-            mainTimetable = Timetable.loadTimetable(config.timetableInfo)
+            mainSchedule = Schedule.load(config.scheduleInfo.type, config.scheduleInfo.name)
         }
 
         setContentView(R.layout.activity_main)

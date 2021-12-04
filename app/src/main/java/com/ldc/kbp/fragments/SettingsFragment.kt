@@ -9,13 +9,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.ldc.kbp.R
-import com.ldc.kbp.config
-import com.ldc.kbp.mainTimetable
+import com.ldc.kbp.*
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.models.Timetable
-import com.ldc.kbp.onStateChanged
+import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 import kotlin.concurrent.thread
@@ -45,15 +42,14 @@ class SettingsFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
-        val search = SearchFragment(groups_selector_fragment, Groups.timetable.map { it to it.category }, { it.group })
-        search.onSelected = { timetableInfo ->
-            thread { mainTimetable = Timetable.loadTimetable(timetableInfo) }
+        val search = SearchFragment(groups_selector_fragment, Groups.timetable.map { it to Groups.getRusType(it) }, { it.name })
+        search.onSelected = { info ->
+            thread { mainSchedule = Schedule.load(info.type, info.name) }
 
-            group_name_tv.text = timetableInfo.group
+            group_name_tv.text = info.name
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-            config.link = timetableInfo.link
-            config.timetableInfo = timetableInfo
+            config.scheduleInfo = info
 
             fun checkGroup(simpleInfo: Groups.SimpleInfo?) {
                 if (simpleInfo == null) {
@@ -70,24 +66,24 @@ class SettingsFragment : Fragment() {
                 }
             }
 
-            when (timetableInfo.category) {
-                "преподаватель" -> {
-                    val id = Groups.teachersJournal.find { it.name.lowercase() == timetableInfo.group.lowercase() }
+            when (info.type) {
+                "teacher" -> {
+                    val id = Groups.teachersJournal.find { it.name.lowercase() == info.name.lowercase() }
 
                     config.isStudent = false
                     config.group = ""
-                    config.surname = timetableInfo.group
+                    config.surname = info.name
 
                     name_layout.isVisible = false
                     password_tv.setText(R.string.password)
 
                     checkGroup(id)
                 }
-                "группа" -> {
-                    val id = Groups.groupsJournal.find { it.name.lowercase() == timetableInfo.group.lowercase() }
+                "group" -> {
+                    val id = Groups.groupsJournal.find { it.name.lowercase() == info.name.lowercase() }
 
                     config.isStudent = true
-                    config.group = timetableInfo.group
+                    config.group = info.name
 
                     name_layout.isVisible = true
                     password_tv.setText(R.string.birthday)
@@ -130,7 +126,7 @@ class SettingsFragment : Fragment() {
         multi_week_mode_switcher.isChecked = config.multiWeek
         sex_switcher.isChecked = config.isFemale
 
-        group_name_tv.text = mainTimetable.info?.group
+        group_name_tv.text = mainSchedule.info.name
 
         confirm_button.setOnClickListener {
             if (config.isStudent) config.surname = name_et.text.toString()

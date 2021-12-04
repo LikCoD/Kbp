@@ -7,12 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.ldc.kbp.R
-import com.ldc.kbp.getCurrentWeek
-import com.ldc.kbp.mainTimetable
+import com.ldc.kbp.*
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.models.Timetable
-import com.ldc.kbp.shortSnackbar
+import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.adapters.emptyroom.FloorSwitcherAdapter
 import kotlinx.android.synthetic.main.fragment_empty_room.view.*
 import org.threeten.bp.LocalDate
@@ -26,12 +23,15 @@ class EmptyRoomFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_empty_room, container, false).apply {
         val freeRooms = mutableListOf<String>()
-        val roomAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, freeRooms)
+        val roomAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, freeRooms)
         val floorAdapter = FloorSwitcherAdapter(requireContext(), 6)
 
-        val daysOfWeek = resources.getStringArray(R.array.days_of_weeks).dropLast(7 - mainTimetable.daysInWeek)
+        val daysOfWeek =
+            resources.getStringArray(R.array.days_of_weeks).dropLast(7 - mainSchedule.info.daysCount)
 
-        day_of_week_spinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, daysOfWeek)
+        day_of_week_spinner.adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, daysOfWeek)
         rooms_list.adapter = roomAdapter
         empty_room_floor_recycler.adapter = floorAdapter
 
@@ -39,26 +39,28 @@ class EmptyRoomFragment : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction().let { transaction ->
                 transaction.replace(
                     R.id.nav_host_fragment,
-                    TimetableFragment(Groups.timetable.find { it.group == v.getItemAtPosition(i).toString() }!!)
+                    TimetableFragment(Groups.timetable.find {
+                        it.name == v.getItemAtPosition(i).toString()
+                    }!!)
                 )
                 transaction.commit()
             }
         }
 
-        if (LocalDate.now().dayOfWeek.ordinal < mainTimetable.daysInWeek)
+        if (LocalDate.now().dayOfWeek.ordinal < mainSchedule.info.daysCount)
             day_of_week_spinner.setSelection(LocalDate.now().dayOfWeek.ordinal)
 
-        week_index_edit.setText((getCurrentWeek(mainTimetable.weeks.size) + 1).toString())
+        week_index_edit.setText((getCurrentWeek() + 1).toString())
 
         confirm_button.setOnClickListener { _ ->
             val lessonIndex = lesson_index_edit.text.toString().toIntOrNull() ?: 0
             val weekIndex = week_index_edit.text.toString().toIntOrNull() ?: 0
 
-            if (lessonIndex > mainTimetable.lessonsInDay || lessonIndex <= 0) {
+            if (lessonIndex > mainSchedule.info.subjectsCount || lessonIndex <= 0) {
                 shortSnackbar(lesson_index_edit, R.string.error_lesson)
                 return@setOnClickListener
             }
-            if (weekIndex > mainTimetable.weeks.size || weekIndex <= 0) {
+            if (weekIndex > mainSchedule.info.weeksCount || weekIndex <= 0) {
                 shortSnackbar(week_index_edit, R.string.error_week)
                 return@setOnClickListener
             }
@@ -66,22 +68,23 @@ class EmptyRoomFragment : Fragment() {
             info_layout.isVisible = false
             freeRooms.clear()
 
-            fun isRoomOnFloor(floor: Int, group: Groups.Timetable): Boolean =
-                if (floor > 0) group.group.count { it.isDigit() } == 3 && group.group[0].digitToInt() == floor
-                else group.group.count { it.isDigit() } == 2
+            fun isRoomOnFloor(floor: Int, group: Groups.Schedule): Boolean =
+                if (floor > 0) group.name.count { it.isDigit() } == 3 && group.name[0].digitToInt() == floor
+                else group.name.count { it.isDigit() } == 2
 
             val groups = Groups.timetable.filter { room ->
-                room.category == "аудитория" && (0..5).any {
+                room.type == "room" && (0..5).any {
                     isRoomOnFloor(it, room) && floorAdapter.switchers[it].isChecked
                 }
             }
 
             groups.forEach {
                 thread {
-                    val timetable = Timetable.loadTimetable(it)
-                    if (timetable.weeks[weekIndex - 1].days[day_of_week_spinner.selectedItemPosition].replacementLessons[lessonIndex - 1].subjects.isNullOrEmpty()) {
-                        rooms_list.post { roomAdapter.add(it.group) }
-                    }
+                    val schedule = Schedule.load(it.type, it.name)
+                    val subject =
+                        schedule.subjects[(weekIndex - 1 * schedule.info.daysCount + day_of_week_spinner.selectedItemPosition) * schedule.info.subjectsCount + lessonIndex - 1]
+                    if (subject == null || subject.subjects.all { it.type == Schedule.Type.REMOVED })
+                        rooms_list.post { roomAdapter.add(it.name) }
                 }
             }
         }

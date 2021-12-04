@@ -12,7 +12,7 @@ import android.view.View
 import androidx.core.app.ActivityCompat.startActivityForResult
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Homeworks
-import com.ldc.kbp.models.Timetable
+import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.adapters.Adapter
 import com.ldc.kbp.views.dialogs.HomeworkSetDialog
 import kotlinx.android.synthetic.main.item_homework_line.view.*
@@ -25,15 +25,18 @@ import kotlin.concurrent.thread
 class HomeworkLineAdapter(
     private val activity: Activity,
     private val homeworksDay: Homeworks.Day,
-    items: List<Timetable.Lesson?>? = null,
+    items: List<Schedule.Subjects?>,
     private val date: LocalDate,
     var imageAddListener: ((Int, Bitmap, File) -> Unit) = { _, _, _ -> },
-    var onHomeworkChangeListener: (Timetable.Subject, Homeworks.Homework) -> Unit = { _, _ -> }
-) : Adapter<Timetable.Lesson?>(activity, items?.filterNotNull(), R.layout.item_homework_line) {
-    override fun onBindViewHolder(view: View, item: Timetable.Lesson?, position: Int) {
-        val subject = item?.subjects?.get(0) ?: return
+    var onHomeworkChangeListener: (Schedule.Subject, Homeworks.Homework) -> Unit = { _, _ -> }
+) : Adapter<Schedule.Subjects?>(activity, items.filterNotNull(), R.layout.item_homework_line) {
 
-        view.item_homework_line_index.text = item.index.toString()
+    override fun onBindViewHolder(view: View, item: Schedule.Subjects?, position: Int) {
+        item ?: return
+
+        val subject = item.subjects[0]
+
+        view.item_homework_line_index.text = (item.rowIndex + 1).toString()
         view.item_homework_line_subject.text = subject.subject
         view.item_homework_line_text.text = homeworksDay.subjects[subject.subject]?.homework
 
@@ -48,7 +51,7 @@ class HomeworkLineAdapter(
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 val file = getFile(
                     Environment.DIRECTORY_PICTURES,
-                    "${item.index}. $date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}",
+                    "${item.rowIndex}. $date ${subject.subject} ${getFilesInMedia(item)?.size ?: 0}",
                     "jpg"
                 )
 
@@ -70,9 +73,9 @@ class HomeworkLineAdapter(
         }
     }
 
-    private fun getFilesInMedia(lesson: Timetable.Lesson): Array<File>? =
+    private fun getFilesInMedia(subjects: Schedule.Subjects): Array<File>? =
         getDir(Environment.DIRECTORY_PICTURES).listFiles { _, s ->
-            s.contains("${lesson.index}. $date ${lesson.subjects?.get(0)?.subject}")
+            s.contains("${subjects.rowIndex}. $date ${subjects.subjects[0].subject}")
         }
 
 

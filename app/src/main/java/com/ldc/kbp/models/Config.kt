@@ -4,8 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
-    var link: String = "?cat=group&id=66",
-    var timetableInfo: Groups.Timetable = Groups.Timetable("Т-095", "?cat=group&id=66", "группа"),
+    var scheduleInfo: Groups.Schedule = Groups.Schedule("Т-095", "group"),
     var isStudent: Boolean = true,
     var groupId: String = "",
     var password: String = "",
