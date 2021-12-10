@@ -34,6 +34,17 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
 
             <ImageView
+                    android:id="@+id/journal_laboratory_work_img"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_laboratory_work"
+                    android:contentDescription="@string/app_name"
+                    app:layout_constraintStart_toEndOf="@+id/journal_average_img"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
                     android:id="@+id/journal_add_date_img"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -41,7 +52,7 @@
                     android:src="@drawable/ic_calendar"
                     android:visibility="gone"
                     android:contentDescription="@string/app_name"
-                    app:layout_constraintStart_toEndOf="@+id/journal_average_img"
+                    app:layout_constraintStart_toEndOf="@+id/journal_laboratory_work_img"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
