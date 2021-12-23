@@ -1,8 +1,13 @@
 package com.ldc.kbp.models
 
 import com.ldc.kbp.HttpRequests
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 @Serializable
@@ -21,7 +26,14 @@ data class Journal(
     data class Subject(
         var name: String = "",
         var index: Int = 0,
-        var months: MutableList<Month>
+        var months: MutableList<Month>,
+        var laboratoryWorks: MutableList<LaboratoryWork>? = null
+    )
+
+    @Serializable
+    data class LaboratoryWork(
+        val date: List<String>,
+        val info: String
     )
 
     @Serializable
@@ -99,7 +111,19 @@ data class Journal(
         fun parseJournal(document: Document): Journal {
             val tables = document.select("table")
 
-            val subjectsNames = tables[0].select("td").drop(2).dropLast(1).map { it.text() }
+            val subjectsNames = tables[0].select("td").drop(2).dropLast(1).map {
+                val url = it.select("a").getOrNull(0)?.attr("href")?.substring(1)
+                if (url != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val info = Jsoup.connect("https://nehai.by/ej/templates/$url").get()
+                            .select("tbody")[1].select("tr")[2].select("span")
+                        println(info)
+                    }
+
+                }
+
+                it.text()
+            }
             val trs = tables[1].select("tr")
 
             return parse(subjectsNames, trs)

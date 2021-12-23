@@ -108,11 +108,11 @@ class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int?
         var selectedSubject = 0
 
         holder.layout.post {
-            if (subject.subjects.size > 1) {
+            if (subjects.size > 1) {
                 holder.expandBtn.isVisible = true
 
                 holder.expandBtn.setOnClickListener {
-                    onExpand?.invoke(subject)
+                    onExpand?.invoke(subjects)
                 }
 
                 holder.nextBtn.setOnClickListener {
@@ -125,7 +125,7 @@ class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int?
                 }
             }
 
-            updateSubject(holder, subject.subjects[0])
+            updateSubject(holder, subjects[0])
         }
 
     }
@@ -133,7 +133,7 @@ class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int?
     override fun getItemCount(): Int =
         if (shownWeek == null) schedule.subjects.size else schedule.subjects.size / schedule.info.weeksCount
 
-    var onExpand: ((Schedule.Subjects) -> Unit)? = null
+    var onExpand: ((List<Schedule.Subject>) -> Unit)? = null
 
     class ViewHolder(val parent: View, itemView: View) : RecyclerView.ViewHolder(itemView) {
         val layout: ConstraintLayout = itemView.item_subject_layout

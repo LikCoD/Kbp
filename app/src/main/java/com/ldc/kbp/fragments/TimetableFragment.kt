@@ -100,8 +100,8 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
             }
         }
 
-        timetableAdapter.onExpand = { subject ->
-            expandAdapter.items = subject.subjects
+        timetableAdapter.onExpand = { subjects ->
+            expandAdapter.items = subjects
 
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
