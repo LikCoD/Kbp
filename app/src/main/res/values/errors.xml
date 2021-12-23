@@ -4,4 +4,6 @@
     <string name="incorrect_data">Неверные данные</string>
     <string name="unknown_response">Неизвестная ошибка</string>
     <string name="no_answer">Нет ответа от сервера</string>
+
+    <string name="notification_schedule_update_error">Ошибка подключения уведомлений</string>
 </resources>

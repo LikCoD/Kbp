@@ -9,6 +9,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ldc.kbp.fragments.SapperFragment
 import com.ldc.kbp.models.Files
@@ -27,6 +29,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+        val isNotificationsConnected = preferences.getBoolean("isNotificationsConnected", true)
+
+        if (isNotificationsConnected) {
+            Firebase.messaging.subscribeToTopic("schedule_update").addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    shortToast(this, R.string.notification_schedule_update_error)
+                    return@addOnCompleteListener
+                }
+                val preferencesEditor = preferences.edit()
+                preferencesEditor.putBoolean("isNotificationsConnected", false)
+                preferencesEditor.apply()
+            }
+        }
 
         Files.getConfig(this)
         Files.getHomeworkList(this)

@@ -4,6 +4,7 @@ plugins {
     kotlin("android.extensions")
     id("kotlinx-serialization")
     id("kotlin-android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -40,6 +41,11 @@ android {
 }
 
 dependencies {
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:29.0.3"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+
     implementation("com.jakewharton.threetenabp:threetenabp:1.0.3")
     implementation("joda-time:joda-time:2.10.12")
     implementation("com.github.OKatrych:RightSheetBehavior:1.0")
