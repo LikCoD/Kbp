@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Config(
     var scheduleInfo: Groups.Schedule = Groups.Schedule("Т-095", "group"),
     var isStudent: Boolean = true,
-    var groupId: String = "",
+    var groupId: String = "435",
     var password: String = "",
     var surname: String = "",
     var multiWeek: Boolean = true,
