@@ -82,7 +82,7 @@ class EmptyRoomFragment : Fragment() {
                 thread {
                     val schedule = Schedule.load(it.type, it.name)
                     val subject =
-                        schedule.subjects[(weekIndex - 1 * schedule.info.daysCount + day_of_week_spinner.selectedItemPosition) * schedule.info.subjectsCount + lessonIndex - 1]
+                        schedule.subjects[((weekIndex - 1) * schedule.info.daysCount + day_of_week_spinner.selectedItemPosition) * schedule.info.subjectsCount + lessonIndex - 1]
                     if (subject == null || subject.subjects.all { it.type == Schedule.Type.REMOVED })
                         rooms_list.post { roomAdapter.add(it.name) }
                 }
