@@ -60,6 +60,6 @@ data class Schedule(
 
     companion object {
         fun load(type: String, name: String): Schedule =
-            Json.decodeFromStream(URL("https://kbp-server.herokuapp.com/?type=$type&name=$name&educationPlaceId=0").openStream())
+            Json.decodeFromStream(URL("https://college-helper.herokuapp.com/schedule?type=$type&name=$name&educationPlaceId=0").openStream())
     }
 }
