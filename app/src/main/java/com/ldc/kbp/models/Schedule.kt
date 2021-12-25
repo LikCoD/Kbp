@@ -42,7 +42,9 @@ data class Schedule(
         val daysCount: Int,
         val subjectsCount: Int,
         val type: String,
-        val name: String
+        val name: String,
+        val educationPlaceId: Int,
+        val educationPlaceName: String
     )
 
     @Serializable
