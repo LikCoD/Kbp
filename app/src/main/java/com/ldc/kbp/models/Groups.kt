@@ -10,16 +10,13 @@ import java.net.URL
 
 object Groups {
     @Serializable
-    data class Timetable(val group: String, val link: String, val category: String)
-
-    @Serializable
     data class Schedule(val name: String, val type: String)
 
     @Serializable
     data class SimpleInfo(val name: String, val id: String)
 
     fun loadTimetable() {
-        timetable = Json.decodeFromStream(URL("https://kbp-server.herokuapp.com/types?educationPlaceId=0").openStream())
+        timetable = Json.decodeFromStream(URL("https://college-helper.herokuapp.com/schedule/types?educationPlaceId=0").openStream())
     }
 
     fun loadGroupsFromJournal() {
