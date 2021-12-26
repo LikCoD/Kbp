@@ -1,12 +1,15 @@
 package com.ldc.kbp.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Deprecates
@@ -19,6 +22,7 @@ import com.ldc.kbp.views.adapters.timetable.TimetableAdapter
 import com.ldc.kbp.views.adapters.timetable.TimetableExpandAdapter
 import com.ldc.kbp.views.adapters.timetable.WeekIndexAdapter
 import com.ldc.kbp.views.fragments.SearchFragment
+import com.ldc.kbp.views.itemdecoritions.BottomOffsetDecoration
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_timetable.*
@@ -28,6 +32,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import kotlin.properties.Delegates
+
 
 class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() {
     private lateinit var root: View
@@ -52,31 +57,58 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
         val bottomSheetBehavior = BottomSheetBehavior.from(timetable_bottom_sheet)
 
         val searchFragment =
-            SearchFragment(groups_selector_fragment, Groups.timetable.map { it to Groups.getRusType(it) }, { it.name }) {
+            SearchFragment(
+                groups_selector_fragment,
+                Groups.timetable.map { it to Groups.getRusType(it) },
+                { it.name }) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
                 update(it)
             }
 
-        timetableAdapter = TimetableAdapter(requireContext(), mainSchedule, if (config.multiWeek) null else getCurrentWeek())
-        weekSelectorAdapter = RoundButtonsAdapter(requireContext(), true, firstSelectionIndex = getCurrentWeek())
+        timetableAdapter = TimetableAdapter(
+            requireContext(),
+            mainSchedule,
+            if (config.multiWeek) null else getCurrentWeek()
+        )
+        weekSelectorAdapter =
+            RoundButtonsAdapter(requireContext(), true, firstSelectionIndex = getCurrentWeek())
 
         val expandAdapter = TimetableExpandAdapter(requireContext())
         weekIndexAdapter =
-            WeekIndexAdapter(requireContext(), mainSchedule.info.weeksCount, mainSchedule.info.daysCount)
-        lessonIndexAdapter = LessonIndexAdapter(requireContext(), mainSchedule.info.subjectsCount)
+            WeekIndexAdapter(
+                requireContext(),
+                mainSchedule.info.weeksCount,
+                mainSchedule.info.daysCount
+            )
+        lessonIndexAdapter = LessonIndexAdapter(
+            requireContext(),
+            mainSchedule.info.subjectsCount,
+            0
+        )
+        val bottomOffsetDecoration = BottomOffsetDecoration(resources.getDimension(R.dimen.bottomSpace).toInt())
+        lessons_index_scroll.addItemDecoration(bottomOffsetDecoration)
 
         week_selector_recycler.adapter = weekSelectorAdapter
         week_selector_recycler.addItemDecoration(SpaceDecoration(20))
         subject_expand_recycler.adapter = expandAdapter
 
-        days_of_week_scroll.setup(weekIndexAdapter)
-        timetable_scroll.setup(timetableAdapter, mainSchedule.info.subjectsCount)
-        lessons_index_scroll.setup(lessonIndexAdapter)
+        update(info)
+
+        timetable_scroll.recyclerView.adapter = timetableAdapter
+        timetable_scroll.scrollContainers = listOf(
+            PinnedScrollView.Container(days_of_week_scroll, LinearLayout.HORIZONTAL, false),
+            PinnedScrollView.Container(lessons_index_scroll, LinearLayout.VERTICAL, false)
+        )
+
+        lessons_index_scroll.adapter = lessonIndexAdapter
+        lessons_index_scroll.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        days_of_week_scroll.adapter = weekIndexAdapter
+        days_of_week_scroll.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
         timetable_multi_week.isSelected = config.multiWeek
-
-        update(info)
 
         itemWidth = dimen(resources, R.dimen.item_subject_width) +
                 dimen(resources, R.dimen.item_subject_margin) * 2
@@ -110,7 +142,7 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
 
         weekSelectorAdapter.onItemClickListener = { pos, _ ->
             if (timetable_multi_week.isSelected)
-                timetable_scroll.smoothScrollTo(itemWidth * schedule.info.daysCount * pos, 0)
+                timetable_scroll.scrollToX(itemWidth * schedule.info.daysCount * pos)
             else {
                 timetableAdapter.shownWeek = pos
                 weekIndexAdapter.shownWeek = pos
@@ -143,19 +175,14 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
             }
         }
 
-        timetable_scroll.setOnScrollChangeListener { _, x, _, _, _ ->
-            val selectedWeek = x / itemWidth / schedule.info.daysCount
+        timetable_scroll.horizontalScrollChangeListener = { x ->
+            val selectedWeek = x / itemWidth / mainSchedule.info.daysCount
             if (selectedWeek != weekSelectorAdapter.selectionIndex && timetable_multi_week.isSelected) {
                 weekSelectorAdapter.selectionIndex = selectedWeek
 
                 week_selector_recycler.scrollToPosition(selectedWeek)
             }
         }
-
-        timetable_scroll.containers = listOf(
-            PinnedScrollView.Container(days_of_week_scroll, LinearLayout.HORIZONTAL, false),
-            PinnedScrollView.Container(lessons_index_scroll, LinearLayout.VERTICAL, false)
-        )
     }
 
     private fun update(i: Groups.Schedule? = null) {
@@ -178,7 +205,7 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
                     weekSelectorAdapter.items = (1..schedule.info.weeksCount).map { it.toString() }
 
                     var sX = LocalDate.now().dayOfWeek.ordinal
-                    val sY = schedule.subjects.indexOfFirst { it != null  }
+                    val sY = schedule.subjects.indexOfFirst { it != null }
 
                     if (timetable_multi_week.isSelected) {
                         sX += schedule.info.daysCount * schedule.info.subjectsCount * getCurrentWeek()
@@ -187,7 +214,8 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
                         timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
                     }
 
-                    root.timetable_scroll.smoothScrollTo(sX * itemWidth, sY * itemHeight)
+                    root.timetable_scroll.scrollBy(sX * itemWidth, sY * itemHeight)
+                    root.timetable_scroll.scrollToX(sX * itemWidth)
 
                     root.loading_tv.isVisible = false
                 }

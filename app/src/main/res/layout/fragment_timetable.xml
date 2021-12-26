@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                     xmlns:tools="http://schemas.android.com/tools"
-                                                     android:layout_width="match_parent"
-                                                     android:layout_height="match_parent"
-                                                     android:background="@color/background">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,21 +23,21 @@
                     android:layout_width="@dimen/lesson_index_width"
                     android:layout_height="@dimen/lesson_index_width"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_bell"/>
+                    android:src="@drawable/ic_bell" />
 
             <ImageView
                     android:id="@+id/search_image"
                     android:layout_width="@dimen/lesson_index_width"
                     android:layout_height="@dimen/lesson_index_width"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_search"/>
+                    android:src="@drawable/ic_search" />
 
             <ImageView
                     android:id="@+id/update_image"
                     android:layout_width="@dimen/lesson_index_width"
                     android:layout_height="@dimen/lesson_index_width"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_refresh"/>
+                    android:src="@drawable/ic_refresh" />
         </LinearLayout>
 
 
@@ -51,18 +51,18 @@
                 android:text="@string/hide_replacement"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.ldc.kbp.views.NoScrollableRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/days_of_week_scroll"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
                 app:layout_constraintStart_toEndOf="@+id/lessons_index_scroll"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/change_replacement_mode_tv"/>
+                app:layout_constraintTop_toBottomOf="@+id/change_replacement_mode_tv" />
 
-        <com.ldc.kbp.views.NoScrollableRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lessons_index_scroll"
                 android:scrollbars="none"
                 android:layout_width="wrap_content"
@@ -71,30 +71,19 @@
                 app:recyclerOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/days_of_week_scroll">
+                app:layout_constraintTop_toBottomOf="@+id/days_of_week_scroll" />
 
-            <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"/>
-
-        </com.ldc.kbp.views.NoScrollableRecyclerView>
-
-        <com.ldc.kbp.views.NoScrollableRecyclerView
+        <com.ldc.kbp.views.GridRecyclerView
                 android:id="@+id/timetable_scroll"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layoutOrientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/lessons_index_scroll"
-                app:layout_constraintTop_toBottomOf="@+id/days_of_week_scroll">
-
-
-                <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"/>
-
-        </com.ldc.kbp.views.NoScrollableRecyclerView>
+                app:layout_constraintTop_toBottomOf="@+id/days_of_week_scroll"
+                app:orientation="horizontal"
+                app:spaceAfter="@dimen/bottomSpace"
+                app:spanCount="7"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -114,7 +103,7 @@
                 android:layout_marginVertical="@dimen/bottom_bar_line_margin"
                 android:layout_width="75dp"
                 android:layout_height="5dp"
-                android:background="@drawable/ic_bottom_line"/>
+                android:background="@drawable/ic_bottom_line" />
 
         <TextView
                 android:id="@+id/loading_tv"
@@ -122,7 +111,7 @@
                 android:layout_height="@dimen/bottom_bar_loading"
                 android:text="@string/loading"
                 android:textColor="@color/lime"
-                android:textSize="28sp"/>
+                android:textSize="28sp" />
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -135,7 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    android:text="@string/week"/>
+                    android:text="@string/week" />
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/week_selector_recycler"
@@ -144,7 +133,7 @@
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="2"
-                    tools:listitem="@layout/item_round_button"/>
+                    tools:listitem="@layout/item_round_button" />
 
 
             <com.ldc.kbp.views.CheckButton
@@ -155,7 +144,7 @@
                     android:background="@drawable/test_button"
                     android:gravity="center"
                     android:text="@string/multi_week_button"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black" />
 
         </LinearLayout>
 
@@ -169,13 +158,13 @@
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="4"
-                tools:listitem="@layout/item_lesson"/>
+                tools:listitem="@layout/item_lesson" />
 
         <include
                 android:id="@+id/groups_selector_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_bar_group_selection_height"
-                layout="@layout/fragment_search"/>
+                layout="@layout/fragment_search" />
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

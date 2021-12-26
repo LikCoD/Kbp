@@ -22,4 +22,14 @@
         </attr>
         <attr name="reverseLayout" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="GridRecyclerView">
+        <attr name="orientation">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+        <attr name="spaceAfter" format="dimension"/>
+        <attr name="reverse" format="boolean"/>
+        <attr name="spanCount" format="integer"/>
+    </declare-styleable>
 </resources>

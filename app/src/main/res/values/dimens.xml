@@ -37,4 +37,6 @@
     <dimen name="journal_subject_width">125dp</dimen>
     <dimen name="journal_cell_width">50dp</dimen>
     <dimen name="journal_cell_height">50dp</dimen>
+
+    <dimen name="bottomSpace">60dp</dimen>
 </resources>
