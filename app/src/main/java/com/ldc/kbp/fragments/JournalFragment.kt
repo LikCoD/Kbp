@@ -1,7 +1,6 @@
 package com.ldc.kbp.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,6 @@ import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.fragment_journal.view.*
 import kotlinx.android.synthetic.main.fragment_journal.view.confirm_button
-import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -217,7 +215,7 @@ class JournalFragment : Fragment() {
         isStudent: Boolean = true
     ) = MainScope().launch {
         journal = if (isStudent) Journal.parseJournal(document)
-        else Journal.parseTeacherJournal(document)
+        else Journal.parseTeacherJournal(document, document)
 
         dateAdapter = JournalDateAdapter(requireContext(), journal.dates)
 
@@ -330,9 +328,16 @@ class JournalFragment : Fragment() {
             behavior.state = BottomSheetBehavior.STATE_HIDDEN
 
             thread {
-                val html = httpRequests.post(
+                val mainTableHtml = httpRequests.post(
                     "https://nehai.by/ej/ajax.php",
                     "action" to "show_table",
+                    "subject_id" to subject.subjectId,
+                    "group_id" to subject.groupId
+                )
+
+                val laboratoryTableHtml = httpRequests.post(
+                    "https://nehai.by/ej/ajax.php",
+                    "action" to "show_labs",
                     "subject_id" to subject.subjectId,
                     "group_id" to subject.groupId
                 )
@@ -341,7 +346,9 @@ class JournalFragment : Fragment() {
                     root.journal_subjects_selector_recycler.isVisible = false
                     root.journal_add_mark_recycler.isVisible = true
 
-                    update(Jsoup.parse(html), behavior, false)
+                    Journal.parseTeacherJournal(Jsoup.parse(mainTableHtml), Jsoup.parse(laboratoryTableHtml))
+
+                    update(Jsoup.parse(mainTableHtml), behavior, false)
                 }
             }
         }

@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 @Serializable
@@ -129,25 +128,74 @@ data class Journal(
             return parse(subjectsNames, trs)
         }
 
-        fun parseTeacherJournal(document: Document): Journal {
-            val tables = document.select("table")
+        fun parseTeacherJournal(marksTables: Document, laboratoryTables: Document): Journal {
+            val laboratoryTable = laboratoryTables.select("table")[1]
 
-            val surnames = tables[0].getElementsByClass("pupilName").mapIndexed { i, el -> "${i + 1} ${el.text()}" }
-
-
+            val tables = marksTables.select("table")
+            val names = tables[0].getElementsByClass("pupilName").mapIndexed { i, el -> "${i + 1} ${el.text()}" }
             val trs = tables.getOrNull(1)?.select("tr")
 
             if (trs == null) {
                 val subjects = mutableListOf<Subject>()
 
-                surnames.forEachIndexed { index, it ->
+                names.forEachIndexed { index, it ->
                     subjects.add(Subject(it, index, mutableListOf()))
                 }
 
                 return Journal(subjects, listOf())
             }
 
-            return parse(surnames, trs)
+            val datesNumbers = trs[1].select("td")
+            var currentNumber = 0
+
+            val laboratoryLine = laboratoryTable.select("tr").drop(2).dropLast(1)
+            val laboratoryDatesNumbers = laboratoryTable.select("tr")[1].select("td")
+                .map { it.text() }
+            var laboratoryIndex = 0
+
+            val dates: MutableList<Date> = mutableListOf()
+            val subjectsLine = trs.drop(2).dropLast(1)
+            val subjects = names.mapIndexed { i, el -> Subject(el, i, mutableListOf()) }
+            trs[0].select("td").dropLast(1).mapIndexed { monthIndex, month ->
+                val daysInMonth = month.attr("colspan").toInt()
+                val date = Date(
+                    if (monthIndex + 9 > 12) monthIndex - 3 else monthIndex + 9,
+                    List(daysInMonth) { datesNumbers[it + currentNumber].text() }
+                )
+
+                List(subjects.size) { i ->
+                    val cells = List(daysInMonth) { index ->
+                        var pairId = ""
+                        var studentId = ""
+
+                        val marks = subjectsLine[i].select("td")[index + currentNumber].select("div").flatMap { div ->
+                            pairId = div.attr("pair-id")
+                            studentId = div.attr("st-id")
+                            div.select("span").map {
+                                Mark(
+                                    it.text(),
+                                    it.attr("data-mark-id")
+                                )
+                            }
+                        }.filter { it.mark != "" }.toMutableList()
+
+                        if (date.dates[index] == laboratoryDatesNumbers.getOrNull(laboratoryIndex)){
+                            laboratoryIndex++
+                        }
+
+                        //date[index] -> current date number
+
+                        Cell(index + currentNumber, pairId, studentId, marks)
+                    }
+
+                    subjects[i].months.add(Month(cells))
+                }
+
+                dates.add(date)
+                currentNumber += daysInMonth
+            }
+
+            return Journal(subjects, dates)
         }
     }
 }
