@@ -1,12 +1,15 @@
 package com.ldc.kbp.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Journal
@@ -17,6 +20,8 @@ import com.ldc.kbp.views.adapters.journal.*
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.fragment_journal.view.*
+import kotlinx.android.synthetic.main.fragment_journal.view.confirm_button
+import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -88,7 +93,7 @@ class JournalFragment : Fragment() {
 
     private lateinit var journal: Journal
 
-    private lateinit var weekSelectorAdapter: RoundButtonsAdapter
+    private lateinit var monthSelectorAdapter: RoundButtonsAdapter
     private lateinit var dateAdapter: JournalDateAdapter
     private lateinit var cellsAdapter: JournalCellsAdapter
 
@@ -113,16 +118,29 @@ class JournalFragment : Fragment() {
             date_tv.text = date.toString()
         }
 
-        weekSelectorAdapter = RoundButtonsAdapter(requireContext())
-        month_selector_recycler.adapter = weekSelectorAdapter
+        journal_multi_month.isSelected = config.multiMonth
+
+        monthSelectorAdapter = RoundButtonsAdapter(requireContext())
+        month_selector_recycler.adapter = monthSelectorAdapter
         month_selector_recycler.addItemDecoration(SpaceDecoration(20))
 
-        weekSelectorAdapter.onItemClickListener = { i, month ->
-            dateAdapter.items = journal.dates[i].dates
+        monthSelectorAdapter.onItemClickListener = { i, month ->
+            if (journal_multi_month.isSelected) {
+                if (i == 0) {
+                    journal_marks_scroll.recyclerView.scrollToPosition(0)
+                    journal_date_scroll.scrollToPosition(0)
+                } else {
+                    val scrollDates = journal.dates.subList(0, i).sumOf { it.dates.size }
+                    journal_marks_scroll.recyclerView.scrollToPosition(scrollDates * journal.subjects.size)
+                    journal_date_scroll.scrollToPosition(scrollDates)
+                }
+            } else {
+                cellsAdapter.currentMonth = i
+                dateAdapter.currentMonth = i
+            }
 
-            cellsAdapter.currentMonth = i
-
-            root.month_text.text = requireContext().resources.getStringArray(R.array.months)[month.toInt() - 1]
+            root.month_text.text =
+                requireContext().resources.getStringArray(R.array.months)[month.toInt() - 1]
         }
 
         confirm_button.setOnClickListener {
@@ -167,6 +185,16 @@ class JournalFragment : Fragment() {
             }
         }
 
+        journal_multi_month.onSelectionChanged = {
+            if (it) {
+                cellsAdapter.currentMonth = monthSelectorAdapter.selectionIndex
+                dateAdapter.currentMonth = monthSelectorAdapter.selectionIndex
+            } else {
+                cellsAdapter.currentMonth = null
+                dateAdapter.currentMonth = null
+            }
+        }
+
         journal_average_img.setOnClickListener {
             journal_average_scroll.isVisible = !journal_average_scroll.isVisible
         }
@@ -175,7 +203,7 @@ class JournalFragment : Fragment() {
             datePickerPopup.show()
         }
 
-        journal_marks_scroll.containers = listOf(
+        journal_marks_scroll.scrollContainers = listOf(
             PinnedScrollView.Container(journal_date_scroll, LinearLayout.HORIZONTAL, false),
             PinnedScrollView.Container(journal_subjects_name_scroll, LinearLayout.VERTICAL, false),
             PinnedScrollView.Container(journal_average_scroll, LinearLayout.VERTICAL, false)
@@ -183,114 +211,141 @@ class JournalFragment : Fragment() {
     }
 
 
-    private fun update(document: Document, behavior: BottomSheetBehavior<*>, isStudent: Boolean = true) =
-        MainScope().launch {
-            journal = if (isStudent) Journal.parseJournal(document) else Journal.parseTeacherJournal(document)
+    private fun update(
+        document: Document,
+        behavior: BottomSheetBehavior<*>,
+        isStudent: Boolean = true
+    ) = MainScope().launch {
+        journal = if (isStudent) Journal.parseJournal(document)
+        else Journal.parseTeacherJournal(document)
 
-            root.journal_subjects_name_scroll.setup(
-                JournalSubjectsNameAdapter(
-                    requireContext(),
-                    journal.subjects.map { it.name })
-            )
+        dateAdapter = JournalDateAdapter(requireContext(), journal.dates)
 
+        root.journal_date_scroll.adapter = dateAdapter
+        root.journal_date_scroll.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+        root.journal_average_scroll.adapter =
+            JournalAverageAdapter(requireContext(), journal.subjects)
+        root.journal_average_scroll.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        root.journal_subjects_name_scroll.adapter =
+            JournalSubjectsNameAdapter(requireContext(), journal.subjects.map { it.name })
+        root.journal_subjects_name_scroll.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+        monthSelectorAdapter.items = journal.dates.map { it.month.toString() }
+        monthSelectorAdapter.selectionIndex = monthSelectorAdapter.items!!.lastIndex
+
+        var selectedMark: Journal.Mark? = null
+
+        val viewMarkAdapter = JournalViewMarkAdapter(requireContext()) { selectedMark = it }
+
+        root.journal_view_marks_recycler.adapter = viewMarkAdapter
+
+        if (!isStudent) root.journal_add_date_img.isVisible = !config.isStudent
+
+        cellsAdapter = JournalCellsAdapter(
+            requireContext(),
+            journal,
+            if (config.multiMonth) null else journal.dates.size - 1
+        )
+        cellsAdapter.onVisibleMonthChanged = { index, month ->
             root.month_text.text =
-                requireContext().resources.getStringArray(R.array.months)[journal.dates.last().month - 1]
+                requireContext().resources.getStringArray(R.array.months)[month - 1]
 
-            dateAdapter = JournalDateAdapter(requireContext(), journal.dates.last())
+            monthSelectorAdapter.selectionIndex = index
+        }
+        cellsAdapter.onClick = onClick@{ cell, pos ->
+            viewMarkAdapter.items = cell.marks
 
-            root.journal_date_scroll.setup(dateAdapter)
-            root.journal_average_scroll.setup(JournalAverageAdapter(requireContext(), journal.subjects))
-
-            weekSelectorAdapter.items = journal.dates.map { it.month.toString() }
-            weekSelectorAdapter.selectionIndex = weekSelectorAdapter.items!!.lastIndex
-
-            var selectedMark: Journal.Mark? = null
-
-            val viewMarkAdapter = JournalViewMarkAdapter(requireContext()) { selectedMark = it }
-
-            root.journal_view_marks_recycler.adapter = viewMarkAdapter
-
-            if (!isStudent) root.journal_add_date_img.isVisible = !config.isStudent
-
-            cellsAdapter = JournalCellsAdapter(requireContext(), journal)
-            cellsAdapter.onClick = onClick@{ cell, pos ->
-                viewMarkAdapter.items = cell.marks
-
-                if (isStudent) {
-                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    return@onClick
-                }
-
-                val marks = mutableListOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "X", "н")
-
-                root.journal_add_mark_recycler.adapter =
-                    JournalAddMarksAdapter(requireContext(), marks) { action, _ ->
-                        MainScope().launch(Dispatchers.IO) {
-                            if (action == "X") {
-                                when {
-                                    selectedMark == null -> cell.marks.removeIf { it.remove(httpRequests, cell) == "0" }
-                                    selectedMark!!.remove(httpRequests, cell) == "0" -> cell.marks.remove(selectedMark)
-                                }
-                            } else {
-                                val markId = httpRequests.post(
-                                    "https://nehai.by/ej/ajax.php",
-                                    "action" to "set_mark",
-                                    "student_id" to cell.studentId,
-                                    "pair_id" to cell.pairId,
-                                    "mark_id" to "${selectedMark?.markId ?: 0}",
-                                    "value" to action
-                                ).lines().last()
-
-                                if (selectedMark != null)
-                                    cell.marks.remove(selectedMark)
-
-                                cell.marks.add(Journal.Mark(action, markId))
-                            }
-
-                            launch(Dispatchers.Main) {
-                                cellsAdapter.notifyItemChanged(pos)
-
-                                viewMarkAdapter.items = cell.marks
-                            }
-                        }
-                    }
-
+            if (isStudent) {
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                return@onClick
             }
 
-            root.journal_marks_recycler.adapter = cellsAdapter
+            val marks =
+                mutableListOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "X", "н")
+
+            root.journal_add_mark_recycler.adapter =
+                JournalAddMarksAdapter(requireContext(), marks) { action, _ ->
+                    MainScope().launch(Dispatchers.IO) {
+                        if (action == "X") {
+                            when {
+                                selectedMark == null -> cell.marks.removeIf {
+                                    it.remove(
+                                        httpRequests,
+                                        cell
+                                    ) == "0"
+                                }
+                                selectedMark!!.remove(
+                                    httpRequests,
+                                    cell
+                                ) == "0" -> cell.marks.remove(selectedMark)
+                            }
+                        } else {
+                            val markId = httpRequests.post(
+                                "https://nehai.by/ej/ajax.php",
+                                "action" to "set_mark",
+                                "student_id" to cell.studentId,
+                                "pair_id" to cell.pairId,
+                                "mark_id" to "${selectedMark?.markId ?: 0}",
+                                "value" to action
+                            ).lines().last()
+
+                            if (selectedMark != null)
+                                cell.marks.remove(selectedMark)
+
+                            cell.marks.add(Journal.Mark(action, markId))
+                        }
+
+                        launch(Dispatchers.Main) {
+                            cellsAdapter.notifyItemChanged(pos)
+
+                            viewMarkAdapter.items = cell.marks
+                        }
+                    }
+                }
+
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
+
+        root.journal_marks_scroll.spanCount = journal.subjects.size
+        root.journal_marks_scroll.recyclerView.adapter = cellsAdapter
+        root.journal_marks_scroll.recyclerView.scrollToPosition(cellsAdapter.items.size - 1)
+        root.journal_date_scroll.scrollToPosition(dateAdapter.items.size - 1)
+    }
 
     private fun updateSelector(
         selector: JournalTeacherSelector, behavior: BottomSheetBehavior<*>
     ) = MainScope().launch {
-            JournalSubjectsNameAdapter(requireContext(), selector.groups.keys.map { it.name })
+        JournalSubjectsNameAdapter(requireContext(), selector.groups.keys.map { it.name })
 
-            val selectorAdapter = JournalSubjectsSelectorAdapter(requireContext(), selector)
+        val selectorAdapter = JournalSubjectsSelectorAdapter(requireContext(), selector)
 
-            selectorAdapter.onClick = { _, subject ->
-                info = subject
+        selectorAdapter.onClick = { _, subject ->
+            info = subject
 
-                behavior.isHideable = true
-                behavior.state = BottomSheetBehavior.STATE_HIDDEN
+            behavior.isHideable = true
+            behavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-                thread {
-                    val html = httpRequests.post(
-                        "https://nehai.by/ej/ajax.php",
-                        "action" to "show_table",
-                        "subject_id" to subject.subjectId,
-                        "group_id" to subject.groupId
-                    )
+            thread {
+                val html = httpRequests.post(
+                    "https://nehai.by/ej/ajax.php",
+                    "action" to "show_table",
+                    "subject_id" to subject.subjectId,
+                    "group_id" to subject.groupId
+                )
 
-                    root.journal_average_scroll.post {
-                        root.journal_subjects_selector_recycler.isVisible = false
-                        root.journal_add_mark_recycler.isVisible = true
+                root.journal_average_scroll.post {
+                    root.journal_subjects_selector_recycler.isVisible = false
+                    root.journal_add_mark_recycler.isVisible = true
 
-                        update(Jsoup.parse(html), behavior, false)
-                    }
+                    update(Jsoup.parse(html), behavior, false)
                 }
             }
-
-            root.journal_subjects_selector_recycler.adapter = selectorAdapter
         }
+
+        root.journal_subjects_selector_recycler.adapter = selectorAdapter
+    }
 }

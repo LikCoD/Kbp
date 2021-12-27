@@ -86,8 +86,10 @@
     <string name="password">Пароль</string>
     <string name="workdays">Будние</string>
     <string name="multi_week_mode">Multiweek</string>
+    <string name="multi_month_mode">Multimonth</string>
     <string name="multi_week_button">M</string>
     <string name="menu_empty_room">Пустой кабинет</string>
+    <string name="floor0">Этаж -1</string>
     <string name="floor1">Этаж 1</string>
     <string name="floor2">Этаж 2</string>
     <string name="floor3">Этаж 3</string>
@@ -95,7 +97,6 @@
     <string name="floor5">Этаж 5</string>
     <string name="lesson_index">№ Пары</string>
     <string name="day_of_week">День недели</string>
-    <string name="floor0">Этаж -1</string>
     <string name="week_number">№ Недели</string>
     <string name="error_lesson">Введите № пары правильно</string>
     <string name="error_week">Введите № недели правильно</string>

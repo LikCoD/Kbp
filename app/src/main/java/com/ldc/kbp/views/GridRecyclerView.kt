@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Space
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ldc.kbp.R
 import com.ldc.kbp.disableActions
@@ -23,8 +24,12 @@ class GridRecyclerView @JvmOverloads constructor(
         attrsArray.getInt(R.styleable.GridRecyclerView_orientation, 0)
     private val reverseLayout =
         attrsArray.getBoolean(R.styleable.GridRecyclerView_reverse, false)
-    private val spanCount =
+    var spanCount =
         attrsArray.getInt(R.styleable.GridRecyclerView_spanCount, 1)
+    set(value) {
+        (recyclerView.layoutManager as GridLayoutManager).spanCount = value
+        field = value
+    }
     private val spaceAfter =
         attrsArray.getDimension(R.styleable.GridRecyclerView_spaceAfter, 0F)
 

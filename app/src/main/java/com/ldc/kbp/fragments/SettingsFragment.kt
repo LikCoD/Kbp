@@ -120,10 +120,16 @@ class SettingsFragment : Fragment() {
             Files.saveConfig(requireContext())
         }
 
+        multi_month_mode_switcher.setOnCheckedChangeListener { _, isChecked ->
+            config.multiMonth = isChecked
+            Files.saveConfig(requireContext())
+        }
+
         name_et.setText(config.surname)
         password_et.setText(config.password)
         department_auto.setText(config.department)
         multi_week_mode_switcher.isChecked = config.multiWeek
+        multi_month_mode_switcher.isChecked = config.multiMonth
         sex_switcher.isChecked = config.isFemale
 
         group_name_tv.text = mainSchedule.info.name

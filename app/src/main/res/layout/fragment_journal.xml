@@ -61,13 +61,13 @@
         <TextView
                 style="@style/head_text"
                 android:id="@+id/month_text"
+                android:layout_margin="16dp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll"
                 app:layout_constraintStart_toEndOf="@+id/journal_subjects_name_scroll"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
-        <com.ldc.kbp.views.NoScrollableRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:layout_marginTop="8dp"
                 android:id="@+id/journal_date_scroll"
                 android:layout_marginStart="8dp"
@@ -78,7 +78,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/month_text"
                 android:scrollbars="none" />
 
-        <com.ldc.kbp.views.NoScrollableRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:scrollbars="none"
                 android:layout_marginStart="8dp"
                 android:id="@+id/journal_subjects_name_scroll"
@@ -89,24 +89,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll" />
 
-        <com.ldc.kbp.views.PinnedScrollView
+        <com.ldc.kbp.views.GridRecyclerView
                 android:id="@+id/journal_marks_scroll"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                app:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="@+id/journal_date_scroll"
                 app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll">
+                app:layout_constraintEnd_toStartOf="@+id/journal_average_scroll"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/journal_marks_recycler"
-                    android:orientation="vertical"
-                    tools:listitem="@layout/item_journal_marks" />
-        </com.ldc.kbp.views.PinnedScrollView>
-
-        <com.ldc.kbp.views.NoScrollableRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:visibility="gone"
                 android:id="@+id/journal_average_scroll"
                 android:layout_width="@dimen/journal_cell_width"
@@ -156,6 +149,17 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="6"
                     tools:listitem="@layout/item_round_button" />
+
+
+            <com.ldc.kbp.views.CheckButton
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/journal_multi_month"
+                    android:layout_width="@dimen/diary_days_of_week_selection_height"
+                    android:layout_height="@dimen/diary_days_of_week_selection_height"
+                    android:background="@drawable/test_button"
+                    android:gravity="center"
+                    android:text="@string/multi_week_button"
+                    android:textColor="@color/black" />
 
         </LinearLayout>
 

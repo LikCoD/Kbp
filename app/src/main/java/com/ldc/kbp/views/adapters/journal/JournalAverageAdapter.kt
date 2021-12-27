@@ -19,6 +19,8 @@ class JournalAverageAdapter(
 
     override fun onBindViewHolder(view: View, item: Journal.Subject?, position: Int) {
         if (item == null) {
+            if (marksAverage.isEmpty()) return
+            view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.timetable_subject_bg))
             val average = marksAverage.sum() / marksAverage.size
             view.item_journal_cell_average.text = getAverage(average)
             return
@@ -26,9 +28,8 @@ class JournalAverageAdapter(
 
         val marks = item.months.flatMap { it.cells }.flatMap { it.marks }.map { it.mark }.filter { it.toIntOrNull() != null }
 
-        if (marks.isEmpty())
-            view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
-        else {
+        if (marks.isNotEmpty()){
+            view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.timetable_subject_bg))
             val average = marks.sumOf { it.toDouble() } / marks.size
             marksAverage.add(average)
 

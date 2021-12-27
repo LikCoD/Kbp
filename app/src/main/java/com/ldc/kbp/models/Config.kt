@@ -10,6 +10,7 @@ data class Config(
     var password: String = "",
     var surname: String = "",
     var multiWeek: Boolean = true,
+    var multiMonth: Boolean = true,
     var isFemale: Boolean = true,
     var department: String = "",
     var group: String = "",
