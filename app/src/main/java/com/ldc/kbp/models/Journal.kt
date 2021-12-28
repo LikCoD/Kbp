@@ -150,8 +150,8 @@ data class Journal(
 
             val laboratoryLine = laboratoryTable.select("tr").drop(2).dropLast(1)
             val laboratoryDatesNumbers = laboratoryTable.select("tr")[1].select("td")
-                .map { it.text() }
             var laboratoryIndex = 0
+            var allLaboratoryIndex = 0
 
             val dates: MutableList<Date> = mutableListOf()
             val subjectsLine = trs.drop(2).dropLast(1)
@@ -161,6 +161,13 @@ data class Journal(
                 val date = Date(
                     if (monthIndex + 9 > 12) monthIndex - 3 else monthIndex + 9,
                     List(daysInMonth) { datesNumbers[it + currentNumber].text() }
+                )
+
+                val laboratoriesInMonth =
+                    laboratoryTable.select("tr")[0].select("td")[monthIndex].attr("colspan").toInt()
+                val laboratoryDate = Date(
+                    if (monthIndex + 9 > 12) monthIndex - 3 else monthIndex + 9,
+                    List(laboratoriesInMonth) { laboratoryDatesNumbers[it + allLaboratoryIndex].text() }
                 )
 
                 List(subjects.size) { i ->
@@ -179,17 +186,31 @@ data class Journal(
                             }
                         }.filter { it.mark != "" }.toMutableList()
 
-                        if (date.dates[index] == laboratoryDatesNumbers.getOrNull(laboratoryIndex)){
+                        if (date.dates[index] == laboratoryDate.dates.getOrNull(laboratoryIndex)) {
+                            marks.addAll(
+                                laboratoryLine[i].select("td")[allLaboratoryIndex + laboratoryIndex].select("div").flatMap { div ->
+                                        div.select("span").map {
+                                            Mark(
+                                                it.text(),
+                                                it.attr("data-mark-id")
+                                            )
+                                        }
+                                    }.filter { it.mark != "" }
+                            )
+
                             laboratoryIndex++
                         }
-
-                        //date[index] -> current date number
 
                         Cell(index + currentNumber, pairId, studentId, marks)
                     }
 
                     subjects[i].months.add(Month(cells))
+
+
+                    laboratoryIndex = 0
                 }
+
+                allLaboratoryIndex += laboratoryDate.dates.size
 
                 dates.add(date)
                 currentNumber += daysInMonth

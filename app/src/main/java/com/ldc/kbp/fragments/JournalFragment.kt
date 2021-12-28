@@ -1,5 +1,6 @@
 package com.ldc.kbp.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,6 @@ import com.ldc.kbp.views.adapters.journal.*
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
 import kotlinx.android.synthetic.main.fragment_journal.view.*
-import kotlinx.android.synthetic.main.fragment_journal.view.confirm_button
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -157,7 +157,14 @@ class JournalFragment : Fragment() {
                     "pair_disc" to description
                 )
 
-                update(Jsoup.parse(newHtml), bottomSheetBehavior, false)
+                val laboratoryTableHtml = httpRequests.post(
+                    "https://nehai.by/ej/ajax.php",
+                    "action" to "show_labs",
+                    "subject_id" to info.subjectId,
+                    "group_id" to info.groupId
+                )
+
+                update(Journal.parseTeacherJournal(Jsoup.parse(newHtml), Jsoup.parse(laboratoryTableHtml)), bottomSheetBehavior, false)
             }
         }
 
@@ -170,7 +177,7 @@ class JournalFragment : Fragment() {
                         config.groupId,
                         config.password
                     )
-                    update(html, bottomSheetBehavior)
+                    update(Journal.parseJournal(html), bottomSheetBehavior)
                 } else {
                     html = loginTeacher(config.groupId, config.password)
                     updateSelector(
@@ -208,14 +215,13 @@ class JournalFragment : Fragment() {
         )
     }
 
-
+    @SuppressLint("NotifyDataSetChanged")
     private fun update(
-        document: Document,
+        journal: Journal,
         behavior: BottomSheetBehavior<*>,
         isStudent: Boolean = true
     ) = MainScope().launch {
-        journal = if (isStudent) Journal.parseJournal(document)
-        else Journal.parseTeacherJournal(document, document)
+        this@JournalFragment.journal = journal
 
         dateAdapter = JournalDateAdapter(requireContext(), journal.dates)
 
@@ -254,58 +260,64 @@ class JournalFragment : Fragment() {
 
             monthSelectorAdapter.selectionIndex = index
         }
-        cellsAdapter.onClick = onClick@{ cell, pos ->
-            viewMarkAdapter.items = cell.marks
 
-            if (isStudent) {
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                return@onClick
-            }
+        var cells = listOf<Journal.Cell>()
+        var updateIndexes: List<Int>? = null
 
-            val marks =
-                mutableListOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "X", "н")
-
-            root.journal_add_mark_recycler.adapter =
-                JournalAddMarksAdapter(requireContext(), marks) { action, _ ->
-                    MainScope().launch(Dispatchers.IO) {
-                        if (action == "X") {
-                            when {
-                                selectedMark == null -> cell.marks.removeIf {
-                                    it.remove(
-                                        httpRequests,
-                                        cell
-                                    ) == "0"
-                                }
-                                selectedMark!!.remove(
-                                    httpRequests,
-                                    cell
-                                ) == "0" -> cell.marks.remove(selectedMark)
-                            }
-                        } else {
-                            val markId = httpRequests.post(
-                                "https://nehai.by/ej/ajax.php",
-                                "action" to "set_mark",
-                                "student_id" to cell.studentId,
-                                "pair_id" to cell.pairId,
-                                "mark_id" to "${selectedMark?.markId ?: 0}",
-                                "value" to action
-                            ).lines().last()
-
-                            if (selectedMark != null)
-                                cell.marks.remove(selectedMark)
-
-                            cell.marks.add(Journal.Mark(action, markId))
+        val marks = mutableListOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "X", "н", "з")
+        root.journal_add_mark_recycler.adapter = JournalAddMarksAdapter(requireContext(), marks) { action, _ ->
+            MainScope().launch(Dispatchers.IO) {
+                cells.forEach { cell ->
+                    if (action == "X") {
+                        when {
+                            selectedMark == null -> cell.marks.removeIf { it.remove(httpRequests, cell) == "0" }
+                            selectedMark!!.remove(httpRequests, cell) == "0" -> cell.marks.remove(selectedMark)
                         }
+                    } else {
+                        val markId = httpRequests.post(
+                            "https://nehai.by/ej/ajax.php",
+                            "action" to "set_mark",
+                            "student_id" to cell.studentId,
+                            "pair_id" to cell.pairId,
+                            "mark_id" to "${selectedMark?.markId ?: 0}",
+                            "value" to action
+                        ).lines().last()
 
-                        launch(Dispatchers.Main) {
-                            cellsAdapter.notifyItemChanged(pos)
+                        if (selectedMark != null)
+                            cell.marks.remove(selectedMark)
 
-                            viewMarkAdapter.items = cell.marks
-                        }
+                        cell.marks.add(Journal.Mark(action, markId))
                     }
                 }
 
+                launch(Dispatchers.Main) {
+                    updateIndexes?.forEach {
+                        cellsAdapter.notifyItemChanged(it)
+                    } ?: cellsAdapter.notifyDataSetChanged()
+                    if (cells.isNotEmpty())
+                        viewMarkAdapter.items = cells[0].marks
+                }
+            }
+        }
+
+        dateAdapter.onSelectionChanged = onClick@{ pos ->
+            viewMarkAdapter.items = emptyList()
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+            if (isStudent) return@onClick
+
+            cells = journal.subjects.map { s -> s.months.flatMap { it.cells }[pos!!] }
+            updateIndexes = null
+        }
+
+        cellsAdapter.onClick = onClick@{ cell, pos ->
+            viewMarkAdapter.items = cell.marks
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+            if (isStudent) return@onClick
+
+            cells = listOf(cell)
+            updateIndexes = listOf(pos)
         }
 
         root.journal_marks_scroll.spanCount = journal.subjects.size
@@ -346,9 +358,9 @@ class JournalFragment : Fragment() {
                     root.journal_subjects_selector_recycler.isVisible = false
                     root.journal_add_mark_recycler.isVisible = true
 
-                    Journal.parseTeacherJournal(Jsoup.parse(mainTableHtml), Jsoup.parse(laboratoryTableHtml))
+                    journal = Journal.parseTeacherJournal(Jsoup.parse(mainTableHtml), Jsoup.parse(laboratoryTableHtml))
 
-                    update(Jsoup.parse(mainTableHtml), behavior, false)
+                    update(journal, behavior, false)
                 }
             }
         }

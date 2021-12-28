@@ -13,6 +13,8 @@ class JournalAddMarksAdapter(
 ) : Adapter<String>(context, items, R.layout.item_journal_cell) {
 
     override fun onBindViewHolder(view: View, item: String?, position: Int) {
+        view.item_journal_cell_card_view.setCardBackgroundColor(context.getColor(R.color.timetable_subject_bg))
+
         view.item_journal_cell_mark.text = item!!
 
         view.item_journal_cell_card_view.setOnClickListener { onClick?.invoke(item, position) }

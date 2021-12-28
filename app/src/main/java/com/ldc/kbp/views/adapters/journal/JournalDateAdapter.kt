@@ -28,13 +28,30 @@ class JournalDateAdapter(
             notifyDataSetChanged()
         }
 
-    var items = dates.flatMap { it.dates }
+    private var selectedDateIndex: Int? = null
+    var onSelectionChanged: (Int?) -> Unit = {}
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    var items = dates.flatMap { it.dates }
+    
+    @SuppressLint("RecyclerView")
+    override fun onBindViewHolder(holder: ViewHolder,  position: Int) {
+        if (selectedDateIndex == position)
+            holder.numberTv.setTextColor(context.getColor(R.color.orange90))
+        else
+            holder.numberTv.setTextColor(context.getColor(android.R.color.white))
+
         val item = if (currentMonth != null) {
             dates[currentMonth!!].dates[position]
         } else dates.flatMap { it.dates }[position]
         holder.numberTv.text = item
+
+        holder.numberTv.setOnClickListener {
+            holder.numberTv.setTextColor(context.getColor(R.color.orange90))
+            if (selectedDateIndex != null)
+                notifyItemChanged(selectedDateIndex!!)
+            selectedDateIndex = position
+            onSelectionChanged(selectedDateIndex)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
