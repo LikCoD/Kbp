@@ -163,8 +163,12 @@ data class Journal(
                     List(daysInMonth) { datesNumbers[it + currentNumber].text() }
                 )
 
-                val laboratoriesInMonth =
-                    laboratoryTable.select("tr")[0].select("td")[monthIndex].attr("colspan").toInt()
+                val laboratoryMonthsTds = laboratoryTable.select("tr")[0].select("td").dropLast(2)
+
+                val laboratoriesInMonth = if (monthIndex < laboratoryMonthsTds.size && laboratoryMonthsTds[monthIndex].text() == month.text()){
+                    laboratoryMonthsTds[monthIndex].attr("colspan").toInt()
+                }else 0
+
                 val laboratoryDate = Date(
                     if (monthIndex + 9 > 12) monthIndex - 3 else monthIndex + 9,
                     List(laboratoriesInMonth) { laboratoryDatesNumbers[it + allLaboratoryIndex].text() }
