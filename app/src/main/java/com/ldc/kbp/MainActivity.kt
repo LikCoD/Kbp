@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
         val isNotificationsConnected = preferences.getBoolean("isNotificationsConnected", true)
+        val versionNotifications = preferences.getBoolean("notificationsV2.0", true)
 
         if (isNotificationsConnected) {
             Firebase.messaging.subscribeToTopic("schedule_update").addOnCompleteListener { task ->
@@ -41,6 +42,18 @@ class MainActivity : AppCompatActivity() {
                 }
                 val preferencesEditor = preferences.edit()
                 preferencesEditor.putBoolean("isNotificationsConnected", false)
+                preferencesEditor.apply()
+            }
+        }
+
+        if (versionNotifications){
+            Firebase.messaging.subscribeToTopic("Version2.0").addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    shortToast(this, R.string.notification_schedule_update_error)
+                    return@addOnCompleteListener
+                }
+                val preferencesEditor = preferences.edit()
+                preferencesEditor.putBoolean("notificationsV2.0", false)
                 preferencesEditor.apply()
             }
         }
