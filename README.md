@@ -3,7 +3,7 @@
 
 **Актуальная версия - 2.0** 
 
-[Скачать .apk](https://github.com/LikCoD/Kbp/raw/main/app/release/app-release.apk)
+[Скачать .apk](https://github.com/LikCoD/Kbp/raw/main/app/release/kbp-v2.0-beta.apk)
 
 Функции приложения
 
