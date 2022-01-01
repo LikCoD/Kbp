@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.ldc.kbp.R
@@ -20,13 +19,12 @@ class LessonIndexAdapter(
     private val spaceAfter: Int
 ) : RecyclerView.Adapter<LessonIndexAdapter.ViewHolder>() {
 
-    private val bellsLayout = mutableListOf<View>()
     private var isBellShown = false
 
     fun updateBells() {
         isBellShown = !isBellShown
 
-        bellsLayout.forEach { it.isVisible = isBellShown }
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -63,7 +61,7 @@ class LessonIndexAdapter(
             }
         }
 
-        bellsLayout.add(holder.itemView.item_bell_layout)
+        holder.itemView.item_bell_layout.isVisible = isBellShown
     }
 
     override fun getItemCount(): Int = itemsCount + 1

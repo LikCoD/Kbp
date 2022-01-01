@@ -91,42 +91,44 @@ class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int?
                     || (!isReplacementShown && it.type == Schedule.Type.REMOVED)
         }
 
+
+        holder.expandBtn.isVisible = subject != null && subjects!!.size > 1
+
         if (subjects == null || subjects.isEmpty()) {
-            holder.layout.post {
-                holder.card.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
+            holder.card.setCardBackgroundColor(context.getColor(R.color.timetable_empty_subject_bg))
 
-                holder.expandBtn.isVisible = false
+            holder.subjectTv.text = ""
+            holder.teacherTv.text = ""
+            holder.groupTv.text = ""
+            holder.roomTv.text = ""
 
-                holder.subjectTv.text = ""
-                holder.teacherTv.text = ""
-                holder.groupTv.text = ""
-                holder.roomTv.text = ""
-            }
+            holder.nextBtn.setOnClickListener {}
+            holder.prevBtn.setOnClickListener {}
+
             return
         }
 
         var selectedSubject = 0
 
-        holder.layout.post {
-            if (subjects.size > 1) {
-                holder.expandBtn.isVisible = true
-
-                holder.expandBtn.setOnClickListener {
-                    onExpand?.invoke(subjects)
-                }
-
-                holder.nextBtn.setOnClickListener {
-                    selectedSubject = checkBounds(subjects, selectedSubject + 1)
-                    updateSubject(holder, subjects[selectedSubject])
-                }
-                holder.prevBtn.setOnClickListener {
-                    selectedSubject = checkBounds(subjects, selectedSubject - 1)
-                    updateSubject(holder, subjects[selectedSubject])
-                }
+        if (subjects.size > 1) {
+            holder.expandBtn.setOnClickListener {
+                onExpand?.invoke(subjects)
             }
 
-            updateSubject(holder, subjects[0])
+            holder.nextBtn.setOnClickListener {
+                selectedSubject = checkBounds(subjects, selectedSubject + 1)
+                updateSubject(holder, subjects[selectedSubject])
+            }
+            holder.prevBtn.setOnClickListener {
+                selectedSubject = checkBounds(subjects, selectedSubject - 1)
+                updateSubject(holder, subjects[selectedSubject])
+            }
+        } else {
+            holder.nextBtn.setOnClickListener {}
+            holder.prevBtn.setOnClickListener {}
         }
+
+        updateSubject(holder, subjects[0])
 
     }
 
