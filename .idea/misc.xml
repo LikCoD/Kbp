@@ -96,7 +96,6 @@
     <option name="languageLevel" value="FLOW" />
   </component>
   <component name="PWA">
-    <option name="enabled" value="true" />
     <option name="wasEnabledAtLeastOnce" value="true" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
