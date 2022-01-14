@@ -1,5 +1,6 @@
 package com.ldc.kbp.models
 
+import com.ldc.kbp.API_URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -16,7 +17,7 @@ object Groups {
     data class SimpleInfo(val name: String, val id: String)
 
     fun loadTimetable() {
-        timetable = Json.decodeFromStream(URL("https://collegehelper-3f572.appspot.com/api/schedule/types?studyPlaceId=0").openStream())
+        timetable = Json.decodeFromStream(URL("$API_URL/schedule/types?studyPlaceId=0").openStream())
     }
 
     fun loadGroupsFromJournal() {

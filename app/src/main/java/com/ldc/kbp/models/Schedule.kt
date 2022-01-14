@@ -1,4 +1,5 @@
 package com.ldc.kbp.models
+import com.ldc.kbp.API_URL
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -62,6 +63,6 @@ data class Schedule(
 
     companion object {
         fun load(type: String, name: String): Schedule =
-            Json.decodeFromStream(URL("https://collegehelper-3f572.appspot.com/api/schedule?type=$type&name=$name&studyPlaceId=0").openStream())
+            Json.decodeFromStream(URL("$API_URL/schedule?type=$type&name=$name&studyPlaceId=0").openStream())
     }
 }

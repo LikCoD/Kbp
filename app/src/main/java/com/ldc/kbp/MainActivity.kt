@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ldc.kbp.fragments.SapperFragment
 import com.ldc.kbp.models.Files
@@ -34,6 +35,45 @@ class MainActivity : AppCompatActivity() {
         val isNotificationsConnected = preferences.getBoolean("isNotificationsConnected", true)
         val versionNotifications = preferences.getBoolean("notificationsV2.0", true)
 
+        Firebase.remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                shortToast(this, R.string.load_config_error)
+                return@addOnCompleteListener
+            }
+
+            API_URL = Firebase.remoteConfig.getString("apiUrl")
+
+            runBlocking(Dispatchers.IO) {
+                Groups.loadTimetable()
+
+                mainSchedule = Schedule.load(config.scheduleInfo.type, config.scheduleInfo.name)
+            }
+
+            setContentView(R.layout.activity_main)
+            setSupportActionBar(toolbar)
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                Groups.loadGroupsFromJournal()
+                Groups.loadTeachersFromJournal()
+            }
+
+            val navController = findNavController(R.id.nav_host_fragment)
+            appBarConfiguration = AppBarConfiguration(
+                setOf(
+                    R.id.nav_timetable,
+                    R.id.nav_diary,
+                    R.id.nav_journal,
+                    R.id.nav_empty_room,
+                    R.id.nav_statement,
+                    R.id.nav_settings
+                ),
+                drawer_layout
+            )
+
+            setupActionBarWithNavController(navController, appBarConfiguration)
+            nav_view.setupWithNavController(navController)
+        }
+
         if (isNotificationsConnected) {
             Firebase.messaging.subscribeToTopic("schedule_update").addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -46,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (versionNotifications){
+        if (versionNotifications) {
             Firebase.messaging.subscribeToTopic("Version2.0").addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     shortToast(this, R.string.notification_schedule_update_error)
@@ -62,36 +102,6 @@ class MainActivity : AppCompatActivity() {
         Files.getHomeworkList(this)
 
         AndroidThreeTen.init(application)
-
-        runBlocking(Dispatchers.IO) {
-            Groups.loadTimetable()
-
-            mainSchedule = Schedule.load(config.scheduleInfo.type, config.scheduleInfo.name)
-        }
-
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            Groups.loadGroupsFromJournal()
-            Groups.loadTeachersFromJournal()
-        }
-
-        val navController = findNavController(R.id.nav_host_fragment)
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_timetable,
-                R.id.nav_diary,
-                R.id.nav_journal,
-                R.id.nav_empty_room,
-                R.id.nav_statement,
-                R.id.nav_settings
-            ),
-            drawer_layout
-        )
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        nav_view.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -6,4 +6,6 @@
     <string name="no_answer">Нет ответа от сервера</string>
 
     <string name="notification_schedule_update_error">Ошибка подключения уведомлений</string>
+    <string name="load_config_error">Ошибка загрузки конфигурации</string>
+
 </resources>

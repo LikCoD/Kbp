@@ -26,6 +26,8 @@ var config = Config()
 var homeworkList = Homeworks()
 lateinit var mainSchedule: Schedule
 
+lateinit var API_URL: String
+
 fun dimen(resources: Resources, dimen: Int) = resources.getDimension(dimen).toInt()
 
 fun checkPermission(permission: String, activity: Activity, func: () -> Unit) =
