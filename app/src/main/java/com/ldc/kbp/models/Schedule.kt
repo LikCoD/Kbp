@@ -43,8 +43,8 @@ data class Schedule(
         val subjectsCount: Int,
         val type: String,
         val name: String,
-        val educationPlaceId: Int,
-        val educationPlaceName: String
+        val studyPlaceId: Int,
+        val studyPlaceName: String
     )
 
     @Serializable
@@ -62,6 +62,6 @@ data class Schedule(
 
     companion object {
         fun load(type: String, name: String): Schedule =
-            Json.decodeFromStream(URL("https://collegehelper-3f572.appspot.com/api/schedule?type=$type&name=$name&educationPlaceId=0").openStream())
+            Json.decodeFromStream(URL("https://collegehelper-3f572.appspot.com/api/schedule?type=$type&name=$name&studyPlaceId=0").openStream())
     }
 }
