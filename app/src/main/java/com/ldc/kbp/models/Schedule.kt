@@ -62,6 +62,6 @@ data class Schedule(
 
     companion object {
         fun load(type: String, name: String): Schedule =
-            Json.decodeFromStream(URL("https://collegehelper-3f572.oa.r.appspot.com//schedule?type=$type&name=$name&educationPlaceId=0").openStream())
+            Json.decodeFromStream(URL("https://collegehelper-3f572.appspot.com/api/schedule?type=$type&name=$name&educationPlaceId=0").openStream())
     }
 }

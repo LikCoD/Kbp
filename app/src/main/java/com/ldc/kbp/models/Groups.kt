@@ -16,7 +16,7 @@ object Groups {
     data class SimpleInfo(val name: String, val id: String)
 
     fun loadTimetable() {
-        timetable = Json.decodeFromStream(URL("https://collegehelper-3f572.oa.r.appspot.com/schedule/types?educationPlaceId=0").openStream())
+        timetable = Json.decodeFromStream(URL("https://collegehelper-3f572.appspot.com/api/schedule/types?educationPlaceId=0").openStream())
     }
 
     fun loadGroupsFromJournal() {
