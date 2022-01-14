@@ -45,6 +45,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:29.0.3"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-config-ktx")
 
     implementation("com.jakewharton.threetenabp:threetenabp:1.0.3")
     implementation("joda-time:joda-time:2.10.12")
