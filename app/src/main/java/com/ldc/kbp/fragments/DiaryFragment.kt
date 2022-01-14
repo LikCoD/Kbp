@@ -117,10 +117,7 @@ class DiaryFragment : Fragment() {
         photosAdapter.onAllItemDeleted = { bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN }
 
         select_date_img.setOnClickListener { datePickerPopup.show() }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        root.diary_day_recycler.smoothScrollToPosition(dayOfWeek - 1)
+        post { diary_day_recycler.scrollToPosition(dayOfWeek - 1) }
     }
 }
