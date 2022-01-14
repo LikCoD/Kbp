@@ -16,8 +16,12 @@ import com.ldc.kbp.R
 import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.item_lesson.view.*
 
-class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int? = null) :
-    RecyclerView.Adapter<TimetableAdapter.ViewHolder>() {
+class TimetableAdapter(
+    val context: Context,
+    schedule: Schedule,
+    shownWeek: Int? = null,
+    var onVisibleWeekChanged: ((Int) -> Unit)? = null
+) : RecyclerView.Adapter<TimetableAdapter.ViewHolder>() {
 
     var schedule = schedule
         set(value) {
@@ -36,6 +40,7 @@ class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int?
             }
         }
 
+    var lastShownWeek = 0
 
     var shownWeek: Int? = shownWeek
         set(value) {
@@ -80,6 +85,11 @@ class TimetableAdapter(val context: Context, schedule: Schedule, shownWeek: Int?
 
         val subject =
             if (shownWeek == null) schedule.subjects[position] else schedule.subjects[position + shownWeek!! * schedule.info.daysCount * schedule.info.subjectsCount]
+
+        if (subject != null && subject.weekIndex != lastShownWeek) {
+            lastShownWeek = subject.weekIndex
+            onVisibleWeekChanged?.invoke(lastShownWeek)
+        }
 
         holder.layout.foreground =
             if (schedule.status[currentDay].status == Schedule.StatusInfo.NOT_UPDATED)

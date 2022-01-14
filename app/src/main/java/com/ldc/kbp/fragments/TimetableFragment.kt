@@ -1,7 +1,6 @@
 package com.ldc.kbp.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +69,10 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
             requireContext(),
             mainSchedule,
             if (config.multiWeek) null else getCurrentWeek()
-        )
+        ) {
+            weekSelectorAdapter.selectionIndex = it
+            week_selector_recycler.scrollToPosition(it)
+        }
         weekSelectorAdapter =
             RoundButtonsAdapter(requireContext(), true, firstSelectionIndex = getCurrentWeek())
 
@@ -174,15 +176,6 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
                 weekIndexAdapter.shownWeek = null
             }
         }
-
-        timetable_scroll.horizontalScrollChangeListener = { x ->
-            val selectedWeek = x / itemWidth / mainSchedule.info.daysCount
-            if (selectedWeek != weekSelectorAdapter.selectionIndex && timetable_multi_week.isSelected) {
-                weekSelectorAdapter.selectionIndex = selectedWeek
-
-                week_selector_recycler.scrollToPosition(selectedWeek)
-            }
-        }
     }
 
     private fun update(i: Groups.Schedule? = null) {
@@ -207,15 +200,17 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
                     var sX = LocalDate.now().dayOfWeek.ordinal
                     val sY = schedule.subjects.indexOfFirst { it != null }
 
+                    weekSelectorAdapter.selectionIndex = getCurrentWeek()
+
                     if (timetable_multi_week.isSelected) {
                         sX += schedule.info.daysCount * schedule.info.subjectsCount * getCurrentWeek()
                     } else {
-                        weekSelectorAdapter.selectionIndex = getCurrentWeek()
                         timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
                     }
 
-                    root.timetable_scroll.scrollBy(sX * itemWidth, sY * itemHeight)
-                    root.timetable_scroll.scrollToX(sX * itemWidth)
+                    root.timetable_scroll.recyclerView.scrollToPosition(sX * schedule.info.subjectsCount + sY)
+                    root.days_of_week_scroll.scrollToPosition(sX)
+                    root.lessons_index_scroll.scrollToPosition(sY)
 
                     root.loading_tv.isVisible = false
                 }
