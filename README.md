@@ -1,9 +1,9 @@
 
 ## Колледж бизнеса и права
 
-_**Актуальная версия - 2.0**_ 
+_**Актуальная версия - 2.0.1**_ 
 
-[Скачать .apk](https://github.com/LikCoD/Kbp/raw/main/Releases/kbp-v2.0.apk)
+[Скачать .apk](https://github.com/LikCoD/Kbp/raw/main/Releases/kbp-v2.0.1.apk)
 
 Функции приложения
 
