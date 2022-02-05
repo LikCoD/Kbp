@@ -198,7 +198,6 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
                     weekSelectorAdapter.items = (1..schedule.info.weeksCount).map { it.toString() }
 
                     var sX = LocalDate.now().dayOfWeek.ordinal
-                    val sY = schedule.subjects.indexOfFirst { it != null }
 
                     weekSelectorAdapter.selectionIndex = getCurrentWeek()
 
@@ -208,9 +207,8 @@ class TimetableFragment(private var info: Groups.Schedule? = null) : Fragment() 
                         timetableAdapter.shownWeek = weekSelectorAdapter.selectionIndex
                     }
 
-                    root.timetable_scroll.recyclerView.scrollToPosition(sX * schedule.info.subjectsCount + sY)
+                    root.timetable_scroll.recyclerView.scrollToPosition(sX * schedule.info.subjectsCount)
                     root.days_of_week_scroll.scrollToPosition(sX)
-                    root.lessons_index_scroll.scrollToPosition(sY)
 
                     root.loading_tv.isVisible = false
                 }

@@ -18,8 +18,11 @@ import com.ldc.kbp.views.PinnedScrollView
 import com.ldc.kbp.views.adapters.RoundButtonsAdapter
 import com.ldc.kbp.views.adapters.journal.*
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
+import com.ldc.kbp.views.itemdecoritions.BottomOffsetDecoration
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
+import kotlinx.android.synthetic.main.fragment_journal.*
 import kotlinx.android.synthetic.main.fragment_journal.view.*
+import kotlinx.android.synthetic.main.fragment_timetable.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -108,6 +111,9 @@ class JournalFragment : Fragment() {
         categoryAdapter.selectionIndex = 0
 
         category_recycler.adapter = categoryAdapter
+
+        val bottomOffsetDecoration = BottomOffsetDecoration(resources.getDimension(R.dimen.bottomSpace).toInt())
+        journal_subjects_name_scroll.addItemDecoration(bottomOffsetDecoration)
 
         val datePickerPopup = createDatePicker(requireContext()) { date ->
             journal_add_date_layout.isVisible = true
@@ -240,6 +246,7 @@ class JournalFragment : Fragment() {
 
         monthSelectorAdapter.items = journal.dates.map { it.month.toString() }
         monthSelectorAdapter.selectionIndex = monthSelectorAdapter.items!!.lastIndex
+
 
         var selectedMark: Journal.Mark? = null
 

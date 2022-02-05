@@ -94,6 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:orientation="horizontal"
+                app:spaceAfter="@dimen/bottomSpace"
                 app:layout_constraintStart_toStartOf="@+id/journal_date_scroll"
                 app:layout_constraintTop_toBottomOf="@+id/journal_date_scroll"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -128,9 +129,10 @@
                 android:layout_height="5dp"
                 android:background="@drawable/ic_bottom_line" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_bar_week_selector"
+                android:layout_marginHorizontal="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -138,17 +140,24 @@
                     style="@style/head_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/month" />
+                    android:text="@string/month"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" android:id="@+id/monthText"/>
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/month_selector_recycler"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="6"
-                    tools:listitem="@layout/item_round_button" />
+                    tools:itemCount="8"
+                    tools:listitem="@layout/item_round_button"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/journal_multi_month"
+                    app:layout_constraintStart_toEndOf="@+id/monthText"/>
 
 
             <com.ldc.kbp.views.CheckButton
@@ -159,9 +168,12 @@
                     android:background="@drawable/test_button"
                     android:gravity="center"
                     android:text="@string/multi_week_button"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_marginHorizontal="16dp"
