@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             API_URL = Firebase.remoteConfig.getString("apiUrl")
+            JOURNAL_URL = Firebase.remoteConfig.getString("journalUrl")
 
             runBlocking(Dispatchers.IO) {
                 Groups.loadTimetable()

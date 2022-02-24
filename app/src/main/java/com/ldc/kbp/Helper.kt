@@ -27,6 +27,7 @@ var homeworkList = Homeworks()
 lateinit var mainSchedule: Schedule
 
 lateinit var API_URL: String
+lateinit var JOURNAL_URL: String
 
 fun dimen(resources: Resources, dimen: Int) = resources.getDimension(dimen).toInt()
 

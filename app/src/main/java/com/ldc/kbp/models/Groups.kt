@@ -1,6 +1,7 @@
 package com.ldc.kbp.models
 
 import com.ldc.kbp.API_URL
+import com.ldc.kbp.JOURNAL_URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
@@ -21,7 +22,7 @@ object Groups {
     }
 
     fun loadGroupsFromJournal() {
-        groupsJournal = parseJournalViaUrl("https://nehai.by/ej/templates/login_parent.php")
+        groupsJournal = parseJournalViaUrl("$JOURNAL_URL/templates/login_parent.php")
     }
 
     fun getRusType(schedule: Schedule) =
@@ -35,7 +36,7 @@ object Groups {
 
 
     fun loadTeachersFromJournal() {
-        teachersJournal = parseJournalViaUrl("https://nehai.by/ej/templates/login_teacher.php")
+        teachersJournal = parseJournalViaUrl("$JOURNAL_URL/templates/login_teacher.php")
     }
 
     private fun parseJournalViaUrl(url: String): List<SimpleInfo> = runBlocking(Dispatchers.IO) {

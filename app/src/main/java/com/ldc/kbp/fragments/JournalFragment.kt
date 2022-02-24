@@ -20,9 +20,7 @@ import com.ldc.kbp.views.adapters.journal.*
 import com.ldc.kbp.views.adapters.search.CategoryAdapter
 import com.ldc.kbp.views.itemdecoritions.BottomOffsetDecoration
 import com.ldc.kbp.views.itemdecoritions.SpaceDecoration
-import kotlinx.android.synthetic.main.fragment_journal.*
 import kotlinx.android.synthetic.main.fragment_journal.view.*
-import kotlinx.android.synthetic.main.fragment_timetable.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -40,12 +38,12 @@ class JournalFragment : Fragment() {
 
     @Throws(IllegalStateException::class)
     fun loginStudent(surname: String, groupId: String, birthday: String): Document {
-        val sCode = httpRequests.get("https://nehai.by/ej/templates/login_parent.php")
+        val sCode = httpRequests.get("$JOURNAL_URL/templates/login_parent.php")
             .substringAfter("value=\"")
             .substringBefore("\">")
 
         val result = httpRequests.post(
-            "https://nehai.by/ej/ajax.php",
+            "$JOURNAL_URL/ajax.php",
             "action" to "login_parent",
             "student_name" to surname,
             "group_id" to groupId,
@@ -61,17 +59,17 @@ class JournalFragment : Fragment() {
             else -> error(R.string.unknown_response)
         }
 
-        return Jsoup.connect("https://nehai.by/ej/templates/parent_journal.php").get()
+        return Jsoup.connect("$JOURNAL_URL/templates/parent_journal.php").get()
     }
 
     @Throws(IllegalStateException::class)
     fun loginTeacher(surname: String, password: String): Document {
-        val sCode = httpRequests.get("https://nehai.by/ej/templates/login_teacher.php")
+        val sCode = httpRequests.get("$JOURNAL_URL/templates/login_teacher.php")
             .substringAfter("value=\"")
             .substringBefore("\">")
 
         val result = httpRequests.post(
-            "https://nehai.by/ej/ajax.php",
+            "$JOURNAL_URL/ajax.php",
             "action" to "login_teather",
             "login" to surname,
             "password" to password,
@@ -86,7 +84,7 @@ class JournalFragment : Fragment() {
             else -> error(R.string.unknown_response)
         }
 
-        return Jsoup.connect("https://nehai.by/ej/templates/teacher_journal.php").get()
+        return Jsoup.connect("$JOURNAL_URL/templates/teacher_journal.php").get()
     }
 
     private lateinit var info: JournalTeacherSelector.Subject
@@ -154,7 +152,7 @@ class JournalFragment : Fragment() {
                 val description = description_edit.text.toString()
 
                 val newHtml = httpRequests.post(
-                    "https://nehai.by/ej/ajax.php",
+                    "$JOURNAL_URL/ajax.php",
                     "action" to "add_date",
                     "new_date" to "${date_tv.text}",
                     "subject_id" to info.subjectId,
@@ -164,7 +162,7 @@ class JournalFragment : Fragment() {
                 )
 
                 val laboratoryTableHtml = httpRequests.post(
-                    "https://nehai.by/ej/ajax.php",
+                    "$JOURNAL_URL/ajax.php",
                     "action" to "show_labs",
                     "subject_id" to info.subjectId,
                     "group_id" to info.groupId
@@ -282,7 +280,7 @@ class JournalFragment : Fragment() {
                         }
                     } else {
                         val markId = httpRequests.post(
-                            "https://nehai.by/ej/ajax.php",
+                            "$JOURNAL_URL/ajax.php",
                             "action" to "set_mark",
                             "student_id" to cell.studentId,
                             "pair_id" to cell.pairId,
@@ -348,14 +346,14 @@ class JournalFragment : Fragment() {
 
             thread {
                 val mainTableHtml = httpRequests.post(
-                    "https://nehai.by/ej/ajax.php",
+                    "$JOURNAL_URL/ajax.php",
                     "action" to "show_table",
                     "subject_id" to subject.subjectId,
                     "group_id" to subject.groupId
                 )
 
                 val laboratoryTableHtml = httpRequests.post(
-                    "https://nehai.by/ej/ajax.php",
+                    "$JOURNAL_URL/ajax.php",
                     "action" to "show_labs",
                     "subject_id" to subject.subjectId,
                     "group_id" to subject.groupId

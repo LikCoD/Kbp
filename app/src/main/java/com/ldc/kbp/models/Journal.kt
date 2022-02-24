@@ -1,6 +1,7 @@
 package com.ldc.kbp.models
 
 import com.ldc.kbp.HttpRequests
+import com.ldc.kbp.JOURNAL_URL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +55,7 @@ data class Journal(
         val markId: String
     ) {
         fun remove(requests: HttpRequests, cell: Cell) = requests.post(
-            "https://nehai.by/ej/ajax.php",
+            "$JOURNAL_URL/ajax.php",
             "action" to "set_mark",
             "student_id" to cell.studentId,
             "pair_id" to cell.pairId,
@@ -114,7 +115,7 @@ data class Journal(
                 val url = it.select("a").getOrNull(0)?.attr("href")?.substring(1)
                 if (url != null) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val info = Jsoup.connect("https://nehai.by/ej/templates/$url").get()
+                        val info = Jsoup.connect("$JOURNAL_URL/templates/$url").get()
                             .select("tbody")[1].select("tr")[2].select("span")
                         println(info)
                     }
