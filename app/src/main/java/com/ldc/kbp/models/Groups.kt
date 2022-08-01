@@ -12,7 +12,9 @@ import java.net.URL
 
 object Groups {
     @Serializable
-    data class Schedule(val name: String, val type: String)
+    data class Schedule(val name: String, val type: String) {
+        override fun toString(): String = "$type/$name"
+    }
 
     @Serializable
     data class SimpleInfo(val name: String, val id: String)

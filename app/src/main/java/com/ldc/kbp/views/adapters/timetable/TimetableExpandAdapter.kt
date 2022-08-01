@@ -7,6 +7,7 @@ import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_lesson.view.*
 
+/*
 class TimetableExpandAdapter(
     context: Context,
     val subjects: Schedule.Subjects? = null
@@ -23,4 +24,4 @@ class TimetableExpandAdapter(
         view.item_room_card_tv.text = item.room
         view.item_group_card_tv.text = item.group
     }
-}
+}*/

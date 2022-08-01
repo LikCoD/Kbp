@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.adapters.emptyroom.FloorSwitcherAdapter
 import kotlinx.android.synthetic.main.fragment_empty_room.view.*
 import org.threeten.bp.LocalDate
@@ -22,7 +21,7 @@ class EmptyRoomFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_empty_room, container, false).apply {
-        val freeRooms = mutableListOf<String>()
+      /*  val freeRooms = mutableListOf<String>()
         val roomAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, freeRooms)
         val floorAdapter = FloorSwitcherAdapter(requireContext(), 6)
@@ -39,7 +38,7 @@ class EmptyRoomFragment : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction().let { transaction ->
                 transaction.replace(
                     R.id.nav_host_fragment,
-                    TimetableFragment(Groups.timetable.find {
+                    ScheduleFragment(Groups.timetable.find {
                         it.name == v.getItemAtPosition(i).toString()
                     }!!)
                 )
@@ -80,13 +79,14 @@ class EmptyRoomFragment : Fragment() {
 
             groups.forEach {
                 thread {
-                    val schedule = Schedule.load(it.type, it.name)
+                    //TODO
+*//*                    val schedule = Schedule.load(it.type, it.name)
                     val subject =
                         schedule.subjects[((weekIndex - 1) * schedule.info.daysCount + day_of_week_spinner.selectedItemPosition) * schedule.info.subjectsCount + lessonIndex - 1]
-                    if (subject == null || subject.subjects.all { it.type == Schedule.Type.REMOVED })
-                        rooms_list.post { roomAdapter.add(it.name) }
+                    if (subject == null || subject.subjects.all { it.type == "REMOVED" })
+                        rooms_list.post { roomAdapter.add(it.name) }*//*
                 }
             }
-        }
+        }*/
     }
 }

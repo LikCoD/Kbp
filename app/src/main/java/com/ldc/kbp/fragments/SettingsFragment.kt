@@ -44,7 +44,7 @@ class SettingsFragment : Fragment() {
 
         val search = SearchFragment(groups_selector_fragment, Groups.timetable.map { it to Groups.getRusType(it) }, { it.name })
         search.onSelected = { info ->
-            thread { mainSchedule = Schedule.load(info.type, info.name) }
+            thread { mainSchedule = Schedule.load(info) }
 
             group_name_tv.text = info.name
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -132,7 +132,7 @@ class SettingsFragment : Fragment() {
         multi_month_mode_switcher.isChecked = config.multiMonth
         sex_switcher.isChecked = config.isFemale
 
-        group_name_tv.text = mainSchedule.info.name
+        group_name_tv.text = mainSchedule.info.typeName
 
         confirm_button.setOnClickListener {
             if (config.isStudent) config.surname = name_et.text.toString()

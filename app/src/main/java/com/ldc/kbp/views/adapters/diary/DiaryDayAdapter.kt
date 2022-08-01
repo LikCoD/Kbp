@@ -26,13 +26,13 @@ class DiaryDayAdapter(
     var startWeekDate: LocalDate
 ) : RecyclerView.Adapter<DiaryDayAdapter.ViewHolder>() {
 
-    private val items = schedule.subjects.chunked(schedule.info.daysCount * schedule.info.subjectsCount).map { it.chunked(schedule.info.subjectsCount) }
+    private val items = schedule.lessons.chunked(schedule.info.studyPlace.daysCount)
 
     private var currentWeek = getCurrentWeek()
         set(value) {
             field = when {
-                value < 0 -> mainSchedule.info.weeksCount - 1
-                value > mainSchedule.info.weeksCount - 1 -> 0
+                value < 0 -> mainSchedule.info.studyPlace.weeksCount - 1
+                value > mainSchedule.info.studyPlace.weeksCount - 1 -> 0
                 else -> value
             }
 
@@ -68,7 +68,7 @@ class DiaryDayAdapter(
         holder.lineRecycler.adapter = HomeworkLineAdapter(
             activity,
             homeworks.days[date.toString()] ?: Homeworks.Day(),
-            subjects,
+            listOf(subjects),
             date,
             onImageAddListener
         ) { subject, homework ->
@@ -85,7 +85,7 @@ class DiaryDayAdapter(
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = mainSchedule.info.daysCount
+    override fun getItemCount(): Int = mainSchedule.info.studyPlace.daysCount
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateTv: TextView = itemView.item_diary_day_date_tv

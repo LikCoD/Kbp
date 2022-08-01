@@ -9,6 +9,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         val isNotificationsConnected = preferences.getBoolean("isNotificationsConnected", true)
         val versionNotifications = preferences.getBoolean("notificationsV2.0", true)
 
+        AndroidThreeTen.init(application)
+
         Firebase.remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 shortToast(this, R.string.load_config_error)
@@ -46,8 +49,6 @@ class MainActivity : AppCompatActivity() {
 
             runBlocking(Dispatchers.IO) {
                 Groups.loadTimetable()
-
-                mainSchedule = Schedule.load(config.scheduleInfo.type, config.scheduleInfo.name)
             }
 
             setContentView(R.layout.activity_main)
@@ -101,8 +102,6 @@ class MainActivity : AppCompatActivity() {
 
         Files.getConfig(this)
         Files.getHomeworkList(this)
-
-        AndroidThreeTen.init(application)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -16,6 +16,7 @@ import com.ldc.kbp.R
 import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.item_lesson.view.*
 
+/*
 class TimetableAdapter(
     val context: Context,
     schedule: Schedule,
@@ -160,4 +161,4 @@ class TimetableAdapter(
         val roomTv: TextView = itemView.item_room_card_tv
         val groupTv: TextView = itemView.item_group_card_tv
     }
-}
+}*/

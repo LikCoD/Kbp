@@ -34,7 +34,7 @@ class DiaryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_diary, container, false).apply {
-        root = this
+       /* root = this
 
         diaryDayAdapter =
             DiaryDayAdapter(
@@ -118,6 +118,6 @@ class DiaryFragment : Fragment() {
 
         select_date_img.setOnClickListener { datePickerPopup.show() }
 
-        post { diary_day_recycler.scrollToPosition(dayOfWeek - 1) }
+        post { diary_day_recycler.scrollToPosition(dayOfWeek - 1) }*/
     }
 }

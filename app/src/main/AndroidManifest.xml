@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.ldc.kbp"
-          android:targetSandboxVersion="1"
+        android:targetSandboxVersion="1"
           tools:targetApi="o">
 
     <uses-permission android:name="android.permission.INTERNET"/>

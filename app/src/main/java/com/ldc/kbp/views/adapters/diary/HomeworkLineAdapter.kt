@@ -12,9 +12,9 @@ import android.view.View
 import androidx.core.app.ActivityCompat.startActivityForResult
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Homeworks
+import com.ldc.kbp.models.Lesson
 import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.adapters.Adapter
-import com.ldc.kbp.views.dialogs.HomeworkSetDialog
 import kotlinx.android.synthetic.main.item_homework_line.view.*
 import org.threeten.bp.LocalDate
 import java.io.File
@@ -25,14 +25,14 @@ import kotlin.concurrent.thread
 class HomeworkLineAdapter(
     private val activity: Activity,
     private val homeworksDay: Homeworks.Day,
-    items: List<Schedule.Subjects?>,
+    items: List<Lesson?>,
     private val date: LocalDate,
     var imageAddListener: ((Int, Bitmap, File) -> Unit) = { _, _, _ -> },
-    var onHomeworkChangeListener: (Schedule.Subject, Homeworks.Homework) -> Unit = { _, _ -> }
-) : Adapter<Schedule.Subjects?>(activity, items.filterNotNull(), R.layout.item_homework_line) {
+    var onHomeworkChangeListener: (Lesson, Homeworks.Homework) -> Unit = { _, _ -> }
+) : Adapter<Lesson?>(activity, items.filterNotNull(), R.layout.item_homework_line) {
 
-    override fun onBindViewHolder(view: View, item: Schedule.Subjects?, position: Int) {
-        item ?: return
+    override fun onBindViewHolder(view: View, item: Lesson?, position: Int) {
+        /*item ?: return
 
         val subject = item.subjects[0]
 
@@ -70,13 +70,13 @@ class HomeworkLineAdapter(
                     }
                 }
             } else shortSnackbar(view, R.string.load_photo)
-        }
+        }*/
     }
-
+/*
     private fun getFilesInMedia(subjects: Schedule.Subjects): Array<File>? =
         getDir(Environment.DIRECTORY_PICTURES).listFiles { _, s ->
             s.contains("${subjects.rowIndex}. $date ${subjects.subjects[0].subject}")
-        }
+        }*/
 
 
     private fun InputStream.getBitmap(): Bitmap = BitmapFactory.decodeStream(this).run {

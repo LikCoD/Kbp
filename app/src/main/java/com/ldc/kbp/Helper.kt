@@ -8,14 +8,20 @@ import android.content.res.Resources
 import android.net.Uri
 import android.view.View
 import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.ldc.kbp.models.*
+import com.ldc.kbp.models.Config
+import com.ldc.kbp.models.Deprecates
+import com.ldc.kbp.models.Homeworks
+import com.ldc.kbp.models.Schedule
 import com.ozcanalasalvar.library.view.datePicker.DatePicker
 import com.ozcanalasalvar.library.view.popup.DatePickerPopup
+import kotlinx.serialization.json.Json
 import org.joda.time.DateTime
 import org.joda.time.Weeks
 import org.threeten.bp.LocalDate
@@ -26,8 +32,17 @@ var config = Config()
 var homeworkList = Homeworks()
 lateinit var mainSchedule: Schedule
 
-lateinit var API_URL: String
-lateinit var JOURNAL_URL: String
+/*lateinit */var API_URL: String = "https://studyum-api.herokuapp.com/api"
+/*lateinit */var JOURNAL_URL: String = "https://kbp.by/ej"
+
+val json = Json { ignoreUnknownKeys = true }
+
+fun composeView(context: Context, content: @Composable ComposeView.() -> Unit): View =
+    ComposeView(context).apply {
+        setContent {
+            content()
+        }
+    }
 
 fun dimen(resources: Resources, dimen: Int) = resources.getDimension(dimen).toInt()
 
@@ -64,7 +79,7 @@ fun LocalDate.getString() =
     "${normalizeDate(dayOfMonth)}.${normalizeDate(monthValue)}.${normalizeDate(year)}"
 
 fun getCurrentWeek(
-    weekCount: Int = mainSchedule.info.weeksCount - 1 ,
+    weekCount: Int = mainSchedule.info.studyPlace.weeksCount - 1,
     date: LocalDate = LocalDate.now()
 ): Int {
     val nowDate = LocalDate.now()

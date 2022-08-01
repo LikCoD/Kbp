@@ -7,6 +7,7 @@ import com.ldc.kbp.models.Homeworks
 import com.ldc.kbp.R
 import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.dialog_homework_set.*
+/*
 
 class HomeworkSetDialog(
     context: Context,
@@ -36,4 +37,4 @@ class HomeworkSetDialog(
         dialog_homework_discard.setOnClickListener { hide() }
     }
 
-}
+}*/
