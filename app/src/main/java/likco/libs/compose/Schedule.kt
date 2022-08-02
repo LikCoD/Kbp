@@ -135,12 +135,7 @@ fun BoxScope.BasicCellContent(
         Button(
             onClick = onClick,
             elevation = null,
-            colors = ButtonDefaults.buttonColors(
-                Color.Transparent,
-                Color.Transparent,
-                Color.Transparent,
-                Color.Transparent
-            ),
+            colors = ButtonDefaults.buttonColors(Color.Transparent),
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1F),
@@ -229,7 +224,7 @@ fun BasicSchedule(
 ) {
     val numDays = ChronoUnit.DAYS.between(minDate, maxDate).toInt() + 1
     val numMinutes = ChronoUnit.MINUTES.between(minTime, maxTime).toInt() + 1
-    val dividerColor = if (MaterialTheme.colors.isLight) Color.LightGray else Color.DarkGray
+    val dividerColor = MaterialTheme.colors.onBackground
     val positionedEvents = remember(events) {
         splitEvents(events.sortedBy(Lesson::startDate), hourHeight, subjectHeight)
             .filter { it.end > minTime && it.start < maxTime }

@@ -1,33 +1,38 @@
 package com.ldc.kbp
 
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.ldc.kbp.fragments.SapperFragment
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.models.Schedule
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import likco.studyum.compose.Drawer
+import likco.studyum.compose.Schedule
+import likco.studyum.models.DrawerItem
+import likco.studyum.models.User
+import likco.studyum.services.UserService
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-
-    private var personClickCount = 0
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,31 +54,89 @@ class MainActivity : AppCompatActivity() {
 
             runBlocking(Dispatchers.IO) {
                 Groups.loadTimetable()
+
+                UserService.load()
             }
 
-            setContentView(R.layout.activity_main)
-            setSupportActionBar(toolbar)
+            setContent {
+                MaterialTheme(
+                    colors = darkColors(
+                        onPrimary = Color.White,
+                        primary = Color(0xFFE6BA92),
+                        surface = Color(0xFF434C5C)
+                    )
+                ) {
+                    var user by remember { mutableStateOf(UserService.user) }
+
+                    if (user == null) LoginScreen { user = it }
+                    else Surface {
+                        val scaffoldState = rememberScaffoldState()
+                        val scope = rememberCoroutineScope()
+
+                        val appName = stringResource(id = R.string.app_name)
+
+                        var topBarTitle by remember { mutableStateOf(appName) }
+                        var topBarActions by remember {
+                            mutableStateOf<@Composable RowScope.() -> Unit>({})
+                        }
+
+                        var selectedItem by remember { mutableStateOf("Schedule") }
+
+                        Scaffold(
+                            scaffoldState = scaffoldState,
+                            topBar = {
+                                TopAppBar(
+                                    title = {
+                                        Text(text = topBarTitle)
+                                    },
+                                    navigationIcon = {
+                                        IconButton(onClick = {
+                                            scope.launch { scaffoldState.drawerState.open() }
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Menu,
+                                                contentDescription = "menu"
+                                            )
+                                        }
+                                    },
+                                    actions = topBarActions,
+                                    backgroundColor = MaterialTheme.colors.primary
+                                )
+                            },
+                            drawerContent = {
+                                Drawer(
+                                    user = user!!,
+                                    items = listOf(
+                                        DrawerItem(
+                                            text = "Schedule",
+                                            icon = Icons.Default.DateRange,
+                                            contentDescription = "schedule item"
+                                        ),
+                                    ),
+                                    bottomItem = DrawerItem(
+                                        text = "Log out",
+                                        icon = Icons.Default.ExitToApp,
+                                        contentDescription = "log out item"
+                                    )
+                                ) {
+                                    selectedItem = it.text
+                                }
+                            }
+                        ) {
+                            when (selectedItem) {
+                                "Schedule" -> {
+                                    topBarActions = Schedule { topBarTitle = it }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             lifecycleScope.launch(Dispatchers.IO) {
                 Groups.loadGroupsFromJournal()
                 Groups.loadTeachersFromJournal()
             }
-
-            val navController = findNavController(R.id.nav_host_fragment)
-            appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.nav_timetable,
-                    R.id.nav_diary,
-                    R.id.nav_journal,
-                    R.id.nav_empty_room,
-                    R.id.nav_statement,
-                    R.id.nav_settings
-                ),
-                drawer_layout
-            )
-
-            setupActionBarWithNavController(navController, appBarConfiguration)
-            nav_view.setupWithNavController(navController)
         }
 
         if (isNotificationsConnected) {
@@ -104,23 +167,62 @@ class MainActivity : AppCompatActivity() {
         Files.getHomeworkList(this)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
 
-    fun onImgClick(view: View?) {
-        if (view == null) return
+    @Composable
+    fun LoginScreen(userSet: (User?) -> Unit) {
+        Box {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .size(width = 250.dp, height = 225.dp)
+                    .align(Alignment.Center)
+            ) {
+                val coroutineScope = rememberCoroutineScope()
 
-        personClickCount++
+                var login by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
 
-        if (personClickCount == 5) {
-            supportFragmentManager.beginTransaction().let {
-                it.replace(R.id.nav_host_fragment, SapperFragment())
-                it.commit()
+                OutlinedTextField(
+                    value = login,
+                    onValueChange = { login = it },
+                    label = { Text(text = "Email") }
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(text = "Password") },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                val context = LocalContext.current
+                Button(onClick = {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        UserService.login(login, password)
+                        if (UserService.user == null) return@launch
+
+                        Files.saveConfig(context)
+                        userSet(UserService.user)
+                    }
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Continue")
+                }
+
+                val uriHandler = LocalUriHandler.current
+                TextButton(
+                    onClick = { uriHandler.openUri("https://studyum.herokuapp.com/signup") },
+                    contentPadding = PaddingValues(),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(20.dp)
+                ) {
+                    Text(text = "Sign up")
+                }
             }
-
-            personClickCount = 0
         }
     }
 }

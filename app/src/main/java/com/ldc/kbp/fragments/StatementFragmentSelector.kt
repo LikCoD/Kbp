@@ -35,8 +35,8 @@ class StatementFragmentSelector : Fragment() {
                 Statement.type = StatementsType.values()[id.toInt()]
 
                 requireActivity().supportFragmentManager.beginTransaction().let {
-                    it.replace(R.id.nav_host_fragment, StatementDataFragment())
-                    it.commit()
+                    /*it.replace(R.id.nav_host_fragment, StatementDataFragment())
+                    it.commit()*/
                 }
             }
         }

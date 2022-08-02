@@ -73,6 +73,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
     implementation("androidx.compose.runtime:runtime-livedata:1.3.0-alpha01")
 
+    implementation("androidx.navigation:navigation-compose:2.5.1")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.jakewharton.threetenabp:threetenabp:1.0.3")
     implementation("joda-time:joda-time:2.10.12")

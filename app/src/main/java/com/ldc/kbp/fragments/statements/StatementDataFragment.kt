@@ -54,11 +54,11 @@ class StatementDataFragment : Fragment() {
                 }
 
                 requireActivity().supportFragmentManager.beginTransaction().let {
-                    it.replace(
+/*                    it.replace(
                         R.id.nav_host_fragment,
                         Statement.type.fragment ?: CustomStatementFragment(Statement.type)
                     )
-                    it.commit()
+                    it.commit()*/
                 }
             } else shortSnackbar(continue_btn, R.string.enter_data)
         }
