@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,7 +65,9 @@ class MainActivity : ComponentActivity() {
                     colors = darkColors(
                         onPrimary = Color.White,
                         primary = Color(0xFFE6BA92),
-                        surface = Color(0xFF434C5C)
+                        secondary = Color(0xFFFCFAF1),
+                        surface = Color(0xFF434C5C),
+                        background = Color(0xFF434C5C)
                     )
                 ) {
                     var user by remember { mutableStateOf(UserService.user) }

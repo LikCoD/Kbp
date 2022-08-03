@@ -27,9 +27,10 @@ import com.ldc.kbp.models.Lesson
 import com.ldc.kbp.models.LessonType
 import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.fragments.SearchFragment
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -42,15 +43,17 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
 
     var schedule by remember { mutableStateOf<Schedule?>(null) }
     var isLoading by remember { mutableStateOf(true) }
-    updateSchedule {
-        setTitle(it.info.typeName)
-        schedule = it
-        isLoading = false
-    }
+    updateSchedule(
+        scope = coroutineScope,
+        onScheduleUpdate = { schedule = it },
+        setTitle = setTitle,
+        setIsLoading = { isLoading = it }
+    )
+
+    val secondaryColor = MaterialTheme.colors.secondary
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
-        backgroundColor = Color(0xFF434C5C),
         sheetPeekHeight = 60.dp,
         sheetElevation = 0.dp,
         sheetBackgroundColor = Color(0x66000000),
@@ -64,23 +67,17 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
                 val size = Size(200f, 15f)
                 val offset = Offset(center.x - size.width / 2, 10f)
 
-                this.drawRoundRect(Color(0xBFC8C8C8), offset, size, CornerRadius(15f, 15f))
+                this.drawRoundRect(secondaryColor.copy(alpha = .75f), offset, size, CornerRadius(15f, 15f))
             }
             if (isLoading) Text(
                 text = "Loading...",
-                color = Color.White,
                 fontSize = 22.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .background(Color.Transparent)
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Text(
                 text = "Schedule",
-                color = Color.White,
                 fontSize = 22.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .background(Color.Transparent)
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             AndroidView(
                 factory = { ctx ->
@@ -93,12 +90,13 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
                             bottomSheetScaffoldState.bottomSheetState.collapse()
                         }
 
-                        isLoading = true
-                        updateSchedule(it) { s ->
-                            setTitle(s.info.typeName)
-                            schedule = s
-                            isLoading = false
-                        }
+                        updateSchedule(
+                            scope = coroutineScope,
+                            info = it,
+                            onScheduleUpdate = { schedule = it },
+                            setTitle = setTitle,
+                            setIsLoading = { isLoading = it }
+                        )
                     }
 
                     view
@@ -113,6 +111,8 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
             Text(text = "Loading...")
             return@BottomSheetScaffold
         }
+
+        val primaryColor = MaterialTheme.colors.primary
         likco.libs.compose.Schedule(
             events = schedule!!.lessons,
             dayHeader = {
@@ -129,7 +129,7 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
                     color = Color.White,
                 )
             },
-            moreIndicator = { drawCircle(Color(0xFFE6BA92), 12f) },
+            moreIndicator = { drawCircle(primaryColor, 12f) },
             eventContent = { i, len, l ->
                 LessonContainer(
                     i = i,
@@ -153,12 +153,12 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
             Icon(imageVector = Icons.Default.Search, contentDescription = "search")
         }
         IconButton(onClick = {
-            isLoading = true
-            updateSchedule {
-                setTitle(it.info.typeName)
-                schedule = it
-                isLoading = false
-            }
+            updateSchedule(
+                scope = coroutineScope,
+                onScheduleUpdate = { schedule = it },
+                setTitle = setTitle,
+                setIsLoading = { isLoading = it }
+            )
         }) {
             Icon(imageVector = Icons.Default.Refresh, contentDescription = "refresh")
         }
@@ -221,12 +221,19 @@ fun LessonContainer(i: Int, len: Int, lesson: Lesson) {
     }
 }
 
-private fun updateSchedule(info: Groups.Schedule? = null, onScheduleUpdate: (Schedule) -> Unit) {
-    MainScope().launch {
-        launch(Dispatchers.IO) {
-            val schedule = Schedule.load(info)
+private fun updateSchedule(
+    scope: CoroutineScope,
+    info: Groups.Schedule? = null,
+    onScheduleUpdate: (Schedule) -> Unit,
+    setTitle: (String) -> Unit,
+    setIsLoading: (Boolean) -> Unit
+) = scope.launch {
+    setIsLoading(true)
 
-            onScheduleUpdate(schedule)
-        }
-    }
+    val schedule = runBlocking(Dispatchers.IO) { Schedule.load(info) }
+
+    setTitle(schedule.info.typeName)
+    onScheduleUpdate(schedule)
+
+    setIsLoading(false)
 }
