@@ -31,6 +31,7 @@ import kotlinx.coroutines.runBlocking
 import likco.studyum.compose.Drawer
 import likco.studyum.compose.Schedule
 import likco.studyum.models.DrawerItem
+import likco.studyum.models.TopBarItem
 import likco.studyum.models.User
 import likco.studyum.services.UserService
 
@@ -72,8 +73,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     var user by remember { mutableStateOf(UserService.user) }
 
-                    if (user == null) LoginScreen { user = it }
-                    else Surface {
+                    if (user == null) {
+                        LoginScreen { user = it }
+                        return@MaterialTheme
+                    }
+
+                    Surface {
                         val scaffoldState = rememberScaffoldState()
                         val scope = rememberCoroutineScope()
 
@@ -123,14 +128,29 @@ class MainActivity : ComponentActivity() {
                                         contentDescription = "log out item"
                                     )
                                 ) {
+                                    topBarActions = {}
+                                    scope.launch { scaffoldState.drawerState.close() }
+
                                     selectedItem = it.text
                                 }
                             }
                         ) {
-                            when (selectedItem) {
-                                "Schedule" -> {
-                                    topBarActions = Schedule { topBarTitle = it }
+                            val setTitle = { title: String -> topBarTitle = title }
+                            val setTopBar = { items: List<TopBarItem> ->
+                                topBarActions = {
+                                    items.forEach {
+                                        IconButton(onClick = it.onClick) {
+                                            Icon(
+                                                imageVector = it.icon,
+                                                contentDescription = it.contentDescription
+                                            )
+                                        }
+                                    }
                                 }
+                            }
+
+                            when (selectedItem) {
+                                "Schedule" -> Schedule(setTitle, setTopBar)
                             }
                         }
                     }

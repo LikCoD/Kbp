@@ -31,11 +31,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import likco.studyum.models.TopBarItem
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
+fun Schedule(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
@@ -67,7 +68,12 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
                 val size = Size(200f, 15f)
                 val offset = Offset(center.x - size.width / 2, 10f)
 
-                this.drawRoundRect(secondaryColor.copy(alpha = .75f), offset, size, CornerRadius(15f, 15f))
+                this.drawRoundRect(
+                    secondaryColor.copy(alpha = .75f),
+                    offset,
+                    size,
+                    CornerRadius(15f, 15f)
+                )
             }
             if (isLoading) Text(
                 text = "Loading...",
@@ -144,25 +150,29 @@ fun Schedule(setTitle: (String) -> Unit): @Composable RowScope.() -> Unit {
         )
     }
 
-    return {
-        IconButton(onClick = {
-            coroutineScope.launch {
-                bottomSheetScaffoldState.bottomSheetState.expand()
-            }
-        }) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "search")
-        }
-        IconButton(onClick = {
-            updateSchedule(
-                scope = coroutineScope,
-                onScheduleUpdate = { schedule = it },
-                setTitle = setTitle,
-                setIsLoading = { isLoading = it }
-            )
-        }) {
-            Icon(imageVector = Icons.Default.Refresh, contentDescription = "refresh")
-        }
-    }
+    topBar(
+        listOf(
+            TopBarItem(
+                icon = Icons.Default.Search,
+                contentDescription = "search",
+            ) {
+                coroutineScope.launch {
+                    bottomSheetScaffoldState.bottomSheetState.expand()
+                }
+            },
+            TopBarItem(
+                icon = Icons.Default.Refresh,
+                contentDescription = "refresh",
+            ) {
+                updateSchedule(
+                    scope = coroutineScope,
+                    onScheduleUpdate = { schedule = it },
+                    setTitle = setTitle,
+                    setIsLoading = { isLoading = it }
+                )
+            },
+        )
+    )
 }
 
 @Composable
