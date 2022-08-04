@@ -1,5 +1,10 @@
 package com.ldc.kbp.models
 
+import com.github.kittinunf.fuel.core.FuelError
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.serialization.responseObject
+import com.github.kittinunf.result.getOrNull
+import com.github.kittinunf.result.onError
 import com.ldc.kbp.API_URL
 import kotlinx.serialization.Serializable
 
@@ -16,15 +21,14 @@ data class Schedule(
         val date: String
     )
 
-    @Serializable
-    enum class Type {
-        STAY,
-        ADDED,
-        REMOVED
-    }
-
     companion object {
-        fun load(info: Groups.Schedule?): Schedule =
-            Requests.get<Schedule>("$API_URL/schedule/${info ?: "my"}")!!
+        fun load(info: Groups.Schedule?, error: (FuelError) -> Unit): Schedule? {
+            val (_, _, result) = "$API_URL/schedule/${info ?: "my"}"
+                .httpGet()
+                .withToken()
+                .responseObject<Schedule>(JSON)
+
+            return result.onError(error).getOrNull()
+        }
     }
 }

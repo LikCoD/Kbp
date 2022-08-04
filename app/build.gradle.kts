@@ -74,7 +74,12 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.3.0-alpha01")
 
     implementation("androidx.navigation:navigation-compose:2.5.1")
-    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01") //image from url
+
+    //http requests
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-android:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:2.3.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.jakewharton.threetenabp:threetenabp:1.0.3")

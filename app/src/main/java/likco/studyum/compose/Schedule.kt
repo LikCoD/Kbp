@@ -240,7 +240,7 @@ private fun updateSchedule(
 ) = scope.launch {
     setIsLoading(true)
 
-    val schedule = runBlocking(Dispatchers.IO) { Schedule.load(info) }
+    val schedule = runBlocking(Dispatchers.IO) { Schedule.load(info) {} } ?: return@launch
 
     setTitle(schedule.info.typeName)
     onScheduleUpdate(schedule)

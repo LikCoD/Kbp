@@ -44,7 +44,7 @@ class SettingsFragment : Fragment() {
 
         val search = SearchFragment(groups_selector_fragment, Groups.timetable.map { it to Groups.getRusType(it) }, { it.name })
         search.onSelected = { info ->
-            thread { mainSchedule = Schedule.load(info) }
+            thread { mainSchedule = Schedule.load(info){} ?: return@thread }
 
             group_name_tv.text = info.name
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

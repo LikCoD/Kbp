@@ -1,5 +1,6 @@
 package com.ldc.kbp
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +42,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
-        val isNotificationsConnected = preferences.getBoolean("isNotificationsConnected", true)
-        val versionNotifications = preferences.getBoolean("notificationsV2.0", true)
+        val prefs = getSharedPreferences("preferences", MODE_PRIVATE)
+        val isNotificationsConnected = prefs.getBoolean("isNotificationsConnected", true)
+        val versionNotifications = prefs.getBoolean("notificationsV2.0", true)
 
         AndroidThreeTen.init(application)
 
@@ -55,13 +57,18 @@ class MainActivity : ComponentActivity() {
             API_URL = Firebase.remoteConfig.getString("apiUrl")
             JOURNAL_URL = Firebase.remoteConfig.getString("journalUrl")
 
-            runBlocking(Dispatchers.IO) {
-                Groups.loadTimetable()
-
-                UserService.load()
-            }
-
             setContent {
+                val preferences = getPreferences(Context.MODE_PRIVATE)
+                UserService.setPreferences(preferences)
+
+                runBlocking(Dispatchers.IO) {
+                    Groups.loadTimetable()
+
+                    UserService.load {
+                        it.printStackTrace()
+                    }
+                }
+
                 MaterialTheme(
                     colors = darkColors(
                         onPrimary = Color.White,
@@ -73,12 +80,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     var user by remember { mutableStateOf(UserService.user) }
 
-                    if (user == null) {
-                        LoginScreen { user = it }
-                        return@MaterialTheme
-                    }
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        if (user == null) {
+                            LoginScreen { user = it }
+                            return@Surface
+                        }
 
-                    Surface {
                         val scaffoldState = rememberScaffoldState()
                         val scope = rememberCoroutineScope()
 
@@ -90,6 +97,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                         var selectedItem by remember { mutableStateOf("Schedule") }
+
+                        val context = LocalContext.current
 
                         Scaffold(
                             scaffoldState = scaffoldState,
@@ -113,26 +122,32 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                             drawerContent = {
-                                Drawer(
-                                    user = user!!,
-                                    items = listOf(
-                                        DrawerItem(
-                                            text = "Schedule",
-                                            icon = Icons.Default.DateRange,
-                                            contentDescription = "schedule item"
+                                if (user != null)
+                                    Drawer(
+                                        user = user!!,
+                                        items = listOf(
+                                            DrawerItem(
+                                                text = "Schedule",
+                                                icon = Icons.Default.DateRange,
+                                                contentDescription = "schedule item"
+                                            ),
+                                            DrawerItem(
+                                                text = "Settings",
+                                                icon = Icons.Default.Settings,
+                                                contentDescription = "settings item"
+                                            ),
                                         ),
-                                    ),
-                                    bottomItem = DrawerItem(
-                                        text = "Log out",
-                                        icon = Icons.Default.ExitToApp,
-                                        contentDescription = "log out item"
-                                    )
-                                ) {
-                                    topBarActions = {}
-                                    scope.launch { scaffoldState.drawerState.close() }
+                                        bottomItem = DrawerItem(
+                                            text = "Log out",
+                                            icon = Icons.Default.ExitToApp,
+                                            contentDescription = "log out item"
+                                        )
+                                    ) {
+                                        topBarActions = {}
+                                        scope.launch { scaffoldState.drawerState.close() }
 
-                                    selectedItem = it.text
-                                }
+                                        selectedItem = it.text
+                                    }
                             }
                         ) {
                             val setTitle = { title: String -> topBarTitle = title }
@@ -169,7 +184,7 @@ class MainActivity : ComponentActivity() {
                     shortToast(this, R.string.notification_schedule_update_error)
                     return@addOnCompleteListener
                 }
-                val preferencesEditor = preferences.edit()
+                val preferencesEditor = prefs.edit()
                 preferencesEditor.putBoolean("isNotificationsConnected", false)
                 preferencesEditor.apply()
             }
@@ -181,7 +196,7 @@ class MainActivity : ComponentActivity() {
                     shortToast(this, R.string.notification_schedule_update_error)
                     return@addOnCompleteListener
                 }
-                val preferencesEditor = preferences.edit()
+                val preferencesEditor = prefs.edit()
                 preferencesEditor.putBoolean("notificationsV2.0", false)
                 preferencesEditor.apply()
             }
@@ -226,7 +241,9 @@ class MainActivity : ComponentActivity() {
                 val context = LocalContext.current
                 Button(onClick = {
                     coroutineScope.launch(Dispatchers.IO) {
-                        UserService.login(login, password)
+                        UserService.login(UserService.LoginData(login, password)) {
+                            it.printStackTrace()
+                        }
                         if (UserService.user == null) return@launch
 
                         Files.saveConfig(context)
