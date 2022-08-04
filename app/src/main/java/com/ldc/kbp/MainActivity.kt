@@ -166,6 +166,10 @@ class MainActivity : ComponentActivity() {
 
                             when (selectedItem) {
                                 "Schedule" -> Schedule(setTitle, setTopBar)
+                                "Log out" -> {
+                                    UserService.logout()
+                                    user = UserService.user
+                                }
                             }
                         }
                     }
