@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import likco.studyum.compose.Drawer
 import likco.studyum.compose.Schedule
+import likco.studyum.compose.Settings
 import likco.studyum.models.DrawerItem
 import likco.studyum.models.TopBarItem
 import likco.studyum.models.User
@@ -92,13 +93,9 @@ class MainActivity : ComponentActivity() {
                         val appName = stringResource(id = R.string.app_name)
 
                         var topBarTitle by remember { mutableStateOf(appName) }
-                        var topBarActions by remember {
-                            mutableStateOf<@Composable RowScope.() -> Unit>({})
-                        }
+                        var topBarItems by remember { mutableStateOf(listOf<TopBarItem>()) }
 
                         var selectedItem by remember { mutableStateOf("Schedule") }
-
-                        val context = LocalContext.current
 
                         Scaffold(
                             scaffoldState = scaffoldState,
@@ -117,7 +114,16 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     },
-                                    actions = topBarActions,
+                                    actions = {
+                                        topBarItems.forEach {
+                                            IconButton(onClick = it.onClick) {
+                                                Icon(
+                                                    imageVector = it.icon,
+                                                    contentDescription = it.contentDescription
+                                                )
+                                            }
+                                        }
+                                    },
                                     backgroundColor = MaterialTheme.colors.primary
                                 )
                             },
@@ -143,7 +149,7 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = "log out item"
                                         )
                                     ) {
-                                        topBarActions = {}
+                                        topBarItems = emptyList()
                                         scope.launch { scaffoldState.drawerState.close() }
 
                                         selectedItem = it.text
@@ -151,21 +157,12 @@ class MainActivity : ComponentActivity() {
                             }
                         ) {
                             val setTitle = { title: String -> topBarTitle = title }
-                            val setTopBar = { items: List<TopBarItem> ->
-                                topBarActions = {
-                                    items.forEach {
-                                        IconButton(onClick = it.onClick) {
-                                            Icon(
-                                                imageVector = it.icon,
-                                                contentDescription = it.contentDescription
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                            val setUser = { u: User? -> user = u }
+                            val setTopBar = { items: List<TopBarItem> -> topBarItems = items }
 
                             when (selectedItem) {
                                 "Schedule" -> Schedule(setTitle, setTopBar)
+                                "Settings" -> Settings(setTitle, setTopBar, setUser)
                                 "Log out" -> {
                                     UserService.logout()
                                     user = UserService.user
