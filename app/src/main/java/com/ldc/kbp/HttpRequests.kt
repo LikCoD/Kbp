@@ -2,6 +2,7 @@ package com.ldc.kbp
 
 import java.io.OutputStreamWriter
 import java.net.*
+import likco.studyum.R
 import javax.net.ssl.HttpsURLConnection
 
 class HttpRequests {

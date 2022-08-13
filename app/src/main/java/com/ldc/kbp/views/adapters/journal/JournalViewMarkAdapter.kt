@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.models.Journal
 import kotlinx.android.synthetic.main.item_journal_cell.view.*
 

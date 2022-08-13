@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.config
 import com.ldc.kbp.models.Files
 import kotlinx.android.synthetic.main.fragment_sapper.view.*

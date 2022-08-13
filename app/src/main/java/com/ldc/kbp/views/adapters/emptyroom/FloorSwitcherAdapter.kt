@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ldc.kbp.R
+import likco.studyum.R
 import kotlinx.android.synthetic.main.item_floor_switcher.view.*
 
 class FloorSwitcherAdapter(

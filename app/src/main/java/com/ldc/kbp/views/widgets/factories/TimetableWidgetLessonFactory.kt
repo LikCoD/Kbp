@@ -3,7 +3,7 @@ package com.ldc.kbp.views.widgets.factories
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import com.ldc.kbp.R
+import likco.studyum.R
 
 class TimetableWidgetLessonFactory(val context: Context, val items: ArrayList<String>?) :
     RemoteViewsService.RemoteViewsFactory {

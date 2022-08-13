@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.itextpdf.layout.element.Paragraph
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.createDatePicker
 import com.ldc.kbp.getString
 import com.ldc.kbp.models.Groups

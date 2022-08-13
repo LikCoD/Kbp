@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import likco.studyum.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Files

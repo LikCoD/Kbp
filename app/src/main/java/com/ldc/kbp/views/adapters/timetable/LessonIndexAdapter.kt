@@ -8,7 +8,7 @@ import android.widget.Space
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.models.Deprecates
 import kotlinx.android.synthetic.main.item_bell.view.*
 import org.threeten.bp.LocalDate

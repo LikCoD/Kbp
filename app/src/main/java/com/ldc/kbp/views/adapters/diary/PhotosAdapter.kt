@@ -6,7 +6,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.snackbar.Snackbar
 import com.ldc.kbp.models.Deprecates
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_photo.view.*
 import java.io.File

@@ -1,4 +1,4 @@
-package com.ldc.kbp
+package likco.studyum
 
 import android.content.Context
 import android.os.Bundle
@@ -24,8 +24,11 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.ldc.kbp.API_URL
+import com.ldc.kbp.JOURNAL_URL
 import com.ldc.kbp.models.Files
 import com.ldc.kbp.models.Groups
+import com.ldc.kbp.shortToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.getCurrentWeek
 import com.ldc.kbp.getString
 import com.ldc.kbp.mainSchedule

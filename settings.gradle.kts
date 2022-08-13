@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 include(":app")
-rootProject.name = "Kbp"
+rootProject.name = "Studyum"

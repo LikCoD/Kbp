@@ -13,6 +13,7 @@ import com.ldc.kbp.views.adapters.emptyroom.FloorSwitcherAdapter
 import kotlinx.android.synthetic.main.fragment_empty_room.view.*
 import org.threeten.bp.LocalDate
 import kotlin.concurrent.thread
+import likco.studyum.R
 
 class EmptyRoomFragment : Fragment() {
 

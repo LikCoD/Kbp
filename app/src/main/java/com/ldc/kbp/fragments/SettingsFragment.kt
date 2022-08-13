@@ -16,6 +16,7 @@ import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 import kotlin.concurrent.thread
+import likco.studyum.R
 
 class SettingsFragment : Fragment() {
 

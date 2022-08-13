@@ -1,7 +1,7 @@
 package com.ldc.kbp.models.statements
 
 import androidx.fragment.app.Fragment
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.fragments.statements.custom.FragmentWorkingOff
 import com.ldc.kbp.ifFemale
 

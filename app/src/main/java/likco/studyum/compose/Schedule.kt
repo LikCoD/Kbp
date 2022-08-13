@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.models.Groups
 import likco.studyum.models.Lesson
 import likco.studyum.models.LessonType

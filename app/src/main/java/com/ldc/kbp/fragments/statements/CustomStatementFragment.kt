@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.models.statements.Statement
 import com.ldc.kbp.models.statements.StatementsType
 import com.ldc.kbp.shortSnackbar

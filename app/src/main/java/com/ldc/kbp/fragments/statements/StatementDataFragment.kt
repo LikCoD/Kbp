@@ -11,6 +11,7 @@ import com.ldc.kbp.models.statements.Statement
 import com.ldc.kbp.models.statements.StatementsType
 import kotlinx.android.synthetic.main.fragment_statement_data.view.*
 import org.threeten.bp.LocalDate
+import likco.studyum.R
 
 class StatementDataFragment : Fragment() {
 

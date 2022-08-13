@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ldc.kbp.R
+import likco.studyum.R
 import kotlinx.android.synthetic.main.item_day_of_week_index.view.*
 
 class WeekIndexAdapter(

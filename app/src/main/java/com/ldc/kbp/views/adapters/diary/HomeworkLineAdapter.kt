@@ -12,6 +12,7 @@ import com.ldc.kbp.views.adapters.Adapter
 import org.threeten.bp.LocalDate
 import java.io.File
 import java.io.InputStream
+import likco.studyum.R
 
 class HomeworkLineAdapter(
     private val activity: Activity,

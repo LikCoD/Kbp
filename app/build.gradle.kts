@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ldc.kbp"
+    namespace = "likco.studyum"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.ldc.kbp"
+        applicationId = "likco.studyum"
         minSdk = 24
         targetSdk = 33
         versionCode = 20

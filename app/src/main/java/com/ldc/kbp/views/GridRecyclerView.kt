@@ -7,7 +7,7 @@ import android.widget.ScrollView
 import android.widget.Space
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.disableActions
 import com.ldc.kbp.views.layoutmanagers.FixedGridLayoutManager
 

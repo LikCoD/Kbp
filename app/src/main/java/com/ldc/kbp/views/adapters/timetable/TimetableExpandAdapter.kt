@@ -2,7 +2,7 @@ package com.ldc.kbp.views.adapters.timetable
 
 import android.content.Context
 import android.view.View
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_lesson.view.*

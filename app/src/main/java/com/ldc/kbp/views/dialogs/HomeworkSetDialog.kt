@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import com.ldc.kbp.models.Homeworks
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.models.Schedule
 import kotlinx.android.synthetic.main.dialog_homework_set.*
 /*

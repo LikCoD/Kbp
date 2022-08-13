@@ -2,7 +2,7 @@ package com.ldc.kbp.views.adapters
 
 import android.content.Context
 import android.view.View
-import com.ldc.kbp.R
+import likco.studyum.R
 import kotlinx.android.synthetic.main.item_round_button.view.*
 
 class RoundButtonsAdapter(

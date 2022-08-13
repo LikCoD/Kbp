@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.checkPermission
 import com.ldc.kbp.fragments.statements.StatementDataFragment
 import com.ldc.kbp.models.statements.Statement

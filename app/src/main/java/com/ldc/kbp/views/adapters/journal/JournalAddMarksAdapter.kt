@@ -2,7 +2,7 @@ package com.ldc.kbp.views.adapters.journal
 
 import android.content.Context
 import android.view.View
-import com.ldc.kbp.R
+import likco.studyum.R
 import com.ldc.kbp.views.adapters.Adapter
 import kotlinx.android.synthetic.main.item_journal_cell.view.*
 
