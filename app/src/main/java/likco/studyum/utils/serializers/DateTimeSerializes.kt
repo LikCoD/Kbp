@@ -1,4 +1,4 @@
-package com.ldc.kbp.serializers
+package likco.studyum.utils.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

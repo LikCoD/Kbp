@@ -7,6 +7,7 @@ import com.github.kittinunf.result.getOrNull
 import com.github.kittinunf.result.onError
 import com.ldc.kbp.API_URL
 import kotlinx.serialization.Serializable
+import likco.studyum.models.Lesson
 
 @Serializable
 data class Schedule(

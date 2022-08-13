@@ -1,6 +1,7 @@
 package com.ldc.kbp.models
 
 import kotlinx.serialization.Serializable
+import likco.studyum.models.Lesson
 
 @Serializable
 data class Homeworks(var days: MutableMap<String, Day> = mutableMapOf()) {

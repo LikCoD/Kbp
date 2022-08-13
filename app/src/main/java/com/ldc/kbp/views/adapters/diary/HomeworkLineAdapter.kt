@@ -1,26 +1,17 @@
 package com.ldc.kbp.views.adapters.diary
 
-import android.Manifest
 import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.os.Environment
-import android.provider.MediaStore
 import android.view.View
-import androidx.core.app.ActivityCompat.startActivityForResult
 import com.ldc.kbp.*
 import com.ldc.kbp.models.Homeworks
-import com.ldc.kbp.models.Lesson
-import com.ldc.kbp.models.Schedule
+import likco.studyum.models.Lesson
 import com.ldc.kbp.views.adapters.Adapter
-import kotlinx.android.synthetic.main.item_homework_line.view.*
 import org.threeten.bp.LocalDate
 import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
-import kotlin.concurrent.thread
 
 class HomeworkLineAdapter(
     private val activity: Activity,

@@ -1,7 +1,7 @@
-package com.ldc.kbp.models
+package likco.studyum.models
 
-import com.ldc.kbp.serializers.DateTimeSerializer
 import kotlinx.serialization.Serializable
+import likco.studyum.utils.serializers.DateTimeSerializer
 import java.time.LocalDateTime
 
 @Serializable
@@ -17,7 +17,17 @@ data class Lesson(
     val room: String,
     val title: String,
     val homework: String,
-    val description: String
+    val description: String,
+    val marks: List<Mark>? = null
+)
+
+@Serializable
+data class Mark(
+    val id: String,
+    val mark: String,
+    val userId: String,
+    val lessonId: String,
+    val studyPlaceId: Int
 )
 
 enum class LessonType {

@@ -10,19 +10,15 @@ plugins {
 
 android {
     namespace = "com.ldc.kbp"
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.ldc.kbp"
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 20
         versionName = "2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
@@ -66,12 +62,14 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-config-ktx")
 
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.0-alpha01")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
-    implementation("androidx.compose.ui:ui:1.3.0-alpha01")
-    implementation("androidx.compose.material:material:1.3.0-alpha01")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha01")
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.0-alpha01")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.0-alpha02")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha02")
+    implementation("androidx.compose.ui:ui:1.3.0-alpha02")
+    implementation("androidx.compose.material:material:1.3.0-alpha02")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0-alpha02")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.0-alpha02")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha15")
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-alpha15")
 
     implementation("androidx.navigation:navigation-compose:2.5.1")
     implementation("io.coil-kt:coil-compose:2.0.0-rc01") //image from url

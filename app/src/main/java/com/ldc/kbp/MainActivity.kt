@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -31,8 +30,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import likco.studyum.compose.Drawer
+import likco.studyum.compose.JournalView
 import likco.studyum.compose.Schedule
 import likco.studyum.compose.Settings
+import likco.studyum.compose.icons.Journal
+import likco.studyum.compose.icons.Schedule
 import likco.studyum.models.DrawerItem
 import likco.studyum.models.TopBarItem
 import likco.studyum.models.User
@@ -95,7 +97,7 @@ class MainActivity : ComponentActivity() {
                         var topBarTitle by remember { mutableStateOf(appName) }
                         var topBarItems by remember { mutableStateOf(listOf<TopBarItem>()) }
 
-                        var selectedItem by remember { mutableStateOf("Schedule") }
+                        var selectedItem by remember { mutableStateOf("Journal") }
 
                         Scaffold(
                             scaffoldState = scaffoldState,
@@ -134,7 +136,12 @@ class MainActivity : ComponentActivity() {
                                         items = listOf(
                                             DrawerItem(
                                                 text = "Schedule",
-                                                icon = Icons.Default.DateRange,
+                                                icon = Icons.Default.Schedule,
+                                                contentDescription = "schedule item"
+                                            ),
+                                            DrawerItem(
+                                                text = "Journal",
+                                                icon = Icons.Default.Journal,
                                                 contentDescription = "schedule item"
                                             ),
                                             DrawerItem(
@@ -162,6 +169,7 @@ class MainActivity : ComponentActivity() {
 
                             when (selectedItem) {
                                 "Schedule" -> Schedule(setTitle, setTopBar)
+                                "Journal" -> JournalView(setTitle, setTopBar)
                                 "Settings" -> Settings(setTitle, setTopBar, setUser)
                                 "Log out" -> {
                                     UserService.logout()

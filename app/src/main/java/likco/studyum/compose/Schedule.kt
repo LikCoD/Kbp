@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ldc.kbp.R
 import com.ldc.kbp.models.Groups
-import com.ldc.kbp.models.Lesson
-import com.ldc.kbp.models.LessonType
+import likco.studyum.models.Lesson
+import likco.studyum.models.LessonType
 import com.ldc.kbp.models.Schedule
 import com.ldc.kbp.views.fragments.SearchFragment
 import kotlinx.coroutines.CoroutineScope
