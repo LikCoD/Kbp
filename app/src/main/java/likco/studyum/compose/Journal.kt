@@ -167,10 +167,10 @@ fun JournalBarItem(row: Journal.Row, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun JournalCell(lesson: Lesson, cellSize: Dp) {
+fun JournalCell(lesson: Lesson?, cellSize: Dp) {
     val primaryColor = MaterialTheme.colors.primary
 
-    val color = when (lesson.marks?.size) {
+    val color = when (lesson?.marks?.size) {
         null, 0 -> Color(0xFF505A64)
         else -> Color(0xFFF1F1F1)
     }
@@ -182,7 +182,7 @@ fun JournalCell(lesson: Lesson, cellSize: Dp) {
             .padding(7.5.dp)
             .background(color, RoundedCornerShape(15.dp))
     ) {
-        when (lesson.marks?.size) {
+        when (lesson?.marks?.size) {
             null, 0 -> {}
             1 -> JournalMark1Cell(lesson.marks[0])
             2 -> JournalMark2Cell(lesson.marks[0], lesson.marks[1])

@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 data class Lesson(
     val id: String,
     val studyPlaceId: Int,
-    val type: LessonType,
+    val type: String,
     @Serializable(DateTimeSerializer::class) val endDate: LocalDateTime,
     @Serializable(DateTimeSerializer::class) val startDate: LocalDateTime,
     val subject: String,
@@ -29,10 +29,3 @@ data class Mark(
     val lessonId: String,
     val studyPlaceId: Int
 )
-
-enum class LessonType {
-    STAY,
-    ADDED,
-    REMOVED,
-    GENERAL,
-}

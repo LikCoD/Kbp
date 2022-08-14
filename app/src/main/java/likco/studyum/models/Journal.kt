@@ -18,7 +18,7 @@ data class Journal(val info: Info, val rows: List<Row>, val dates: List<Lesson>)
         val id: String,
         val title: String,
         val userType: String,
-        val lessons: List<Lesson>
+        val lessons: List<Lesson?>
     )
 
     @Serializable
@@ -28,6 +28,7 @@ data class Journal(val info: Info, val rows: List<Row>, val dates: List<Lesson>)
         val group: String,
         val editable: Boolean
     ) {
-        override fun toString(): String = "${group}/${subject}/${teacher}"
+        override fun toString(): String =
+            if (teacher == "") "" else "${group}/${subject}/${teacher}"
     }
 }

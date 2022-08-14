@@ -192,10 +192,11 @@ fun LessonContainer(i: Int, len: Int, lesson: Lesson) {
     }
 
     val color = when (lesson.type) {
-        LessonType.STAY -> Color(0xFFF1F1F1)
-        LessonType.ADDED -> Color(0xFF71AB7F)
-        LessonType.REMOVED -> Color(0xFFFA6F46)
-        LessonType.GENERAL -> Color(0xFFB4B4B4)
+        "STAY" -> Color(0xFFF1F1F1)
+        "ADDED" -> Color(0xFF71AB7F)
+        "REMOVED" -> Color(0xFFFA6F46)
+        "GENERAL" -> Color(0xFFB4B4B4)
+        else -> Color(0xFF797979)
     }
 
     Box(
