@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ fun JournalView(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) 
 
     if (options == null) {
         setTitle("Journal")
+        topBar(emptyList())
         scope.launch(Dispatchers.IO) {
             options = JournalService.getOptions { it.printStackTrace() }
         }
@@ -53,6 +56,9 @@ fun JournalView(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) 
     }
 
     if (options != null && journal == null) {
+        setTitle("Journal")
+        topBar(emptyList())
+
         if (options!!.size == 1) onSelect(options!![0])
         else JournalSelector(options = options!!, onSelect = ::onSelect)
     }
@@ -60,6 +66,9 @@ fun JournalView(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) 
     if (journal != null) {
         setTitle("${journal!!.info.subject} ${journal!!.info.group}")
         topBar(listOf(
+            TopBarItem(Icons.Default.ArrowBack, "back") {
+                journal = null
+            },
             TopBarItem(Icons.Default.Refresh, "refresh") {
                 val i = journal?.info ?: return@TopBarItem
                 onSelect(Journal.Option(i.teacher, i.subject, i.group, i.editable))
