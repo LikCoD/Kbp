@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
                         var topBarTitle by remember { mutableStateOf(appName) }
                         var topBarItems by remember { mutableStateOf(listOf<TopBarItem>()) }
 
-                        var selectedItem by remember { mutableStateOf("Journal") }
+                        var selectedItem by remember { mutableStateOf("Schedule") }
 
                         Scaffold(
                             scaffoldState = scaffoldState,

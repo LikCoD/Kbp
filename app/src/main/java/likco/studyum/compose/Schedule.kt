@@ -1,5 +1,6 @@
 package likco.studyum.compose
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,8 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +24,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import likco.studyum.compose.components.CategorySearch
 import likco.studyum.models.*
+import likco.studyum.services.ScheduleService
 import likco.studyum.utils.format
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Schedule(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) {
@@ -35,6 +37,11 @@ fun Schedule(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
+
+    var options = emptyList<Schedule.Option>()
+    coroutineScope.launch(Dispatchers.IO) {
+        options = ScheduleService.getOptions { it.printStackTrace() } ?: emptyList()
+    }
 
     var schedule by remember { mutableStateOf<Schedule?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -79,32 +86,34 @@ fun Schedule(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) {
                 fontSize = 22.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
- /*           AndroidView(
-                factory = { ctx ->
-                    val view =
-                        LayoutInflater.from(ctx).inflate(R.layout.fragment_search, null, false)
-                    SearchFragment(view,
-                        Groups.timetable.map { it to Groups.getRusType(it) },
-                        { it.name }) {
-                        coroutineScope.launch {
-                            bottomSheetScaffoldState.bottomSheetState.collapse()
-                        }
-
-                        updateSchedule(
-                            scope = coroutineScope,
-                            info = it,
-                            onScheduleUpdate = { schedule = it },
-                            setTitle = setTitle,
-                            setIsLoading = { isLoading = it }
-                        )
-                    }
-
-                    view
+            CategorySearch(
+                baseItems = options,
+                categories = options.distinctBy { it.type }.map { it.category },
+                filter = { category, search, option ->
+                    category == null || option.type == category.name && option.name.contains(search)
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(350.dp)
-            )*/
+                searchItem = {
+                    Text(
+                        text = it.name,
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    )
+
+                    Text(
+                        text = it.category.title,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
+                },
+                onSelect = {option ->
+                    updateSchedule(
+                        scope = coroutineScope,
+                        info = option,
+                        onScheduleUpdate = { schedule = it },
+                        setTitle = setTitle,
+                        setIsLoading = { isLoading = it }
+                    )
+                },
+                modifier = Modifier.padding(top = 15.dp).height(350.dp)
+            )
         },
     ) {
         if (schedule == null) {
@@ -227,14 +236,14 @@ fun LessonContainer(i: Int, len: Int, lesson: Lesson) {
 
 private fun updateSchedule(
     scope: CoroutineScope,
-    info: Groups.Schedule? = null,
+    info: Schedule.Option? = null,
     onScheduleUpdate: (Schedule) -> Unit,
     setTitle: (String) -> Unit,
     setIsLoading: (Boolean) -> Unit
 ) = scope.launch {
     setIsLoading(true)
 
-    val schedule = runBlocking(Dispatchers.IO) { Schedule.load(info) {} } ?: return@launch
+    val schedule = runBlocking(Dispatchers.IO) { ScheduleService.load(info) {} } ?: return@launch
 
     setTitle(schedule.info.typeName)
     onScheduleUpdate(schedule)
