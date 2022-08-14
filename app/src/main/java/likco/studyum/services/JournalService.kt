@@ -16,7 +16,7 @@ object JournalService {
         option: Journal.Option,
         error: (FuelError) -> Unit
     ): Journal? {
-        val (_, _, result) = "$API_URL/journal/${option.group}/${option.subject}/${option.teacher}"
+        val (_, _, result) = "$API_URL/journal/$option"
             .httpGet()
             .withToken()
             .responseObject<Journal>(JSON)

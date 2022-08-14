@@ -27,5 +27,7 @@ data class Journal(val info: Info, val rows: List<Row>, val dates: List<Lesson>)
         val subject: String,
         val group: String,
         val editable: Boolean
-    )
+    ) {
+        override fun toString(): String = "${group}/${subject}/${teacher}"
+    }
 }

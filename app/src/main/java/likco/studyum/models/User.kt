@@ -13,7 +13,7 @@ data class User(
     val type: String,
     val typeName: String,
     val studyPlaceId: Int,
-    val permissions: List<String>,
+    val permissions: List<String>?,
     val accepted: Boolean,
     val blocked: Boolean
 )
