@@ -103,7 +103,7 @@ fun Schedule(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) {
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
                 },
-                onSelect = {option ->
+                onSelect = { option ->
                     updateSchedule(
                         scope = coroutineScope,
                         info = option,
@@ -112,7 +112,9 @@ fun Schedule(setTitle: (String) -> Unit, topBar: (List<TopBarItem>) -> Unit) {
                         setIsLoading = { isLoading = it }
                     )
                 },
-                modifier = Modifier.padding(top = 15.dp).height(350.dp)
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .height(350.dp)
             )
         },
     ) {
